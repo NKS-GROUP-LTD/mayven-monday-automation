@@ -1,0 +1,28 @@
+# Secrets & environment
+.env
+.env.*
+*.env
+secrets.json
+credentials.json
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+env/
+
+# Logs (may contain item data)
+*.log
+phase1_full_run.log
+
+# Supabase temp
+supabase/.temp/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Claude Code local settings
+.claude/settings.local.json
