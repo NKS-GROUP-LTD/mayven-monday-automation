@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mayven Hub — Executive Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Mono:wght@400;500&family=Heebo:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0a0f;--s:#111118;--s2:#1a1a24;--b:#2a2a3a;--a:#c8a96e;--a2:#7c6fff;--g:#3ecf8e;--r:#ff4d6d;--y:#ffd166;--t:#e8e8f0;--m:#6b6b85}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--t);min-height:100vh;direction:rtl}
+header{padding:22px 36px 18px;border-bottom:1px solid var(--b);display:flex;align-items:center;justify-content:space-between}
+.logo{font-family:'DM Serif Display',serif;font-size:24px;color:var(--a)}
+.logo span{color:var(--m);font-size:12px;font-family:'Heebo';font-weight:300;display:block;margin-top:1px}
+.hmeta{font-family:'DM Mono',monospace;font-size:11px;color:var(--m);background:var(--s2);padding:5px 12px;border-radius:20px;border:1px solid var(--b)}
+.kbar{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--b);border-bottom:1px solid var(--b)}
+.kpi{background:var(--s);padding:16px 18px;text-align:center}
+.kv{font-family:'DM Mono',monospace;font-size:26px;font-weight:500;color:var(--t);line-height:1;margin-bottom:4px}
+.kl{font-size:10px;color:var(--m);text-transform:uppercase;letter-spacing:1px}
+.kpi.gold .kv{color:var(--a)}.kpi.green .kv{color:var(--g)}.kpi.red .kv{color:var(--r)}.kpi.purple .kv{color:var(--a2)}
+.main{display:grid;grid-template-columns:220px 1fr;min-height:calc(100vh - 145px)}
+.sidebar{background:var(--s);border-left:1px solid var(--b);padding:16px;overflow-y:auto}
+.stitle{font-size:10px;text-transform:uppercase;letter-spacing:2px;color:var(--m);margin-bottom:8px;margin-top:4px}
+.sbox{width:100%;background:var(--s2);border:1px solid var(--b);border-radius:7px;padding:8px 11px;color:var(--t);font-family:'Heebo';font-size:13px;margin-bottom:14px;direction:rtl}
+.sbox:focus{outline:none;border-color:var(--a2)}
+.sbox::placeholder{color:var(--m)}
+.vtoggle{display:flex;gap:2px;background:var(--s2);padding:3px;border-radius:7px;margin-bottom:14px}
+.vbtn{flex:1;background:transparent;border:none;color:var(--m);padding:5px;border-radius:4px;font-size:12px;cursor:pointer;font-family:'Heebo';transition:all .15s}
+.vbtn.active{background:var(--s);color:var(--t)}
+.fg{margin-bottom:12px}
+.fb{display:block;width:100%;background:transparent;border:1px solid transparent;color:var(--m);padding:4px 9px;border-radius:5px;font-family:'Heebo';font-size:12px;text-align:right;cursor:pointer;transition:all .15s;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fb:hover{background:var(--s2);color:var(--t)}
+.fb.active{background:var(--a2);color:#fff}
+.content{padding:24px 32px;overflow-y:auto}
+.cg{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:12px}
+.pc{background:var(--s);border:1px solid var(--b);border-radius:11px;padding:16px;transition:all .2s;animation:fu .2s ease both}
+@keyframes fu{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
+.pc:hover{border-color:var(--a2);transform:translateY(-2px);box-shadow:0 5px 20px rgba(124,111,255,.1)}
+.ct{font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--a2);margin-bottom:4px;font-family:'DM Mono';overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cn{font-size:13px;font-weight:700;color:var(--t);margin-bottom:10px;line-height:1.3}
+.cs{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:9px}
+.si{background:var(--s2);border-radius:6px;padding:7px 9px}
+.sv{font-family:'DM Mono';font-size:17px;font-weight:500;color:var(--t);line-height:1}
+.sl{font-size:9px;color:var(--m);margin-top:2px;text-transform:uppercase}
+.cf{display:flex;align-items:center;justify-content:space-between;font-size:10px;color:var(--m)}
+.sb{padding:2px 7px;border-radius:20px;font-size:10px;font-weight:600}
+.sb.ok{background:rgba(62,207,142,.15);color:var(--g)}
+.sb.late{background:rgba(255,77,109,.15);color:var(--r)}
+.sb.nodl{background:rgba(107,107,133,.1);color:var(--m)}
+.pt{width:100%;border-collapse:collapse;font-size:12px}
+.pt th{text-align:right;padding:9px 13px;border-bottom:1px solid var(--b);color:var(--m);font-size:9px;text-transform:uppercase;letter-spacing:1px;font-weight:400;white-space:nowrap}
+.pt td{padding:10px 13px;border-bottom:1px solid rgba(42,42,58,.4);vertical-align:middle}
+.pt tr:hover td{background:var(--s2)}
+.tn{font-weight:600;color:var(--t);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.es{display:flex;align-items:center;justify-content:center;flex-direction:column;min-height:300px;gap:12px;color:var(--m)}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">Mayven Hub<span id="hSub">Executive Dashboard · 4,149 משימות · 150 פרויקטים · עדכון אחרון: 15/05/2026</span></div>
+  <div class="hmeta">board_insights · May 2026</div>
+</header>
+<div class="kbar">
+  <div class="kpi gold"><div class="kv">150</div><div class="kl">פרויקטים</div></div>
+  <div class="kpi purple"><div class="kv">4,149</div><div class="kl">משימות</div></div>
+  <div class="kpi"><div class="kv">12</div><div class="kl">סוגי פרויקט</div></div>
+  <div class="kpi green"><div class="kv">84</div><div class="kl">בזמן</div></div>
+  <div class="kpi red"><div class="kv">64</div><div class="kl">חריגת דד ליין</div></div>
+</div>
+<div class="main">
+  <aside class="sidebar">
+    <div class="vtoggle">
+      <button class="vbtn active" onclick="sv('cards')" id="vCards">כרטיסים</button>
+      <button class="vbtn" onclick="sv('table')" id="vTable">טבלה</button>
+    </div>
+    <input type="text" class="sbox" placeholder="חיפוש..." id="si" oninput="applyF()">
+    <div class="fg">
+      <div class="stitle">סטטוס</div>
+      <button class="fb active" onclick="sF('s','all',this)">הכל</button>
+      <button class="fb" onclick="sF('s','ok',this)">✅ בזמן</button>
+      <button class="fb" onclick="sF('s','late',this)">🔴 חריגה</button>
+      <button class="fb" onclick="sF('s','nodl',this)">⚪ ללא דד ליין</button>
+    </div>
+    <div class="fg">
+      <div class="stitle">סוג פרויקט</div>
+      <div id="tF"><button class="fb active" onclick="sF('t','all',this)">הכל</button></div>
+    </div>
+    <div class="fg">
+      <div class="stitle">מיון</div>
+      <button class="fb active" onclick="srt('tasks',this)">מספר משימות</button>
+      <button class="fb" onclick="srt('deadline',this)">דד ליין</button>
+      <button class="fb" onclick="srt('name',this)">שם</button>
+    </div>
+  </aside>
+  <main class="content" id="content"></main>
+</div>
+<script>
+const ALL=[{"name": "💰 Team Finance 📉", "type": "✨ Department", "task_count": 652, "deadline": "2028-03-30", "on_time": true}, {"name": "⭐ Team Marketing", "type": "✨ Department", "task_count": 348, "deadline": "2026-06-21", "on_time": true}, {"name": "Bugs Colony 🐞", "type": "✨ Department", "task_count": 157, "deadline": "2026-05-20", "on_time": true}, {"name": "Notch", "type": "✨ Department", "task_count": 139, "deadline": "2026-05-13", "on_time": false}, {"name": "Automation Hub", "type": "🌀Changing Projects🔄", "task_count": 121, "deadline": "2026-08-11", "on_time": true}, {"name": "🌻 Team Office Management", "type": "✨ Department", "task_count": 99, "deadline": "2026-06-01", "on_time": true}, {"name": "אראל משימות אישי", "type": "✨ Department", "task_count": 93, "deadline": "2026-06-25", "on_time": true}, {"name": "📦 Team Logistics & Product", "type": "✨ Department", "task_count": 92, "deadline": "2026-06-25", "on_time": true}, {"name": "Task🧬 Subscriptions🔹", "type": "🧬 Subscription", "task_count": 83, "deadline": "2026-06-18", "on_time": true}, {"name": "Break free- PMS השקת מוצר", "type": "🚀Product Launch", "task_count": 80, "deadline": "2026-05-21", "on_time": true}, {"name": "🌶️ Mayven Hub- מוצר🌶️", "type": "📦 New Product", "task_count": 67, "deadline": "2026-08-13", "on_time": true}, {"name": "🔥 Team Performance", "type": "✨ Department", "task_count": 66, "deadline": "2026-06-11", "on_time": true}, {"name": "🚀Product Launch: Hey Mom", "type": "🚀Product Launch", "task_count": 64, "deadline": "2026-03-16", "on_time": false}, {"name": "Technical Debt 🛠️", "type": "✨ Department", "task_count": 59, "deadline": "2026-05-28", "on_time": true}, {"name": "✨ Gummies- PMS", "type": "📦 New Product- Gummies", "task_count": 40, "deadline": "2026-04-14", "on_time": false}, {"name": "Sample - Template", "type": "📦 New Product", "task_count": 40, "deadline": null, "on_time": null}, {"name": "✨ Powders Page – Bundles App", "type": "👩‍💻 Website Dev", "task_count": 39, "deadline": "2026-05-20", "on_time": true}, {"name": "✨ Task🧬 Subscriptions🔹", "type": "🧬 Subscription", "task_count": 37, "deadline": "2026-03-25", "on_time": false}, {"name": "✨ Gummies- ACNE", "type": "📦 New Product- Gummies", "task_count": 36, "deadline": "2026-08-02", "on_time": true}, {"name": "✨ Gummies- Focus", "type": "📦 New Product- Gummies", "task_count": 36, "deadline": "2026-08-02", "on_time": true}, {"name": "שבוע וולנס!! מאי 26", "type": "🎀 Wellness Club👑", "task_count": 36, "deadline": "2026-05-18", "on_time": true}, {"name": "✨ Sample- Members Only", "type": "📦 New Product", "task_count": 34, "deadline": "2026-03-10", "on_time": false}, {"name": "אלינור משימות אישיות", "type": "✨ Department", "task_count": 32, "deadline": "2026-04-09", "on_time": false}, {"name": "✨ Sample- Focus", "type": "📦 New Product", "task_count": 32, "deadline": "2026-03-30", "on_time": false}, {"name": "✨ Sample - Acne", "type": "📦 New Product", "task_count": 31, "deadline": "2026-10-19", "on_time": true}, {"name": "✨ Edible- Collagen Wave", "type": "📦 New Product", "task_count": 31, "deadline": "2026-08-02", "on_time": true}, {"name": "15% OFF אפריל", "type": "⚡ Promotion 15%", "task_count": 28, "deadline": "2026-04-23", "on_time": false}, {"name": "✨ 👩‍💻 Website Dev- Home Page", "type": "👩‍💻 Website Dev", "task_count": 28, "deadline": "2026-04-16", "on_time": false}, {"name": "15% OFF מאי", "type": "⚡ Promotion 15%", "task_count": 27, "deadline": "2026-05-31", "on_time": true}, {"name": "15% OFF יוני", "type": "⚡ Promotion 15%", "task_count": 27, "deadline": "2026-06-14", "on_time": true}, {"name": "✨ Sample- Play it Green", "type": "📦 New Product", "task_count": 27, "deadline": "2026-06-18", "on_time": true}, {"name": "Boost Your Bestie", "type": "🎀 Wellness Club👑", "task_count": 26, "deadline": "2026-04-20", "on_time": false}, {"name": "✨ Edible- overnight oats", "type": "📦 New Product", "task_count": 26, "deadline": "2026-11-30", "on_time": true}, {"name": "✨ Website Dev- Before & After", "type": "👩‍💻 Website Dev", "task_count": 26, "deadline": "2026-03-12", "on_time": false}, {"name": "✨ Stories in house", "type": "👩‍💻 Website Dev", "task_count": 25, "deadline": "2026-05-28", "on_time": true}, {"name": "יום האם- לילה לבן", "type": "🎀 Wellness Club👑", "task_count": 25, "deadline": "2026-05-21", "on_time": true}, {"name": "EB וניל עוגיות + שייקר", "type": "🎀 Wellness Club👑", "task_count": 25, "deadline": "2026-06-30", "on_time": true}, {"name": "✨ Pre-order Dev-log", "type": "👩‍💻 Website Dev", "task_count": 24, "deadline": "2026-03-31", "on_time": false}, {"name": "3+1 גאמיז", "type": "🎀 Wellness Club👑", "task_count": 24, "deadline": "2026-04-08", "on_time": false}, {"name": "כפל נקודות + מרצ' מתנה", "type": "🎀 Wellness Club👑", "task_count": 24, "deadline": "2026-06-07", "on_time": true}, {"name": "יום העצמאות 2026", "type": "🌀Changing Projects🔄", "task_count": 24, "deadline": "2026-05-05", "on_time": false}, {"name": "✨ Sample- PMS", "type": "📦 New Product", "task_count": 24, "deadline": "2026-06-08", "on_time": true}, {"name": "✨ Edible- Electrolyte Powder", "type": "📦 New Product", "task_count": 24, "deadline": "2026-08-27", "on_time": true}, {"name": "Build Your Bundle – 15% OFF", "type": "🎀 Wellness Club👑", "task_count": 23, "deadline": "2026-05-17", "on_time": true}, {"name": "✨ Energized Beauty", "type": "🎀 Wellness Club👑", "task_count": 23, "deadline": "2026-07-16", "on_time": true}, {"name": "✨ Accessories- Quarterly Magazine", "type": "🛍️ Accessories", "task_count": 23, "deadline": "2026-03-24", "on_time": false}, {"name": "מארזי משפיעניות למגזר הערבי", "type": "🌀Changing Projects🔄", "task_count": 22, "deadline": "2026-05-10", "on_time": false}, {"name": "✨ Edible- Day Booster", "type": "📦 New Product", "task_count": 22, "deadline": "2026-06-08", "on_time": true}, {"name": "🦄 Team PM", "type": "✨ Department", "task_count": 21, "deadline": "2026-04-30", "on_time": false}, {"name": "✨ PR BOX- Acne", "type": "📦 New Product", "task_count": 20, "deadline": "2026-08-02", "on_time": true}, {"name": "✨ PR BOX- Day Booster", "type": "📦 New Product", "task_count": 20, "deadline": "2026-06-15", "on_time": true}, {"name": "✨ Edible- simply protein", "type": "📦 New Product", "task_count": 20, "deadline": "2026-09-01", "on_time": true}, {"name": "חוויית צ׳קאאוט - פיתוח מרקטינג", "type": "👩‍💻 Website Dev", "task_count": 19, "deadline": "2026-06-03", "on_time": true}, {"name": "💰 Finance Department 📉", "type": "✨ Department", "task_count": 18, "deadline": "2026-03-12", "on_time": false}, {"name": "✨ PR BOX- Focus", "type": "📦 New Product", "task_count": 18, "deadline": "2026-07-23", "on_time": true}, {"name": "Edible- Day Booster", "type": "📦 New Product", "task_count": 18, "deadline": "2026-06-01", "on_time": true}, {"name": "Edible- Collagen Wave", "type": "📦 New Product", "task_count": 18, "deadline": "2026-03-22", "on_time": false}, {"name": "✨ Edible- Play it Green 1", "type": "📦 New Product", "task_count": 18, "deadline": "2026-07-01", "on_time": true}, {"name": "✨ אפליקציה לעיגול הסכום", "type": "👩‍💻 Website Dev", "task_count": 17, "deadline": "2026-07-07", "on_time": true}, {"name": "✨ Add Promo Item to BYOB", "type": "👩‍💻 Website Dev", "task_count": 17, "deadline": "2026-06-18", "on_time": true}, {"name": "✨ Sample- Electrolyte Powder", "type": "📦 New Product", "task_count": 17, "deadline": "2026-02-10", "on_time": false}, {"name": "✨ Sample- Overnight Oats", "type": "📦 New Product", "task_count": 16, "deadline": "2026-06-18", "on_time": true}, {"name": "✨ אזור אישי חדש- וולנס קלאב", "type": "👩‍💻 Website Dev", "task_count": 16, "deadline": "2026-06-18", "on_time": true}, {"name": "✨ PR BOX- PMS", "type": "🎁 PR Box", "task_count": 16, "deadline": "2026-04-22", "on_time": false}, {"name": "Edible- Play it Green 1", "type": "📦 New Product", "task_count": 16, "deadline": "2026-04-22", "on_time": false}, {"name": "Page Product + Points- נציגים", "type": "👩‍💻 Website Dev", "task_count": 16, "deadline": "2026-07-22", "on_time": true}, {"name": "Social Media & Influencers", "type": "🌀Changing Projects🔄", "task_count": 16, "deadline": "2026-05-11", "on_time": false}, {"name": "✨ -Checkout Overlay- פופ אפ", "type": "👩‍💻 Website Dev", "task_count": 15, "deadline": "2026-05-07", "on_time": false}, {"name": "✨ מסך איפוס סיסמה- תוכנית מנויים", "type": "👩‍💻 Website Dev", "task_count": 15, "deadline": "2026-03-19", "on_time": false}, {"name": "✨ VIDEO HERO HOME PAGE", "type": "👩‍💻 Website Dev", "task_count": 15, "deadline": "2026-05-27", "on_time": true}, {"name": "שליחת לינק לתשלום", "type": "👩‍💻 Website Dev", "task_count": 15, "deadline": "2026-06-03", "on_time": true}, {"name": "MAYVEN Podcast", "type": "🌀Changing Projects🔄", "task_count": 15, "deadline": "2026-05-26", "on_time": true}, {"name": "✨ כרטיס גירוד עם מוצר מתנה", "type": "👩‍💻 Website Dev", "task_count": 14, "deadline": "2026-06-04", "on_time": true}, {"name": "ERPייעול לוגיסטיקה", "type": "🌀Changing Projects🔄", "task_count": 14, "deadline": "2026-03-23", "on_time": false}, {"name": "🧬 Subscription May 2026", "type": "🧬 Subscription", "task_count": 14, "deadline": "2026-05-31", "on_time": true}, {"name": "גלויה אחת לכל מוצר", "type": "—", "task_count": 13, "deadline": "2026-06-08", "on_time": true}, {"name": "✨ POINTS EXPERIENCE IN MINICART", "type": "👩‍💻 Website Dev", "task_count": 13, "deadline": "2026-06-18", "on_time": true}, {"name": "התחברות מהירה דרך סמס", "type": "👩‍💻 Website Dev", "task_count": 13, "deadline": "2026-06-10", "on_time": true}, {"name": "One-Page Checkout", "type": "👩‍💻 Website Dev", "task_count": 13, "deadline": "2026-06-15", "on_time": true}, {"name": "✨ Subscribe & Save", "type": "📊A/B Tests", "task_count": 13, "deadline": "2026-05-27", "on_time": true}, {"name": "✨ TY Page - Loyalty Signup", "type": "📊A/B Tests", "task_count": 13, "deadline": "2026-05-20", "on_time": true}, {"name": "✨ Sign-Up – Thank You Page", "type": "👩‍💻 Website Dev", "task_count": 13, "deadline": "2026-02-09", "on_time": false}, {"name": "✨ progress bar- mini cart", "type": "👩‍💻 Website Dev", "task_count": 13, "deadline": "2026-06-02", "on_time": true}, {"name": "✨ הוצאת חשבונית", "type": "👩‍💻 Website Dev", "task_count": 13, "deadline": "2026-08-10", "on_time": true}, {"name": "✨ קרוסלת מוצרים בנקודות", "type": "👩‍💻 Website Dev", "task_count": 13, "deadline": "2026-06-07", "on_time": true}, {"name": "✨ Expired EB PDP", "type": "📊A/B Tests", "task_count": 13, "deadline": "2026-02-26", "on_time": false}, {"name": "📊 A/B Test- Urgency tag", "type": "📊A/B Tests", "task_count": 12, "deadline": "2026-05-03", "on_time": false}, {"name": "✨ PDP Variant Change", "type": "📊A/B Tests", "task_count": 12, "deadline": "2026-05-20", "on_time": true}, {"name": "✨ Accessories- Powder Container", "type": "🛍️ Accessories", "task_count": 12, "deadline": "2026-06-08", "on_time": true}, {"name": "✨ Accessories- New Bottle", "type": "🛍️ Accessories", "task_count": 12, "deadline": "2026-06-17", "on_time": true}, {"name": "השקת מוצר - Members Only", "type": "🚀Product Launch", "task_count": 12, "deadline": "2026-03-03", "on_time": false}, {"name": "✨ ERPייעול לוגיסטיקה", "type": "🌀Changing Projects🔄", "task_count": 11, "deadline": "2026-04-09", "on_time": false}, {"name": "✨ PR BOX- END-OF-YEAR GAME KIT", "type": "📦 New Product", "task_count": 11, "deadline": "2026-08-11", "on_time": true}, {"name": "Mini-Cart Bundle Upgrade", "type": "👩‍💻 Website Dev", "task_count": 11, "deadline": "2026-03-25", "on_time": false}, {"name": "✨ Accessories- Stretwear", "type": "🛍️ Accessories", "task_count": 11, "deadline": "2026-07-27", "on_time": true}, {"name": "✨ Pr Box- protein powder", "type": "🎁 PR Box", "task_count": 11, "deadline": "2026-08-12", "on_time": true}, {"name": "נקודות- קמפיינים", "type": "🌀Changing Projects🔄", "task_count": 10, "deadline": "2026-03-22", "on_time": false}, {"name": "QR Benefits- תוכנית מנויים", "type": "—", "task_count": 10, "deadline": "2026-06-08", "on_time": true}, {"name": "Glassix - Survey", "type": "👩‍💻 Website Dev", "task_count": 10, "deadline": "2026-05-05", "on_time": false}, {"name": "✨ Pr Box- Electrolyte Powder", "type": "📦 New Product", "task_count": 10, "deadline": "2026-06-08", "on_time": true}, {"name": "FRESH START – SPRING RESET", "type": "🎀 Wellness Club👑", "task_count": 10, "deadline": "2026-05-14", "on_time": false}, {"name": "יצירת הזמנות למשפיענית CSV", "type": "👩‍💻 Website Dev", "task_count": 10, "deadline": "2026-04-06", "on_time": false}, {"name": "PR BOX- PMS", "type": "🎁 PR Box", "task_count": 9, "deadline": "2026-04-23", "on_time": false}, {"name": "✨ Gummies- Members Only", "type": "📦 New Product- Gummies", "task_count": 9, "deadline": "2027-01-11", "on_time": true}, {"name": "✨ Sample - Hey Mom", "type": "📦 New Product", "task_count": 8, "deadline": "2026-06-10", "on_time": true}, {"name": "✨ החלפת מודל שירות יוטפו", "type": "🌀Changing Projects🔄", "task_count": 8, "deadline": "2026-05-25", "on_time": true}, {"name": "📊 A/B Test- הדגשת רביעייה", "type": "📊A/B Tests", "task_count": 8, "deadline": "2025-12-18", "on_time": false}, {"name": "התחברות מהירה לאתר", "type": "👩‍💻 Website Dev", "task_count": 8, "deadline": "2026-03-18", "on_time": false}, {"name": "השקת קטגוריית מוצרים בנקודות", "type": "🌀Changing Projects🔄", "task_count": 8, "deadline": "2026-03-19", "on_time": false}, {"name": "✨ Accessories- T.A. Bags", "type": "🛍️ Accessories", "task_count": 8, "deadline": "2026-04-23", "on_time": false}, {"name": "✨ PR BOX- Liquid Collagen", "type": "📦 New Product", "task_count": 8, "deadline": "2026-06-15", "on_time": true}, {"name": "PR BOX- Play it Green", "type": "📦 New Product", "task_count": 8, "deadline": "2026-05-13", "on_time": false}, {"name": "✨ Gummies- HEY MOM", "type": "📦 New Product- Gummies", "task_count": 8, "deadline": "2026-12-31", "on_time": true}, {"name": "✨ 🧬 Subscription May 2026", "type": "🧬 Subscription", "task_count": 8, "deadline": "2026-05-19", "on_time": true}, {"name": "Tabbed Mobile Navigation", "type": "📊A/B Tests", "task_count": 8, "deadline": "2026-03-29", "on_time": false}, {"name": "ניבוי - תוכנית מנויים", "type": "👩‍💻 Website Dev", "task_count": 7, "deadline": "2026-06-23", "on_time": true}, {"name": "משלוחי ND", "type": "👩‍💻 Website Dev", "task_count": 7, "deadline": "2026-03-25", "on_time": false}, {"name": "מעבר ספק טלפוניה ל Voicenter", "type": "👩‍💻 Website Dev", "task_count": 7, "deadline": "2026-03-02", "on_time": false}, {"name": "PDP Variant Change", "type": "—", "task_count": 7, "deadline": "2026-04-29", "on_time": false}, {"name": "✨ התחברות מהירה לאתר", "type": "👩‍💻 Website Dev", "task_count": 7, "deadline": "2026-03-11", "on_time": false}, {"name": "מחלקת לוגיסטיקה ומוצר", "type": "✨ Department", "task_count": 7, "deadline": "2026-07-30", "on_time": true}, {"name": "העברה בין מחסנים- לוגיסטיקה", "type": "—", "task_count": 6, "deadline": "2026-02-12", "on_time": false}, {"name": "progress bar- mini cart", "type": "—", "task_count": 6, "deadline": "2026-05-31", "on_time": true}, {"name": "✨ מגה מניו שיפורים פיתוח", "type": "👩‍💻 Website Dev", "task_count": 6, "deadline": "2026-03-01", "on_time": false}, {"name": "אפיון ניהול מלאי -תוכנית מנויים", "type": "👩‍💻 Website Dev", "task_count": 6, "deadline": "2026-04-12", "on_time": false}, {"name": "דו״ח אירוז מלאי", "type": "👩‍💻 Website Dev", "task_count": 6, "deadline": "2026-03-04", "on_time": false}, {"name": "✨ Pre-order 2.0 לוגיסטיקה", "type": "👩‍💻 Website Dev", "task_count": 6, "deadline": "2026-05-24", "on_time": true}, {"name": "February 15% OFF", "type": "⚡ Promotion 15%", "task_count": 6, "deadline": "2026-03-02", "on_time": false}, {"name": "✨ סגירת קייסים בזוהו", "type": "👩‍💻 Website Dev", "task_count": 6, "deadline": "2026-06-09", "on_time": true}, {"name": "Pr Box- overnight oats", "type": "🎁 PR Box", "task_count": 6, "deadline": "2026-04-30", "on_time": false}, {"name": "Pr Box- protein powder", "type": "🎁 PR Box", "task_count": 6, "deadline": "2026-06-09", "on_time": true}, {"name": "🚀 Braze Onboarding", "type": "🌀Changing Projects🔄", "task_count": 6, "deadline": "2026-05-28", "on_time": true}, {"name": "🚀 Braze Onboarding ⚡", "type": "🌀Changing Projects🔄", "task_count": 6, "deadline": "2026-05-28", "on_time": true}, {"name": "✨ שדה ח.פ/ת.ז חובה", "type": "👩‍💻 Website Dev", "task_count": 5, "deadline": "2026-05-13", "on_time": false}, {"name": "✨ רכישת מוצרים בנק'", "type": "👩‍💻 Website Dev", "task_count": 5, "deadline": "2026-03-18", "on_time": false}, {"name": "באנר קוקיז ותיעוד הסכמות", "type": "👩‍💻 Website Dev", "task_count": 5, "deadline": "2026-05-12", "on_time": false}, {"name": "1,200 points on purchases", "type": "🎀 Wellness Club👑", "task_count": 5, "deadline": "2026-01-22", "on_time": false}, {"name": "✨ 👩‍💻 Website Dev- Terms Page", "type": "👩‍💻 Website Dev", "task_count": 5, "deadline": "2026-06-22", "on_time": true}, {"name": "Sample- Electrolydte Powder", "type": "📦 New Product", "task_count": 5, "deadline": "2026-01-22", "on_time": false}, {"name": "✨ Break free- PMS", "type": "🚀Product Launch", "task_count": 5, "deadline": "2026-05-13", "on_time": false}, {"name": "Pre-order חדש", "type": "—", "task_count": 4, "deadline": "2026-03-29", "on_time": false}, {"name": "🎡✨ Lucky Wheel", "type": "🎀 Wellness Club👑", "task_count": 4, "deadline": "2026-03-31", "on_time": false}, {"name": "📊 A/B Test- Points upsell", "type": "📊A/B Tests", "task_count": 4, "deadline": null, "on_time": null}, {"name": "📊 A/B Test- Quick add", "type": "📊A/B Tests", "task_count": 4, "deadline": "2026-05-21", "on_time": true}, {"name": "Sample - Acne", "type": "📦 New Product", "task_count": 3, "deadline": "2026-05-13", "on_time": false}, {"name": "✨ קוד משפיעניות תיקונים", "type": "👩‍💻 Website Dev", "task_count": 3, "deadline": "2026-06-07", "on_time": true}, {"name": "✨ משלוחי ND", "type": "👩‍💻 Website Dev", "task_count": 3, "deadline": "2026-03-19", "on_time": false}, {"name": "📊 A/B Test- PDP Gallery Chips", "type": "📊A/B Tests", "task_count": 3, "deadline": "2026-05-21", "on_time": true}, {"name": "📊 A/B Test- Mini cart Up Sale", "type": "📊A/B Tests", "task_count": 2, "deadline": "2026-02-26", "on_time": false}, {"name": "✨ Default Savings Badges", "type": "📊A/B Tests", "task_count": 1, "deadline": "2026-05-19", "on_time": true}];
+const TYPES=["⚡ Promotion 15%", "✨ Department", "🌀Changing Projects🔄", "🎀 Wellness Club👑", "🎁 PR Box", "👩‍💻 Website Dev", "📊A/B Tests", "📦 New Product", "📦 New Product- Gummies", "🚀Product Launch", "🛍️ Accessories", "🧬 Subscription"];
+let view='cards',filt={s:'all',t:'all'},sortBy='tasks';
+const tf=document.getElementById('tF');
+TYPES.forEach(t=>{const b=document.createElement('button');b.className='fb';b.textContent=t;b.onclick=function(){sF('t',t,this)};tf.appendChild(b)});
+function sv(v){view=v;['Cards','Table'].forEach(n=>document.getElementById('v'+n).classList.toggle('active',n.toLowerCase()===v));render(fil())};
+function sF(k,v,btn){filt[k]=v;btn.closest('.fg').querySelectorAll('.fb').forEach(b=>b.classList.remove('active'));btn.classList.add('active');applyF()};
+function srt(v,btn){sortBy=v;btn.parentElement.querySelectorAll('.fb').forEach(b=>b.classList.remove('active'));btn.classList.add('active');applyF()};
+function applyF(){render(fil())};
+function fil(){
+  const q=document.getElementById('si').value.toLowerCase();
+  return ALL.filter(p=>{
+    if(q&&!p.name.toLowerCase().includes(q)&&!p.type.toLowerCase().includes(q))return false;
+    if(filt.s==='ok'&&p.on_time!==true)return false;
+    if(filt.s==='late'&&p.on_time!==false)return false;
+    if(filt.s==='nodl'&&p.deadline)return false;
+    if(filt.t!=='all'&&p.type!==filt.t)return false;
+    return true;
+  }).sort((a,b)=>{
+    if(sortBy==='tasks')return(b.task_count||0)-(a.task_count||0);
+    if(sortBy==='deadline')return(a.deadline||'zzz').localeCompare(b.deadline||'zzz');
+    return a.name.localeCompare(b.name);
+  })};
+function badge(p){
+  if(!p.deadline)return'<span class="sb nodl">ללא דד ליין</span>';
+  if(p.on_time===true)return'<span class="sb ok">✓ בזמן</span>';
+  return'<span class="sb late">⚠ חריגה</span>';
+};
+function fd(d){if(!d)return'—';const[y,m,day]=d.split('-');return day+'/'+m+'/'+y.slice(2)};
+function render(projects){
+  const c=document.getElementById('content');
+  if(!projects.length){c.innerHTML='<div class="es"><div style="font-size:40px;opacity:.3">🔍</div><div>לא נמצאו פרויקטים</div></div>';return};
+  if(view==='cards'){
+    c.innerHTML='<div class="cg">'+projects.map((p,i)=>`
+      <div class="pc" style="animation-delay:${Math.min(i*.018,.3)}s">
+        <div class="ct">${p.type}</div>
+        <div class="cn">${p.name}</div>
+        <div class="cs">
+          <div class="si"><div class="sv">${p.task_count}</div><div class="sl">משימות</div></div>
+          <div class="si"><div class="sv">${p.deadline?fd(p.deadline):'—'}</div><div class="sl">דד ליין</div></div>
+        </div>
+        <div class="cf"><div>${badge(p)}</div><div style="color:var(--m)">${p.type}</div></div>
+      </div>`).join('')+'</div>';
+  } else {
+    c.innerHTML=`<table class="pt"><thead><tr><th>שם פרויקט</th><th>סוג</th><th>משימות</th><th>דד ליין</th><th>סטטוס</th></tr></thead><tbody>`+
+      projects.map(p=>`<tr><td class="tn" title="${p.name}">${p.name}</td><td style="color:var(--a2);font-size:11px">${p.type}</td><td style="font-family:'DM Mono';color:var(--a)">${p.task_count}</td><td style="font-size:11px">${fd(p.deadline)}</td><td>${badge(p)}</td></tr>`).join('')+
+      '</tbody></table>';
+  }
+};
+render(fil());
+</script>
+</body>
+</html>
