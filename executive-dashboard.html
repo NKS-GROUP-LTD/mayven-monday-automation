@@ -416,6 +416,52 @@ body::before{content:"";position:fixed;inset:0;background-image:url("data:image/
 
 /* Roadmap filter bar */
 .rm-filters{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+
+/* ── Department page ─────────────────────────────────────────────── */
+.dept-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+.dept-card{background:var(--paper);border:1.5px solid var(--ink);border-radius:10px;box-shadow:3px 3px 0 var(--ink);overflow:hidden;transition:box-shadow .12s,transform .12s}
+.dept-card:hover{box-shadow:4px 4px 0 var(--ink);transform:translate(-1px,-1px)}
+.dept-card-head{display:flex;align-items:flex-start;justify-content:space-between;padding:16px 20px 13px;gap:10px}
+.dept-name-wrap{display:flex;align-items:center;gap:10px}
+.dept-emoji-wrap{width:42px;height:42px;border-radius:8px;border:1.5px solid var(--ink);display:flex;align-items:center;justify-content:center;font-size:22px;background:var(--paper-deep);flex-shrink:0}
+.dept-name{font-family:'Suez One',serif;font-size:16px;color:var(--ink)}
+.dept-he-name{font-size:11.5px;color:rgba(26,29,35,.5);font-weight:500;margin-top:2px}
+.dept-mgr-chip{display:flex;align-items:center;gap:7px;padding:5px 10px 5px 8px;border:1.5px solid var(--ink);border-radius:20px;background:var(--paper);flex-shrink:0}
+.dept-mgr-avatar{width:22px;height:22px;border-radius:50%;background:var(--accent);color:var(--paper);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;border:1.5px solid var(--ink);flex-shrink:0}
+.dept-mgr-name{font-size:12px;font-weight:600;color:var(--ink);white-space:nowrap}
+.dept-stats-row{display:flex;align-items:stretch;gap:0;padding:0 20px 13px;flex-wrap:wrap}
+.dept-stat-item{display:flex;flex-direction:column;align-items:center;min-width:70px;padding:8px 14px;border:1px solid var(--ink-softer);border-radius:7px;margin:0 4px 4px 0;background:var(--paper-deep)}
+.dept-stat-num{font-family:'Suez One',serif;font-size:20px;line-height:1;color:var(--ink)}
+.dept-stat-num.red{color:var(--red-fg)}
+.dept-stat-num.yellow{color:rgba(180,83,9,1)}
+.dept-stat-num.green{color:var(--green-fg)}
+.dept-stat-num.accent{color:var(--accent)}
+.dept-stat-lbl{font-size:10px;color:rgba(26,29,35,.5);font-weight:500;margin-top:2px;text-align:center;white-space:nowrap}
+.dept-battery-wrap{padding:0 20px 12px}
+.dept-people-preview{display:flex;align-items:center;gap:-6px;padding:0 20px 12px}
+.dept-avatar-stack{display:flex;flex-direction:row-reverse}
+.dept-av{width:26px;height:26px;border-radius:50%;border:2px solid var(--paper);display:flex;align-items:center;justify-content:center;font-size:9.5px;font-weight:700;color:var(--paper);margin-left:-7px;flex-shrink:0}
+.dept-av-more{background:var(--ink-soft);font-size:9px;color:var(--ink)}
+.dept-people-label{font-size:11.5px;color:rgba(26,29,35,.55);margin-right:10px}
+.dept-expand-btn{width:100%;padding:9px 20px;background:var(--paper-deep);border:none;border-top:1.5px dashed var(--ink-soft);font-family:'Heebo',sans-serif;font-size:12.5px;font-weight:600;color:rgba(26,29,35,.65);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;transition:background .1s,color .1s}
+.dept-expand-btn:hover{background:rgba(26,29,35,.06);color:var(--ink)}
+.dept-expand-btn .chev{transition:transform .2s;display:inline-block}
+.dept-people-panel{display:none;border-top:1.5px solid var(--ink)}
+.dept-people-panel.open{display:block}
+.dept-panel-head{display:flex;align-items:center;gap:8px;padding:10px 20px 8px;border-bottom:1px dashed var(--ink-softer);background:var(--paper-deep)}
+.dept-panel-head-lbl{font-size:11px;font-weight:700;letter-spacing:.06em;color:rgba(26,29,35,.45);text-transform:uppercase}
+.dept-person-row{display:flex;align-items:center;gap:12px;padding:8px 20px;border-bottom:1px dashed var(--ink-softer)}
+.dept-person-row:last-child{border-bottom:none}
+.dept-person-av{width:30px;height:30px;border-radius:50%;border:1.5px solid var(--ink);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--paper);flex-shrink:0}
+.dept-person-name{font-size:13px;font-weight:600;min-width:90px;flex-shrink:0}
+.dept-person-bar-wrap{flex:1;height:9px;border-radius:5px;background:var(--paper-deep);overflow:hidden;display:flex;border:1px solid var(--ink-softer)}
+.dept-person-chips{display:flex;gap:5px;margin-right:4px;flex-shrink:0}
+.dpc{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;padding:1px 6px;border-radius:3px;white-space:nowrap}
+.dpc.total{background:var(--paper-deep);color:var(--ink);border:1px solid var(--ink-soft)}
+.dpc.late{background:var(--red-bg);color:var(--red-fg)}
+.dpc.nodl{background:rgba(253,246,178,.5);color:rgba(120,53,15,.8)}
+.dpc.ok{background:var(--green-bg);color:var(--green-fg)}
+.dept-no-people{padding:14px 20px;font-size:12px;color:rgba(26,29,35,.45);text-align:center}
 </style>
 </head>
 <body>
@@ -1005,8 +1051,333 @@ function renderWorld(ps) {
   else if (activeWorld === 'pipeline') renderPipeline(pipelineProjects);
   else if (activeWorld === 'tech')     renderTechPage(ps);
   else if (activeWorld === 'product')  renderProductPage(ps);
+  else if (activeWorld === 'departments') renderDepartmentsPage();
   else if (activeWorld === 'launches') renderRoadmap(allProjects.filter(p => p.launchDate || p.deadline));
   else renderWorldPage(ps);
+}
+
+// ══════════════════════════════════════════════════
+// DEPARTMENTS PAGE
+// ══════════════════════════════════════════════════
+
+const DEPT_MGR_MAP = [
+  { kw:['marketing','מרקטינג'],                    mgr:'שימי',   he:'מרקטינג' },
+  { kw:['finance','פיננסים','financial'],           mgr:'אמיר',   he:'פיננסים' },
+  { kw:['logistics','לוגיסטיקה'],                  mgr:'נמרוד',  he:'לוגיסטיקה' },
+  { kw:['product','פרודקט'],                       mgr:'קים',    he:'פרודקט' },
+  { kw:['tech','technology','טכנולוגיה'],           mgr:'מיכל',   he:'טכנולוגיה' },
+  { kw:['hr','human resources'],                   mgr:'אלינור', he:'HR' },
+  { kw:['pm','project management'],                mgr:'אראל',   he:'PM' },
+  { kw:['service','customer','client','sales','מכירות','לקוח'], mgr:'ליאור', he:'שירות לקוחות ומכירות' },
+  { kw:['office','משרד','management'],             mgr:'נמרוד',  he:'מנהלת משרד' },
+  { kw:['performance','פרפורמנס','perform'],        mgr:'יאיר',   he:'פרפורמנס' },
+];
+
+const AVATAR_COLORS = [
+  '#D05A72','#2563eb','#7c3aed','#0891b2','#d97706',
+  '#16a34a','#b91c1c','#6d28d9','#0d9488','#9333ea',
+];
+
+function deptMgrInfo(boardName) {
+  const lower = boardName.toLowerCase();
+  for (const { kw, mgr, he } of DEPT_MGR_MAP) {
+    if (kw.some(k => lower.includes(k))) return { mgr, he };
+  }
+  return { mgr: '—', he: null };
+}
+
+function deptEmoji(name) {
+  const m = name.match(/[\u{1F300}-\u{1FFFF}]|☀-➿/gu);
+  return m ? m[0] : '🏢';
+}
+
+function deptDisplayName(name) {
+  return name
+    .replace(/[\u{1F300}-\u{1FFFF}\u{2600}-\u{27BF}]/gu, '')
+    .replace(/^[\s\W]+/, '')
+    .replace(/^team\s+/i, '')
+    .replace(/[\u{1F300}-\u{1FFFF}\u{2600}-\u{27BF}]/gu, '')
+    .trim();
+}
+
+function initials(name) {
+  if (!name) return '?';
+  const parts = name.trim().split(/\s+/);
+  if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
+  return name.slice(0, 2).toUpperCase();
+}
+
+function processDepartments(rawItems) {
+  const deptMap = new Map();
+  const todayMs = new Date().setHours(0, 0, 0, 0);
+
+  for (const item of rawItems) {
+    const boardName = cv(item, C.BOARD_NAME).t;
+    if (!boardName) continue;
+    const lower = boardName.toLowerCase();
+    if (!lower.includes('team')) continue;
+    if (lower.includes('linkedin')) continue;
+
+    if (!deptMap.has(boardName)) deptMap.set(boardName, { name: boardName, tasks: [] });
+
+    const status   = cv(item, C.STATUS).t || 'בנק משימות';
+    const deadline = parseDate(cv(item, C.DEADLINE).t);
+    const isDone   = status === 'הסתיימה' || status === 'מבוטלת';
+
+    let taskHealth;
+    if (isDone)          taskHealth = 'done';
+    else if (!deadline)  taskHealth = 'no-deadline';
+    else if (deadline.getTime() < todayMs) taskHealth = 'late';
+    else                 taskHealth = 'on-time';
+
+    const personText = cv(item, C.TEAM).t || cv(item, C.OWNER).t || '';
+    const people = personText.split(',').map(s => s.trim()).filter(Boolean);
+
+    deptMap.get(boardName).tasks.push({ status, taskHealth, people, itemName: item.name });
+  }
+
+  const result = [];
+  for (const [, dept] of deptMap) {
+    const { name, tasks } = dept;
+    const total     = tasks.length;
+    const done      = tasks.filter(t => t.status === 'הסתיימה').length;
+    const cancelled = tasks.filter(t => t.status === 'מבוטלת').length;
+    const active    = total - done - cancelled;
+    const late      = tasks.filter(t => t.taskHealth === 'late').length;
+    const noDeadline= tasks.filter(t => t.taskHealth === 'no-deadline').length;
+    const onTime    = tasks.filter(t => t.taskHealth === 'on-time').length;
+    const blocked   = tasks.filter(t => t.status === 'דגל אדום').length;
+
+    const peopleMap = new Map();
+    for (const task of tasks) {
+      for (const person of task.people) {
+        if (!peopleMap.has(person)) peopleMap.set(person, { name: person, total:0, done:0, active:0, late:0, noDeadline:0, onTime:0 });
+        const pm = peopleMap.get(person);
+        pm.total++;
+        if (task.status === 'הסתיימה' || task.status === 'מבוטלת') pm.done++;
+        else {
+          pm.active++;
+          if (task.taskHealth === 'late')          pm.late++;
+          else if (task.taskHealth === 'no-deadline') pm.noDeadline++;
+          else                                      pm.onTime++;
+        }
+      }
+    }
+
+    const people = [...peopleMap.values()]
+      .filter(p => p.total > 0)
+      .sort((a, b) => b.active - a.active || b.total - a.total);
+
+    const { mgr, he } = deptMgrInfo(name);
+    result.push({
+      name, mgr, he,
+      emoji:       deptEmoji(name),
+      displayName: deptDisplayName(name),
+      total, done, cancelled, active, late, noDeadline, onTime, blocked,
+      onTimePct: active > 0 ? Math.round(onTime / active * 100) : (done === total ? 100 : 0),
+      statusArr: tasks.map(t => t.status),
+      people,
+      activePeople: people.filter(p => p.active > 0).length,
+    });
+  }
+  return result.sort((a, b) => b.total - a.total);
+}
+
+const deptExpanded = new Set();
+
+function toggleDept(name) {
+  if (deptExpanded.has(name)) deptExpanded.delete(name);
+  else deptExpanded.add(name);
+  const key = CSS.escape(name);
+  const panel = document.getElementById('dp-' + btoa(unescape(encodeURIComponent(name))).replace(/[^a-z0-9]/gi,''));
+  const btn   = panel?.previousElementSibling;
+  if (!panel) return;
+  panel.classList.toggle('open', deptExpanded.has(name));
+  if (btn) {
+    btn.querySelector('.chev').style.transform = deptExpanded.has(name) ? 'rotate(180deg)' : '';
+    btn.querySelector('.chev-label').textContent = deptExpanded.has(name) ? 'הסתר עומס' : 'הצג עומס לפי עובדים';
+  }
+}
+
+function deptPanelId(name) {
+  return 'dp' + btoa(unescape(encodeURIComponent(name))).replace(/[^a-z0-9]/gi, '').slice(0, 20);
+}
+
+function renderDepartmentsPage() {
+  const rawItems = window.__rawItems;
+  if (!rawItems) { document.getElementById('content').innerHTML = '<div class="page"><div class="empty">טוען…</div></div>'; return; }
+
+  const depts = processDepartments(rawItems);
+  const totalTasks   = depts.reduce((s, d) => s + d.total, 0);
+  const totalActive  = depts.reduce((s, d) => s + d.active, 0);
+  const totalLate    = depts.reduce((s, d) => s + d.late, 0);
+  const totalNoDL    = depts.reduce((s, d) => s + d.noDeadline, 0);
+  const totalWorkers = new Set(depts.flatMap(d => d.people.map(p => p.name))).size;
+  const overallOnTimePct = totalActive > 0
+    ? Math.round(depts.reduce((s, d) => s + d.onTime, 0) / totalActive * 100)
+    : 0;
+
+  function batteryBar(statusArr) {
+    const total = statusArr.length;
+    if (!total) return '';
+    const cnt = s => statusArr.filter(x => x === s).length;
+    const pct = n => total ? Math.round(n / total * 100) : 0;
+    const nDone = cnt('הסתיימה'), nCancel = cnt('מבוטלת'), nActive = cnt('בעבודה') + cnt('מאושר');
+    const nWait = cnt('ממתין'), nBlocked = cnt('דגל אדום'), nBacklog = cnt('בנק משימות');
+    return `<div class="battery-bar" style="height:8px;border-radius:4px;overflow:hidden;background:var(--paper-deep);border:1px solid var(--ink-softer);display:flex">
+      ${nDone    ? `<div style="width:${pct(nDone)}%;background:#16a34a" title="הסתיימו ${nDone}"></div>` : ''}
+      ${nActive  ? `<div style="width:${pct(nActive)}%;background:#D05A72" title="בעבודה ${nActive}"></div>` : ''}
+      ${nWait    ? `<div style="width:${pct(nWait)}%;background:#d97706" title="ממתין ${nWait}"></div>` : ''}
+      ${nBlocked ? `<div style="width:${pct(nBlocked)}%;background:#b91c1c" title="חסום ${nBlocked}"></div>` : ''}
+      ${nCancel  ? `<div style="width:${pct(nCancel)}%;background:#cbd5e1" title="בוטל ${nCancel}"></div>` : ''}
+      ${nBacklog ? `<div style="width:${pct(nBacklog)}%;background:#e2e8f0" title="בק לוג ${nBacklog}"></div>` : ''}
+    </div>`;
+  }
+
+  function personBar(pm) {
+    const t = pm.active || 1;
+    const pct = n => Math.round(n / t * 100);
+    return `<div class="dept-person-bar-wrap">
+      ${pm.onTime    ? `<div style="width:${pct(pm.onTime)}%;background:#16a34a" title="בזמן"></div>` : ''}
+      ${pm.late      ? `<div style="width:${pct(pm.late)}%;background:#b91c1c" title="באיחור"></div>` : ''}
+      ${pm.noDeadline? `<div style="width:${pct(pm.noDeadline)}%;background:#d97706" title="ללא DL"></div>` : ''}
+    </div>`;
+  }
+
+  function avatarColor(idx) { return AVATAR_COLORS[idx % AVATAR_COLORS.length]; }
+
+  function personPanelHtml(d) {
+    if (!d.people.length) return `<div class="dept-no-people">אין עובדים מקושרים למשימות</div>`;
+    return d.people.map((pm, i) => {
+      const color = avatarColor(i);
+      return `<div class="dept-person-row">
+        <div class="dept-person-av" style="background:${color}">${initials(pm.name)}</div>
+        <div class="dept-person-name">${pm.name.split(' ')[0]}<span style="font-weight:400;color:rgba(26,29,35,.45);font-size:11px"> ${(pm.name.split(' ')[1]||'')}</span></div>
+        ${personBar(pm)}
+        <div class="dept-person-chips">
+          <span class="dpc total">${pm.total} משימות</span>
+          ${pm.late      ? `<span class="dpc late">⚠ ${pm.late} באיחור</span>` : ''}
+          ${pm.noDeadline? `<span class="dpc nodl">${pm.noDeadline} ללא DL</span>` : ''}
+          ${pm.onTime    ? `<span class="dpc ok">${pm.onTime} בזמן</span>` : ''}
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  function deptCardHtml(d, idx) {
+    const panelId = deptPanelId(d.name);
+    const isOpen  = deptExpanded.has(d.name);
+    const avatarStack = d.people.slice(0, 5).map((pm, i) =>
+      `<div class="dept-av" style="background:${avatarColor(i)}">${initials(pm.name)}</div>`
+    ).reverse().join('');
+    const extraPeople = d.people.length > 5 ? `<div class="dept-av dept-av-more">+${d.people.length - 5}</div>` : '';
+
+    const onTimePctColor = d.onTimePct >= 70 ? 'green' : d.onTimePct >= 40 ? 'yellow' : 'red';
+
+    return `<div class="dept-card">
+      <div class="dept-card-head">
+        <div class="dept-name-wrap">
+          <div class="dept-emoji-wrap">${d.emoji}</div>
+          <div>
+            <div class="dept-name">${d.displayName}</div>
+            ${d.he ? `<div class="dept-he-name">${d.he}</div>` : ''}
+          </div>
+        </div>
+        ${d.mgr !== '—' ? `<div class="dept-mgr-chip">
+          <div class="dept-mgr-avatar">${initials(d.mgr)}</div>
+          <div class="dept-mgr-name">${d.mgr}</div>
+        </div>` : ''}
+      </div>
+
+      <div class="dept-stats-row">
+        <div class="dept-stat-item">
+          <div class="dept-stat-num accent">${d.total.toLocaleString('he-IL')}</div>
+          <div class="dept-stat-lbl">סה"כ משימות</div>
+        </div>
+        <div class="dept-stat-item">
+          <div class="dept-stat-num">${d.active}</div>
+          <div class="dept-stat-lbl">פעילות</div>
+        </div>
+        <div class="dept-stat-item">
+          <div class="dept-stat-num ${onTimePctColor}">${d.onTimePct}%</div>
+          <div class="dept-stat-lbl">בזמן</div>
+        </div>
+        <div class="dept-stat-item">
+          <div class="dept-stat-num ${d.late > 0 ? 'red' : ''}">${d.late}</div>
+          <div class="dept-stat-lbl">באיחור</div>
+        </div>
+        <div class="dept-stat-item">
+          <div class="dept-stat-num ${d.noDeadline > 0 ? 'yellow' : ''}">${d.noDeadline}</div>
+          <div class="dept-stat-lbl">ללא דד-ליין</div>
+        </div>
+        <div class="dept-stat-item">
+          <div class="dept-stat-num">${d.activePeople}</div>
+          <div class="dept-stat-lbl">עובדים פעילים</div>
+        </div>
+      </div>
+
+      <div class="dept-battery-wrap">${batteryBar(d.statusArr)}</div>
+
+      ${d.people.length ? `<div class="dept-people-preview" style="padding:0 20px 14px">
+        <div class="dept-avatar-stack">${extraPeople}${avatarStack}</div>
+        <div class="dept-people-label" style="margin-right:10px">${d.activePeople} עובדים עם משימות פעילות</div>
+      </div>` : ''}
+
+      <button class="dept-expand-btn" onclick="toggleDept(${JSON.stringify(d.name)})">
+        <span class="chev-label">${isOpen ? 'הסתר עומס' : 'הצג עומס לפי עובדים'}</span>
+        <span class="chev" style="transform:${isOpen ? 'rotate(180deg)' : ''}">▼</span>
+      </button>
+
+      <div class="dept-people-panel ${isOpen ? 'open' : ''}" id="${panelId}">
+        <div class="dept-panel-head">
+          <div class="dept-panel-head-lbl">עומס לפי עובד — ${d.people.length} אנשים מקושרים</div>
+        </div>
+        ${personPanelHtml(d)}
+      </div>
+    </div>`;
+  }
+
+  document.getElementById('content').innerHTML = `
+  <div class="page">
+    <div class="page-head">
+      <div>
+        <h1 class="page-title">מחלקות</h1>
+        <div class="page-sub">${depts.length} מחלקות · ${totalTasks.toLocaleString('he-IL')} משימות · ${totalWorkers} עובדים</div>
+      </div>
+    </div>
+
+    <div class="kpi-strip">
+      <div class="kpi">
+        <div class="kpi-label">סה"כ משימות</div>
+        <div class="kpi-value">${totalTasks.toLocaleString('he-IL')}</div>
+        <div class="kpi-sub">${totalActive} פעילות</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">בזמן (ממוצע)</div>
+        <div class="kpi-value success">${overallOnTimePct}%</div>
+        <div class="kpi-sub">מהמשימות הפעילות</div>
+      </div>
+      <div class="kpi" data-dashed>
+        <div class="kpi-label">באיחור</div>
+        <div class="kpi-value danger">${totalLate}</div>
+        <div class="kpi-sub">דורשות טיפול</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">ללא דד-ליין</div>
+        <div class="kpi-value warning">${totalNoDL}</div>
+        <div class="kpi-sub">לא מתוכנן</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">עובדים פעילים</div>
+        <div class="kpi-value">${totalWorkers}</div>
+        <div class="kpi-sub">עם משימות פתוחות</div>
+      </div>
+    </div>
+
+    <div class="dept-grid">
+      ${depts.map((d, i) => deptCardHtml(d, i)).join('')}
+    </div>
+  </div>`;
 }
 
 // ══════════════════════════════════════════════════
@@ -2280,8 +2651,9 @@ async function refreshData() {
     // Kick off background sync with Monday (doesn't block dashboard load)
     syncHubBackground();
     const [raw, pipeRaw] = await Promise.all([fetchRaw(), fetchPipeline()]);
-    allProjects      = processItems(raw);
-    pipelineProjects = processPipeline(pipeRaw);
+    window.__rawItems    = raw;
+    allProjects          = processItems(raw);
+    pipelineProjects     = processPipeline(pipeRaw);
     updateMeta(raw.length);
     buildTeamFilter();
     buildSidebar();
@@ -2313,8 +2685,9 @@ function buildTeamFilter() {
 async function init() {
   try {
     const [raw, pipeRaw] = await Promise.all([fetchRaw(), fetchPipeline()]);
-    allProjects      = processItems(raw);
-    pipelineProjects = processPipeline(pipeRaw);
+    window.__rawItems    = raw;
+    allProjects          = processItems(raw);
+    pipelineProjects     = processPipeline(pipeRaw);
     updateMeta(raw.length);
     buildTeamFilter();
     buildSidebar();
