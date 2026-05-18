@@ -488,13 +488,6 @@ body::before{content:"";position:fixed;inset:0;background-image:url("data:image/
       </div>
     </div>
     <nav class="sb-nav" id="sbNav"></nav>
-    <div class="sb-footer">
-      <div class="sb-avatar">מ.כ</div>
-      <div>
-        <div class="sb-user-name">מיכל כ.</div>
-        <div class="sb-user-role">מנכ״לית</div>
-      </div>
-    </div>
   </aside>
 
   <!-- Main -->
@@ -1185,22 +1178,22 @@ function processDepartments(rawItems) {
 
 const deptExpanded = new Set();
 
+function deptPanelId(name) {
+  return 'dp' + btoa(unescape(encodeURIComponent(name))).replace(/[^a-z0-9]/gi, '').slice(0, 20);
+}
+
 function toggleDept(name) {
   if (deptExpanded.has(name)) deptExpanded.delete(name);
   else deptExpanded.add(name);
-  const key = CSS.escape(name);
-  const panel = document.getElementById('dp-' + btoa(unescape(encodeURIComponent(name))).replace(/[^a-z0-9]/gi,''));
-  const btn   = panel?.previousElementSibling;
+  const isOpen = deptExpanded.has(name);
+  const panel  = document.getElementById(deptPanelId(name));
   if (!panel) return;
-  panel.classList.toggle('open', deptExpanded.has(name));
+  panel.classList.toggle('open', isOpen);
+  const btn = panel.previousElementSibling;
   if (btn) {
-    btn.querySelector('.chev').style.transform = deptExpanded.has(name) ? 'rotate(180deg)' : '';
-    btn.querySelector('.chev-label').textContent = deptExpanded.has(name) ? 'הסתר עומס' : 'הצג עומס לפי עובדים';
+    btn.querySelector('.chev').style.transform = isOpen ? 'rotate(180deg)' : '';
+    btn.querySelector('.chev-label').textContent = isOpen ? 'הסתר עומס' : 'הצג עומס לפי עובדים';
   }
-}
-
-function deptPanelId(name) {
-  return 'dp' + btoa(unescape(encodeURIComponent(name))).replace(/[^a-z0-9]/gi, '').slice(0, 20);
 }
 
 function renderDepartmentsPage() {
