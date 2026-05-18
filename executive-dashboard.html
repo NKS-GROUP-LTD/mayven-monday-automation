@@ -440,6 +440,7 @@ const BOARD_ID          = 18400570216;
 const PIPELINE_BOARD_ID  = 18404945843;
 const PIPELINE_FETCH_URL = 'https://syrhxhytlkcnakicnyde.supabase.co/functions/v1/pipeline-fetch';
 const PIPELINE_ANON_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN5cmh4aHl0bGtjbmFraWNueWRlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5NTg2MTgsImV4cCI6MjA4NzUzNDYxOH0.ocmq1FmdSva_K8yusrCCf__woxknFThdJH3mRtdgt4U';
+const HUB_SYNC_URL       = 'https://hrdniczngcoymqjpmvqn.supabase.co/functions/v1/hub-sync';
 const PAGE_SIZE = 1000;
 
 const C = {
@@ -463,6 +464,8 @@ const C = {
   QUARTER_T:       'dropdown_mm3eqtpn',
   DEPARTMENT_T:    'color_mm3en599',
   COMPLETION_DATE: 'date_mm0p2hfk',
+  BASELINE_DATE:   'date_mm0pzjaw',
+  LAUNCH_TYPE:     'color_mm0prghm',
   ON_TIME:      'color_mm1rgerb',
   DEADLINE:     'date_mm0ppepz',
   TIMELINE:     'timerange_mm0pbdag',
@@ -1941,11 +1944,28 @@ function renderPipeline(ps) {
 // ══════════════════════════════════════════════════
 // REFRESH
 // ══════════════════════════════════════════════════
+async function syncHub() {
+  try {
+    const res = await fetch(HUB_SYNC_URL, {
+      headers: { 'Authorization': `Bearer ${ANON_KEY}` }
+    });
+    const json = await res.json();
+    if (!res.ok || json.error) console.warn('hub-sync warning:', json.error || json);
+    else console.log('hub-sync ok:', json);
+  } catch(e) {
+    console.warn('hub-sync failed (continuing with cached data):', e.message);
+  }
+}
+
 async function refreshData() {
   const btn = document.getElementById('refreshBtn');
+  const originalHTML = btn.innerHTML;
   btn.disabled = true;
   btn.classList.add('spinning');
+  btn.innerHTML = '<span class="refresh-icon spinning">↻</span> מסנכרן עם Monday…';
   try {
+    await syncHub();
+    btn.innerHTML = '<span class="refresh-icon spinning">↻</span> טוען נתונים…';
     const [raw, pipeRaw] = await Promise.all([fetchRaw(), fetchPipeline()]);
     allProjects      = processItems(raw);
     pipelineProjects = processPipeline(pipeRaw);
@@ -1957,6 +1977,7 @@ async function refreshData() {
   finally {
     btn.disabled = false;
     btn.classList.remove('spinning');
+    btn.innerHTML = originalHTML;
   }
 }
 
