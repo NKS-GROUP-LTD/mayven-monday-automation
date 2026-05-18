@@ -203,6 +203,52 @@ body::before{content:"";position:fixed;inset:0;background-image:url("data:image/
 .dtw-dl td{padding:10px 14px;border-bottom:1px dashed var(--ink-soft);vertical-align:middle}
 .dtw-dl tbody tr:hover td{background:var(--paper-deep)}
 .dl-rel{color:rgba(26,29,35,.5);font-size:11.5px;margin-right:5px}
+
+/* ── Pipeline Cards ── */
+.pc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:16px}
+.pcard{background:var(--paper);border:1.5px solid var(--ink);border-radius:10px;box-shadow:3px 3px 0 var(--ink);overflow:hidden;display:flex;flex-direction:column;transition:box-shadow .15s,transform .15s}
+.pcard:hover{box-shadow:4px 4px 0 var(--ink);transform:translate(-1px,-1px)}
+.pcard[data-done]{opacity:.62;border-style:dashed;box-shadow:2px 2px 0 var(--ink-soft)}
+.pcard[data-cancel]{opacity:.42;border-style:dashed;box-shadow:none}
+.pcard-head{padding:12px 15px 10px;border-bottom:1px dashed var(--ink-soft)}
+.pcard-stage-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:7px;gap:8px}
+.pcard-stage{font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;letter-spacing:.05em;text-transform:uppercase;border:1.3px solid currentColor;background:var(--paper);white-space:nowrap}
+.pcard-name{font-family:'Suez One',serif;font-size:14.5px;color:var(--ink);line-height:1.25;margin-bottom:7px}
+.pcard-people{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:11.5px;color:rgba(26,29,35,.65)}
+.pcard-person{display:flex;align-items:center;gap:3px}
+.pcard-person-role{font-size:10px;font-weight:600;opacity:.55;letter-spacing:.03em}
+.pcard-body{padding:11px 15px 10px;flex:1;display:flex;flex-direction:column;gap:9px}
+/* Battery bar */
+.battery-wrap{}
+.battery-label{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px;font-size:11px}
+.battery-label-left{font-weight:600;color:var(--ink)}
+.battery-label-right{color:rgba(26,29,35,.55)}
+.battery-bar{height:12px;border:1.4px solid var(--ink);border-radius:5px;overflow:hidden;background:var(--paper-shade);display:flex}
+.battery-seg{height:100%}
+.battery-legend{display:flex;flex-wrap:wrap;gap:4px 10px;margin-top:5px}
+.bat-leg{display:flex;align-items:center;gap:3px;font-size:10.5px;color:rgba(26,29,35,.7)}
+.bat-dot{width:7px;height:7px;border-radius:2px;flex-shrink:0}
+.no-hub-msg{font-size:11px;color:rgba(26,29,35,.45);font-style:italic;padding:4px 0}
+/* Deadline row */
+.pcard-dl-row{display:flex;align-items:center;gap:10px;font-size:11.5px;flex-wrap:wrap}
+.pcard-dl-item{display:flex;align-items:center;gap:4px;color:rgba(26,29,35,.65)}
+.pcard-dl-val{font-family:'JetBrains Mono',monospace;color:var(--ink);font-weight:500}
+.pcard-foot{padding:8px 15px;border-top:1px dashed var(--ink-soft);display:flex;align-items:center;justify-content:space-between;gap:6px;background:var(--paper-deep)}
+.pcard-sp{font-size:11px;color:rgba(26,29,35,.6);display:flex;gap:8px;align-items:center}
+.pcard-sp-val{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:500;color:var(--ink)}
+/* Filter bar */
+.pf-bar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:10px 14px;background:var(--paper-deep);border:1.5px solid var(--ink);border-radius:8px;box-shadow:2px 2px 0 var(--ink)}
+.pf-label{font-size:11px;font-weight:600;color:rgba(26,29,35,.55);white-space:nowrap;letter-spacing:.03em;text-transform:uppercase}
+.pf-select{appearance:none;height:28px;padding:0 22px 0 9px;border:1.3px solid var(--ink-soft);border-radius:6px;background:var(--paper) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='9' height='9' viewBox='0 0 24 24' fill='none' stroke='%231a1d23' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>") no-repeat left 5px center;font-family:'Heebo',sans-serif;font-size:12px;color:var(--ink);cursor:pointer}
+.pf-toggle{height:28px;padding:0 11px;border:1.3px solid var(--ink-soft);border-radius:6px;background:var(--paper);font-family:'Heebo',sans-serif;font-size:12px;color:rgba(26,29,35,.75);cursor:pointer;transition:all .12s}
+.pf-toggle.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.pf-div{height:18px;width:1px;background:var(--ink-soft);margin:0 2px}
+/* Group header */
+.pgroup{margin-bottom:24px}
+.pgroup-head{display:flex;align-items:center;gap:10px;padding-bottom:8px;border-bottom:2px solid var(--ink);margin-bottom:12px}
+.pgroup-head-label{font-family:'Suez One',serif;font-size:15px;color:var(--ink)}
+.pgroup-head-stage{font-size:10.5px;font-weight:700;padding:1px 8px;border-radius:4px;border:1.3px solid currentColor;letter-spacing:.04em;text-transform:uppercase}
+.pgroup-count{font-size:11.5px;color:rgba(26,29,35,.5);margin-right:auto}
 </style>
 </head>
 <body>
@@ -1035,52 +1081,208 @@ function renderWorldPage(ps) {
 // ══════════════════════════════════════════════════
 // PIPELINE RENDER
 // ══════════════════════════════════════════════════
-function renderPipeline(ps) {
-  const stageColor = (s) => {
-    const m = {
-      'In Development':'var(--accent)',
-      'QA & Testing':'var(--purple-fg)',
-      'Launch Prep':'var(--yellow-fg)',
-      'UI/UX Design':'#c026d3',
-      'Technical Specs':'var(--blue-fg)',
-      'Discovery & Planning':'var(--blue-fg)',
-      'Deployed':'var(--green-fg)',
-      'Go Live':'var(--green-fg)',
-      'Red Flag 🚩':'var(--red-fg)',
-      'Backlog':'rgba(26,29,35,.45)',
-      'On Hold':'#607d8b',
-      'Cancelled':'rgba(26,29,35,.3)',
-      'NTH':'rgba(26,29,35,.3)',
-    };
-    return m[s] || 'rgba(26,29,35,.55)';
-  };
-  const impactBadge = (i) => {
-    if (!i) return '<span class="muted">—</span>';
-    const cls = i==='גבוה'?'red':i==='בינוני'?'yellow':'';
-    return `<span class="hpill ${cls}" style="font-size:10px;padding:1px 6px">${i}</span>`;
-  };
-  const stageBadge = (s) => {
-    if (!s) return '<span class="muted">—</span>';
-    return `<span style="font-size:11px;color:${stageColor(s)};font-weight:600;white-space:nowrap">${s}</span>`;
-  };
 
-  const active = ps.filter(p => !PIPELINE_DONE_STAGES.has(p.devStage) && !PIPELINE_CANCEL_STAGES.has(p.devStage) && p.devStage !== 'On Hold' && p.devStage !== 'NTH' && p.devStage !== 'Backlog');
-  const inDev  = ps.filter(p => p.devStage === 'In Development').length;
-  const inQA   = ps.filter(p => p.devStage === 'QA & Testing').length;
-  const done   = ps.filter(p => PIPELINE_DONE_STAGES.has(p.devStage)).length;
-  const late   = ps.filter(p => p.health === 'red').length;
-  const noDeadline = ps.filter(p => p.health === 'no-deadline').length;
+// Pipeline filter state (persists across re-renders)
+const pipeF = { groupBy: 'stage', sort: 'stage', hideDone: true };
+
+function stageColor(s) {
+  const m = {
+    'In Development':    'var(--accent)',
+    'QA & Testing':      'var(--purple-fg)',
+    'Launch Prep':       'var(--yellow-fg)',
+    'UI/UX Design':      '#c026d3',
+    'Technical Specs':   'var(--blue-fg)',
+    'Discovery & Planning':'var(--blue-fg)',
+    'Deployed':          'var(--green-fg)',
+    'Go Live':           'var(--green-fg)',
+    'Red Flag 🚩':       'var(--red-fg)',
+    'Backlog':           'rgba(26,29,35,.45)',
+    'On Hold':           '#607d8b',
+    'Cancelled':         'rgba(26,29,35,.3)',
+    'NTH':               'rgba(26,29,35,.3)',
+  };
+  return m[s] || 'rgba(26,29,35,.55)';
+}
+
+function renderPipeline(ps) {
+  // ── Battery bar for a pipeline project ──
+  function batteryHtml(p) {
+    const hub = p.hub;
+    if (!hub || hub.total === 0) {
+      return `<div class="no-hub-msg">אין נתוני משימות מהאב</div>`;
+    }
+    const arr   = hub.statusArr || [];
+    const total = hub.total;
+    const cnt   = (s) => arr.filter(x => x === s).length;
+    const nDone    = cnt('הסתיימה');
+    const nCancel  = cnt('מבוטלת');
+    const nBlocked = cnt('דגל אדום');
+    const nActive  = cnt('בעבודה') + cnt('מאושר');
+    const nWait    = cnt('ממתין');
+    const nBacklog = cnt('בנק משימות');
+    const pct = (n) => Math.round(n / total * 100);
+    const completed = nDone + nCancel;
+
+    // Actual timeline span
+    const tlStr = hub.tlStart && hub.tlEnd
+      ? `<span class="pcard-dl-item"><span>טיימליין:</span> <span class="pcard-dl-val ltr">${fmtDate(hub.tlStart)} → ${fmtDate(hub.tlEnd)}</span></span>`
+      : '';
+
+    // Hub effort
+    const effortStr = hub.effortA
+      ? `<span class="pcard-dl-item"><span>שעות בפועל:</span> <span class="pcard-dl-val">${fmtN(hub.effortA)}ש׳</span>${hub.effortP ? `<span style="color:rgba(26,29,35,.45);font-size:10.5px">/ ${fmtN(hub.effortP)} מתוכנן</span>` : ''}</span>`
+      : '';
+
+    return `
+      <div class="battery-wrap">
+        <div class="battery-label">
+          <span class="battery-label-left">${completed}/${total} משימות הושלמו</span>
+          <span class="battery-label-right">${pct(completed)}%</span>
+        </div>
+        <div class="battery-bar">
+          ${nDone    ? `<div class="battery-seg" style="width:${pct(nDone)}%;background:#15803D" title="הסתיימו: ${nDone}"></div>` : ''}
+          ${nActive  ? `<div class="battery-seg" style="width:${pct(nActive)}%;background:var(--accent)" title="בעבודה: ${nActive}"></div>` : ''}
+          ${nWait    ? `<div class="battery-seg" style="width:${pct(nWait)}%;background:#B45309" title="ממתין: ${nWait}"></div>` : ''}
+          ${nBlocked ? `<div class="battery-seg" style="width:${pct(nBlocked)}%;background:#B91C1C" title="חסום: ${nBlocked}"></div>` : ''}
+          ${nCancel  ? `<div class="battery-seg" style="width:${pct(nCancel)}%;background:rgba(26,29,35,.2)" title="בוטל: ${nCancel}"></div>` : ''}
+          ${nBacklog ? `<div class="battery-seg" style="width:${pct(nBacklog)}%;background:rgba(26,29,35,.08)" title="בק לוג: ${nBacklog}"></div>` : ''}
+        </div>
+        <div class="battery-legend">
+          ${nDone    ? `<div class="bat-leg"><div class="bat-dot" style="background:#15803D"></div>${nDone} הסתיימו</div>` : ''}
+          ${nActive  ? `<div class="bat-leg"><div class="bat-dot" style="background:var(--accent)"></div>${nActive} בעבודה</div>` : ''}
+          ${nWait    ? `<div class="bat-leg"><div class="bat-dot" style="background:#B45309"></div>${nWait} ממתין</div>` : ''}
+          ${nBlocked ? `<div class="bat-leg"><div class="bat-dot" style="background:#B91C1C"></div>${nBlocked} חסום</div>` : ''}
+          ${nCancel  ? `<div class="bat-leg"><div class="bat-dot" style="background:rgba(26,29,35,.25)"></div>${nCancel} בוטל</div>` : ''}
+        </div>
+      </div>
+      ${tlStr || effortStr ? `<div class="pcard-dl-row" style="margin-top:2px">${tlStr}${effortStr}</div>` : ''}`;
+  }
+
+  // ── Single card ──
+  function cardHtml(p) {
+    const isDone   = PIPELINE_DONE_STAGES.has(p.devStage);
+    const isCancel = PIPELINE_CANCEL_STAGES.has(p.devStage);
+    const doneAttr   = isDone   ? 'data-done' : '';
+    const cancelAttr = isCancel ? 'data-cancel' : '';
+    const sColor = stageColor(p.devStage);
+
+    const deadlineStr = p.deadline ? (() => {
+      const diffMs  = p.deadline.getTime() - new Date().setHours(0,0,0,0);
+      const diffDays= Math.round(diffMs / 864e5);
+      const rel     = diffDays < 0  ? `<span style="color:var(--red-fg);font-weight:600">(${Math.abs(diffDays)} י׳ איחור)</span>`
+                    : diffDays === 0 ? `<span style="color:var(--orange-fg);font-weight:600">(היום!)</span>`
+                    : diffDays <= 7  ? `<span style="color:var(--yellow-fg)">(${diffDays} ימים)</span>`
+                    :                  `<span style="color:rgba(26,29,35,.45)">(${diffDays} ימים)</span>`;
+      return `<span class="pcard-dl-val ltr">${fmtDate(p.deadline)}</span> ${rel}`;
+    })() : '<span style="color:rgba(26,29,35,.4)">ללא דד-ליין</span>';
+
+    const impactColor = p.bizImpact === 'גבוה' ? 'var(--red-fg)' : p.bizImpact === 'בינוני' ? 'var(--yellow-fg)' : 'rgba(26,29,35,.5)';
+
+    const spStr = (p.spAct || p.spPlan)
+      ? `<span class="pcard-sp">SP: <span class="pcard-sp-val">${p.spAct||0}</span><span style="opacity:.45">/ ${p.spPlan||0} מתוכנן</span></span>`
+      : '';
+
+    const briefHtml = p.briefUrl
+      ? `<a href="${p.briefUrl}" target="_blank" style="font-size:11px;color:var(--blue-fg);text-decoration:none;display:flex;align-items:center;gap:3px;white-space:nowrap">📎 ${p.briefText||'BRIEF'}</a>`
+      : '';
+
+    const impactHtml = p.bizImpact
+      ? `<span style="font-size:10.5px;font-weight:600;color:${impactColor}">⬤ ${p.bizImpact}</span>`
+      : '';
+
+    return `<div class="pcard" ${doneAttr} ${cancelAttr}>
+      <div class="pcard-head">
+        <div class="pcard-stage-row">
+          <span class="pcard-stage" style="color:${sColor}">${p.devStage||'—'}</span>
+          ${healthHtml(p.health)}
+        </div>
+        <div class="pcard-name">${stripE(p.name)||p.name||'—'}</div>
+        <div class="pcard-people">
+          ${p.owner ? `<div class="pcard-person"><span class="pcard-person-role">OWNER</span> ${p.owner}</div>` : ''}
+          ${p.pm    ? `<div class="pcard-person"><span class="pcard-person-role">PM</span> ${p.pm}</div>` : ''}
+          ${p.quarter ? `<div class="pcard-person"><span class="pcard-person-role">Q</span> ${p.quarter}</div>` : ''}
+        </div>
+      </div>
+
+      <div class="pcard-body">
+        ${batteryHtml(p)}
+        <div class="pcard-dl-row">
+          <span class="pcard-dl-item"><span>דד-ליין:</span> ${deadlineStr}</span>
+        </div>
+      </div>
+
+      <div class="pcard-foot">
+        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+          ${spStr}
+          ${impactHtml}
+        </div>
+        ${briefHtml}
+      </div>
+    </div>`;
+  }
+
+  // ── KPI numbers ──
+  const active      = ps.filter(p => !PIPELINE_DONE_STAGES.has(p.devStage) && !PIPELINE_CANCEL_STAGES.has(p.devStage) && p.devStage !== 'On Hold' && p.devStage !== 'NTH' && p.devStage !== 'Backlog');
+  const inDev       = ps.filter(p => p.devStage === 'In Development').length;
+  const inQA        = ps.filter(p => p.devStage === 'QA & Testing').length;
+  const done        = ps.filter(p => PIPELINE_DONE_STAGES.has(p.devStage)).length;
+  const late        = ps.filter(p => p.health === 'red').length;
+  const noDeadline  = ps.filter(p => p.health === 'no-deadline').length;
   const spPlanTotal = ps.reduce((s,p) => s + p.spPlan, 0);
   const spActTotal  = ps.reduce((s,p) => s + p.spAct,  0);
 
-  // Quarter breakdown
-  const quarterMap = {};
-  ps.forEach(p => {
-    const q = p.quarter || 'ללא רבעון';
-    if (!quarterMap[q]) quarterMap[q] = { total:0, active:0 };
-    quarterMap[q].total++;
-    if (!PIPELINE_DONE_STAGES.has(p.devStage) && !PIPELINE_CANCEL_STAGES.has(p.devStage)) quarterMap[q].active++;
-  });
+  // ── Apply filters ──
+  let filtered = ps;
+  if (pipeF.hideDone) filtered = filtered.filter(p => !PIPELINE_DONE_STAGES.has(p.devStage) && !PIPELINE_CANCEL_STAGES.has(p.devStage));
+  if (filterSearch) filtered = filtered.filter(p => (p.name||'').toLowerCase().includes(filterSearch));
+
+  // Sort
+  const healthOrder = { red:0, yellow:1, 'no-deadline':2, green:3, done:4, cancel:5 };
+  const SORT_FNS = {
+    stage:    (a,b) => PIPELINE_STAGE_ORDER.indexOf(a.devStage) - PIPELINE_STAGE_ORDER.indexOf(b.devStage),
+    deadline: (a,b) => {
+      if (!a.deadline && !b.deadline) return 0;
+      if (!a.deadline) return 1;
+      if (!b.deadline) return -1;
+      return a.deadline - b.deadline;
+    },
+    health:   (a,b) => (healthOrder[a.health]??9) - (healthOrder[b.health]??9),
+  };
+  filtered = filtered.slice().sort(SORT_FNS[pipeF.sort] || SORT_FNS.stage);
+
+  // Group
+  function groupCards(arr) {
+    if (pipeF.groupBy === 'none') {
+      return `<div class="pc-grid">${arr.map(cardHtml).join('')}</div>`;
+    }
+    if (pipeF.groupBy === 'quarter') {
+      const groups = {};
+      arr.forEach(p => { const q = p.quarter||'ללא רבעון'; (groups[q]=groups[q]||[]).push(p); });
+      return Object.entries(groups).sort(([a],[b])=>a.localeCompare(b)).map(([q,items]) => `
+        <div class="pgroup">
+          <div class="pgroup-head">
+            <span class="pgroup-head-label">📅 ${q}</span>
+            <span class="pgroup-count">${items.length} אפיקים</span>
+          </div>
+          <div class="pc-grid">${items.map(cardHtml).join('')}</div>
+        </div>`).join('');
+    }
+    // stage grouping (default)
+    const stageGroups = {};
+    arr.forEach(p => { const s = p.devStage||'—'; (stageGroups[s]=stageGroups[s]||[]).push(p); });
+    return PIPELINE_STAGE_ORDER.filter(s => stageGroups[s]).concat(
+      Object.keys(stageGroups).filter(s => !PIPELINE_STAGE_ORDER.includes(s))
+    ).map(s => {
+      const items = stageGroups[s] || [];
+      return `<div class="pgroup">
+        <div class="pgroup-head">
+          <span class="pgroup-head-stage" style="color:${stageColor(s)}">${s}</span>
+          <span class="pgroup-count">${items.length} אפיקים</span>
+        </div>
+        <div class="pc-grid">${items.map(cardHtml).join('')}</div>
+      </div>`;
+    }).join('');
+  }
 
   document.getElementById('content').innerHTML = `
   <div class="page">
@@ -1124,67 +1326,34 @@ function renderPipeline(ps) {
       </div>
     </div>
 
-    <!-- Quarter breakdown -->
-    ${Object.keys(quarterMap).length > 1 ? `
-    <div class="ms-card" style="margin-bottom:22px">
-      <div class="ms-card-head"><div class="ms-card-title">לפי רבעון</div></div>
-      <div class="ms-card-body" style="display:flex;gap:16px;flex-wrap:wrap">
-        ${Object.entries(quarterMap).sort(([a],[b])=>a.localeCompare(b)).map(([q,d]) => `
-          <div style="border:1.5px solid var(--ink-soft);border-radius:8px;padding:10px 16px;min-width:120px;text-align:center">
-            <div style="font-weight:700;font-size:13px">${q}</div>
-            <div style="font-size:22px;font-weight:700;margin:4px 0">${d.total}</div>
-            <div style="font-size:11px;color:rgba(26,29,35,.55)">${d.active} פעילים</div>
-          </div>`).join('')}
-      </div>
-    </div>` : ''}
-
-    <!-- Projects table -->
-    <div class="ms-card">
-      <div class="ms-card-head">
-        <div>
-          <div class="ms-card-title">אפיקי פיתוח</div>
-          <div class="ms-card-sub">ממוין לפי שלב פיתוח</div>
-        </div>
-      </div>
-      ${ps.length === 0
-        ? `<div class="ms-card-body"><div class="empty"><div class="empty-icon">🔍</div><div>לא נמצאו נתונים</div></div></div>`
-        : `<div class="dtw-wrap"><table class="dtw">
-            <thead><tr>
-              <th>שם אפיק</th>
-              <th>Owner</th>
-              <th>PM</th>
-              <th>Dev Stage</th>
-              <th>השפעה</th>
-              <th>Dev Type</th>
-              <th>רבעון</th>
-              <th>SP מתוכנן</th>
-              <th>SP בפועל</th>
-              <th>דד-ליין</th>
-              <th>בריאות</th>
-              <th>סטטוס</th>
-              <th>בריף</th>
-            </tr></thead>
-            <tbody>
-              ${ps.map(p => `<tr>
-                <td class="dn" title="${(p.name||'').replace(/"/g,'')}">${stripE(p.name)||p.name||'—'}</td>
-                <td style="font-size:12px;white-space:nowrap">${p.owner||'<span class="muted">—</span>'}</td>
-                <td style="font-size:12px;white-space:nowrap">${p.pm||'<span class="muted">—</span>'}</td>
-                <td>${stageBadge(p.devStage)}</td>
-                <td>${impactBadge(p.bizImpact)}</td>
-                <td style="font-size:11px;color:rgba(26,29,35,.65);white-space:nowrap">${stripE(p.devType||'')||'<span class="muted">—</span>'}</td>
-                <td style="font-size:11px;font-weight:600;white-space:nowrap">${p.quarter||'<span class="muted">—</span>'}</td>
-                <td class="mono">${p.spPlan||'<span class="muted">—</span>'}</td>
-                <td class="mono">${p.spAct||'<span class="muted">—</span>'}</td>
-                <td><span class="mono ltr">${fmtDate(p.deadline)}</span></td>
-                <td>${healthHtml(p.health)}</td>
-                <td>${p.status ? `<span class="sbadge ${STATUS_KEYS[p.status]||'backlog'}" style="font-size:10px">${p.status}</span>` : '<span class="muted">—</span>'}</td>
-                <td>${p.briefUrl ? `<a href="${p.briefUrl}" target="_blank" style="font-size:11px;color:var(--blue-fg);text-decoration:none;white-space:nowrap">📎 ${p.briefText||'BRIEF'}</a>` : '<span class="muted">—</span>'}</td>
-              </tr>`).join('')}
-            </tbody>
-          </table>
-          <div class="tfoot">${ps.length} אפיקים · SP בפועל: ${spActTotal} / מתוכנן: ${spPlanTotal}</div>
-        </div>`}
+    <!-- Filter bar -->
+    <div class="pf-bar">
+      <span class="pf-label">קיבוץ לפי:</span>
+      <select class="pf-select" id="pfGroupBy" onchange="pipeF.groupBy=this.value;renderPipeline(pipelineProjects)">
+        <option value="stage"   ${pipeF.groupBy==='stage'  ?'selected':''}>שלב פיתוח</option>
+        <option value="quarter" ${pipeF.groupBy==='quarter'?'selected':''}>רבעון</option>
+        <option value="none"    ${pipeF.groupBy==='none'   ?'selected':''}>ללא קיבוץ</option>
+      </select>
+      <div class="pf-div"></div>
+      <span class="pf-label">מיון:</span>
+      <select class="pf-select" id="pfSort" onchange="pipeF.sort=this.value;renderPipeline(pipelineProjects)">
+        <option value="stage"    ${pipeF.sort==='stage'   ?'selected':''}>שלב פיתוח</option>
+        <option value="deadline" ${pipeF.sort==='deadline'?'selected':''}>דד-ליין</option>
+        <option value="health"   ${pipeF.sort==='health'  ?'selected':''}>בריאות</option>
+      </select>
+      <div class="pf-div"></div>
+      <button class="pf-toggle ${pipeF.hideDone?'on':''}" id="pfHideDone"
+        onclick="pipeF.hideDone=!pipeF.hideDone;renderPipeline(pipelineProjects)">
+        ${pipeF.hideDone ? '👁 הצג הושלמו' : '🙈 הסתר הושלמו'}
+      </button>
+      <span style="margin-right:auto;font-size:11px;color:rgba(26,29,35,.45)">${filtered.length} / ${ps.length} מוצגים</span>
     </div>
+
+    <!-- Cards -->
+    ${filtered.length === 0
+      ? `<div class="ms-card"><div class="ms-card-body"><div class="empty"><div class="empty-icon">🔍</div><div>לא נמצאו אפיקים</div></div></div></div>`
+      : groupCards(filtered)
+    }
   </div>`;
 }
 
