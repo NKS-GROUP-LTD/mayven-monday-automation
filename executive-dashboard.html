@@ -280,7 +280,10 @@ body::before{content:"";position:fixed;inset:0;background-image:url("data:image/
 // ══════════════════════════════════════════════════
 const SUPABASE_URL = 'https://hrdniczngcoymqjpmvqn.supabase.co';
 const ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhyZG5pY3puZ2NveW1xanBtdnFuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg3NjQ3NjMsImV4cCI6MjA5NDM0MDc2M30.Z7ieddQrShW2fInB43BSHYQI1IdpxVqrJSY3npZkTnQ';
-const BOARD_ID = 18400570216;
+const BOARD_ID          = 18400570216;
+const PIPELINE_BOARD_ID  = 18404945843;
+const PIPELINE_FETCH_URL = 'https://syrhxhytlkcnakicnyde.supabase.co/functions/v1/pipeline-fetch';
+const PIPELINE_ANON_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN5cmh4aHl0bGtjbmFraWNueWRlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5NTg2MTgsImV4cCI6MjA4NzUzNDYxOH0.ocmq1FmdSva_K8yusrCCf__woxknFThdJH3mRtdgt4U';
 const PAGE_SIZE = 1000;
 
 const C = {
@@ -313,9 +316,42 @@ const C = {
   QUARTER:      'color_mm2jkkq1',
 };
 
+// ── Pipeline board column IDs ──
+const P = {
+  DEV_STAGE:    'color_mm1qp21h',
+  DEPARTMENT:   'color_mm1qefj4',
+  DEV_TYPE:     'color_mm1qbd4z',
+  OWNER:        'multiple_person_mm1pr59g',
+  PM:           'multiple_person_mm1qy0em',
+  DESCRIPTION:  'text_mm1qtk4m',
+  BRIEF:        'link_mm1q4mfb',
+  BIZ_IMPACT:   'color_mm1qd4hs',
+  STRATEGIC:    'dropdown_mm1pw856',
+  DEPT_PRIO:    'numeric_mm1qrv61',
+  EFFORT_PLAN:  'numeric_mm1p1jfe',
+  EFFORT_ACT:   'numeric_mm1xewhy',
+  MGMT_PRIO:    'numeric_mm1przh8',
+  QUARTER:      'dropdown_mm1pr8wc',
+  START_PLAN:   'date_mm1p456v',
+  START_ACT:    'date_mm1pbx89',
+  DEADLINE:     'date_mm1p37v8',
+  TIMELINE_PLAN:'timerange_mm1q7amw',
+  STATUS:       'color_mm1qz36p',
+  ENV:          'dropdown_mm1prr28',
+};
+
+const PIPELINE_STAGE_ORDER = [
+  'In Development','QA & Testing','Launch Prep','UI/UX Design',
+  'Technical Specs','Discovery & Planning','Backlog',
+  'Deployed','Go Live','Red Flag 🚩','On Hold','Cancelled','NTH',
+];
+const PIPELINE_DONE_STAGES   = new Set(['Deployed','Go Live']);
+const PIPELINE_CANCEL_STAGES = new Set(['Cancelled']);
+
 // ── Worlds ──
 const WORLDS = [
   { key:'overview',    he:'סקירה כללית',       en:'Overview',    icon:'📊' },
+  { key:'pipeline',    he:'פורטפוליו טכנולוגיה', en:'Tech Pipeline', icon:'⚙️' },
   { key:'tech',        he:'פיתוח טכנולוגי',    en:'Tech & Dev',  icon:'👩‍💻' },
   { key:'product',     he:'מוצר חדש',           en:'New Product', icon:'📦' },
   { key:'campaigns',   he:'קמפיינים',           en:'Campaigns',   icon:'🎀' },
@@ -365,9 +401,10 @@ const PIPELINE_ORDER = ['בנק משימות','ממתין','מאושר','בעב�
 // STATE
 // ══════════════════════════════════════════════════
 const db = window.supabase.createClient(SUPABASE_URL, ANON_KEY);
-let allProjects = [];
-let activeWorld = 'overview';
-let filterTeam  = 'all';
+let allProjects      = [];
+let pipelineProjects = [];
+let activeWorld  = 'overview';
+let filterTeam   = 'all';
 let filterSearch = '';
 
 // ══════════════════════════════════════════════════
@@ -392,6 +429,26 @@ async function fetchRaw() {
     from += PAGE_SIZE;
   }
   return items;
+}
+
+async function fetchPipeline() {
+  setLP('שולף פורטפוליו טכנולוגיה…');
+  const res = await fetch(PIPELINE_FETCH_URL, {
+    headers: { 'Authorization': `Bearer ${PIPELINE_ANON_KEY}` }
+  });
+  if (!res.ok) throw new Error(`pipeline-fetch HTTP ${res.status}`);
+  const json = await res.json();
+  if (!json.ok) throw new Error(json.error || 'pipeline-fetch error');
+  // Normalize to match the processPipeline cv() helper format
+  return (json.items || []).map(item => ({
+    id: item.id,
+    name: item.name,
+    column_values: (item.column_values || []).map(cv => ({
+      column_id: cv.id,
+      text_value: cv.text,
+      value: cv.value,
+    })),
+  }));
 }
 
 // ══════════════════════════════════════════════════
@@ -523,6 +580,79 @@ function processItems(rawItems) {
 }
 
 // ══════════════════════════════════════════════════
+// PIPELINE PROCESSING
+// ══════════════════════════════════════════════════
+function processPipeline(items) {
+  const hubMap = new Map(allProjects.map(p => [stripE(p.name).trim().toLowerCase(), p]));
+  const result = [];
+  for (const item of items) {
+    const cvo = (colId) => {
+      const r = item.column_values?.find(r => r.column_id === colId);
+      return r ? { t: r.text_value, r: r.value } : { t: null, r: null };
+    };
+    const name       = item.name || '';
+    const devStage   = cvo(P.DEV_STAGE).t   || null;
+    const department = cvo(P.DEPARTMENT).t  || null;
+    const devType    = cvo(P.DEV_TYPE).t    || null;
+    const owner      = cvo(P.OWNER).t       || null;
+    const pm         = cvo(P.PM).t          || null;
+    const bizImpact  = cvo(P.BIZ_IMPACT).t  || null;
+    const strategic  = cvo(P.STRATEGIC).t   || null;
+    const quarter    = cvo(P.QUARTER).t     || null;
+    const spPlan     = parseFloat(cvo(P.EFFORT_PLAN).t || 0) || 0;
+    const spAct      = parseFloat(cvo(P.EFFORT_ACT).t  || 0) || 0;
+    const mgmtPrio   = parseFloat(cvo(P.MGMT_PRIO).t   || 0) || 0;
+    const deadline   = parseDate(cvo(P.DEADLINE).t);
+    const status     = cvo(P.STATUS).t || null;
+    const tl         = parseTL(cvo(P.TIMELINE_PLAN).r);
+    const env        = cvo(P.ENV).t || null;
+
+    // Brief link
+    let briefUrl = null, briefText = 'BRIEF';
+    try {
+      const b = typeof cvo(P.BRIEF).r === 'string' ? JSON.parse(cvo(P.BRIEF).r) : cvo(P.BRIEF).r;
+      if (b?.url) { briefUrl = b.url; briefText = b.text || 'BRIEF'; }
+    } catch {}
+
+    // Health calculation
+    let health;
+    if (PIPELINE_CANCEL_STAGES.has(devStage) || status === 'מבוטלת') {
+      health = 'cancel';
+    } else if (PIPELINE_DONE_STAGES.has(devStage) || status === 'הסתיימה') {
+      health = 'done';
+    } else if (!deadline) {
+      health = 'no-deadline';
+    } else {
+      const todayMs    = new Date(new Date().toDateString()).getTime();
+      const deadlineMs = new Date(new Date(deadline).toDateString()).getTime();
+      const tlEndMs    = tl.to ? new Date(new Date(tl.to).toDateString()).getTime() : null;
+      if (tlEndMs === null)            health = 'no-deadline';
+      else if (tlEndMs > deadlineMs)   health = 'red';
+      else if (tlEndMs === deadlineMs) health = 'yellow';
+      else                             health = 'green';
+    }
+
+    // Try to join with hub data by name match
+    const hub = hubMap.get(stripE(name).trim().toLowerCase()) || null;
+
+    result.push({
+      id: item.id, name, devStage, department, devType,
+      owner, pm, bizImpact, strategic, quarter,
+      spPlan, spAct, mgmtPrio, deadline, status,
+      tl, env, briefUrl, briefText, health, hub,
+    });
+  }
+
+  return result.sort((a, b) => {
+    const stagePri = (s) => {
+      const i = PIPELINE_STAGE_ORDER.indexOf(s);
+      return i === -1 ? 50 : i;
+    };
+    return stagePri(a.devStage) - stagePri(b.devStage);
+  });
+}
+
+// ══════════════════════════════════════════════════
 // SIDEBAR
 // ══════════════════════════════════════════════════
 function buildSidebar() {
@@ -533,6 +663,8 @@ function buildSidebar() {
     counts[p.world] = (counts[p.world] || 0) + 1;
   });
   counts.overview = allProjects.filter(p => p.mainStatus !== 'הסתיימה' && p.mainStatus !== 'מבוטלת').length;
+
+  counts.pipeline = pipelineProjects.filter(p => !PIPELINE_DONE_STAGES.has(p.devStage) && !PIPELINE_CANCEL_STAGES.has(p.devStage)).length;
 
   document.getElementById('sbNav').innerHTML = WORLDS.map(w => {
     const active = w.key === activeWorld ? 'active' : '';
@@ -616,7 +748,8 @@ function miniBar(pct, health) {
 // RENDER DISPATCHER
 // ══════════════════════════════════════════════════
 function renderWorld(ps) {
-  if (activeWorld === 'overview') renderOverview(ps);
+  if (activeWorld === 'overview')  renderOverview(ps);
+  else if (activeWorld === 'pipeline') renderPipeline(pipelineProjects);
   else renderWorldPage(ps);
 }
 
@@ -900,6 +1033,162 @@ function renderWorldPage(ps) {
 }
 
 // ══════════════════════════════════════════════════
+// PIPELINE RENDER
+// ══════════════════════════════════════════════════
+function renderPipeline(ps) {
+  const stageColor = (s) => {
+    const m = {
+      'In Development':'var(--accent)',
+      'QA & Testing':'var(--purple-fg)',
+      'Launch Prep':'var(--yellow-fg)',
+      'UI/UX Design':'#c026d3',
+      'Technical Specs':'var(--blue-fg)',
+      'Discovery & Planning':'var(--blue-fg)',
+      'Deployed':'var(--green-fg)',
+      'Go Live':'var(--green-fg)',
+      'Red Flag 🚩':'var(--red-fg)',
+      'Backlog':'rgba(26,29,35,.45)',
+      'On Hold':'#607d8b',
+      'Cancelled':'rgba(26,29,35,.3)',
+      'NTH':'rgba(26,29,35,.3)',
+    };
+    return m[s] || 'rgba(26,29,35,.55)';
+  };
+  const impactBadge = (i) => {
+    if (!i) return '<span class="muted">—</span>';
+    const cls = i==='גבוה'?'red':i==='בינוני'?'yellow':'';
+    return `<span class="hpill ${cls}" style="font-size:10px;padding:1px 6px">${i}</span>`;
+  };
+  const stageBadge = (s) => {
+    if (!s) return '<span class="muted">—</span>';
+    return `<span style="font-size:11px;color:${stageColor(s)};font-weight:600;white-space:nowrap">${s}</span>`;
+  };
+
+  const active = ps.filter(p => !PIPELINE_DONE_STAGES.has(p.devStage) && !PIPELINE_CANCEL_STAGES.has(p.devStage) && p.devStage !== 'On Hold' && p.devStage !== 'NTH' && p.devStage !== 'Backlog');
+  const inDev  = ps.filter(p => p.devStage === 'In Development').length;
+  const inQA   = ps.filter(p => p.devStage === 'QA & Testing').length;
+  const done   = ps.filter(p => PIPELINE_DONE_STAGES.has(p.devStage)).length;
+  const late   = ps.filter(p => p.health === 'red').length;
+  const noDeadline = ps.filter(p => p.health === 'no-deadline').length;
+  const spPlanTotal = ps.reduce((s,p) => s + p.spPlan, 0);
+  const spActTotal  = ps.reduce((s,p) => s + p.spAct,  0);
+
+  // Quarter breakdown
+  const quarterMap = {};
+  ps.forEach(p => {
+    const q = p.quarter || 'ללא רבעון';
+    if (!quarterMap[q]) quarterMap[q] = { total:0, active:0 };
+    quarterMap[q].total++;
+    if (!PIPELINE_DONE_STAGES.has(p.devStage) && !PIPELINE_CANCEL_STAGES.has(p.devStage)) quarterMap[q].active++;
+  });
+
+  document.getElementById('content').innerHTML = `
+  <div class="page">
+    <div class="page-head">
+      <div>
+        <h1 class="page-title">⚙️ פורטפוליו טכנולוגיה</h1>
+        <div class="page-sub">Dev Project Pipeline · ${ps.length} אפיקים סה״כ · ${active.length} פעילים</div>
+      </div>
+    </div>
+
+    <div class="kpi-strip kpi-strip-6">
+      <div class="kpi">
+        <div class="kpi-label">סה״כ אפיקים</div>
+        <div class="kpi-value">${ps.length}</div>
+        <div class="kpi-sub">${active.length} פעילים</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">In Development</div>
+        <div class="kpi-value" style="color:var(--accent)">${inDev}</div>
+        <div class="kpi-sub">בפיתוח פעיל</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">QA & Testing</div>
+        <div class="kpi-value" style="color:var(--purple-fg)">${inQA}</div>
+        <div class="kpi-sub">בבדיקות</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">הושלמו</div>
+        <div class="kpi-value success">${done}</div>
+        <div class="kpi-sub">Deployed / Go Live</div>
+      </div>
+      <div class="kpi" data-dashed>
+        <div class="kpi-label">באיחור</div>
+        <div class="kpi-value danger">${late}</div>
+        <div class="kpi-sub">${noDeadline} ללא דד-ליין</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Story Points</div>
+        <div class="kpi-value" style="font-size:${spActTotal>999?'22px':'28px'}">${spActTotal||0}</div>
+        <div class="kpi-sub">מתוכנן: ${spPlanTotal} SP</div>
+      </div>
+    </div>
+
+    <!-- Quarter breakdown -->
+    ${Object.keys(quarterMap).length > 1 ? `
+    <div class="ms-card" style="margin-bottom:22px">
+      <div class="ms-card-head"><div class="ms-card-title">לפי רבעון</div></div>
+      <div class="ms-card-body" style="display:flex;gap:16px;flex-wrap:wrap">
+        ${Object.entries(quarterMap).sort(([a],[b])=>a.localeCompare(b)).map(([q,d]) => `
+          <div style="border:1.5px solid var(--ink-soft);border-radius:8px;padding:10px 16px;min-width:120px;text-align:center">
+            <div style="font-weight:700;font-size:13px">${q}</div>
+            <div style="font-size:22px;font-weight:700;margin:4px 0">${d.total}</div>
+            <div style="font-size:11px;color:rgba(26,29,35,.55)">${d.active} פעילים</div>
+          </div>`).join('')}
+      </div>
+    </div>` : ''}
+
+    <!-- Projects table -->
+    <div class="ms-card">
+      <div class="ms-card-head">
+        <div>
+          <div class="ms-card-title">אפיקי פיתוח</div>
+          <div class="ms-card-sub">ממוין לפי שלב פיתוח</div>
+        </div>
+      </div>
+      ${ps.length === 0
+        ? `<div class="ms-card-body"><div class="empty"><div class="empty-icon">🔍</div><div>לא נמצאו נתונים</div></div></div>`
+        : `<div class="dtw-wrap"><table class="dtw">
+            <thead><tr>
+              <th>שם אפיק</th>
+              <th>Owner</th>
+              <th>PM</th>
+              <th>Dev Stage</th>
+              <th>השפעה</th>
+              <th>Dev Type</th>
+              <th>רבעון</th>
+              <th>SP מתוכנן</th>
+              <th>SP בפועל</th>
+              <th>דד-ליין</th>
+              <th>בריאות</th>
+              <th>סטטוס</th>
+              <th>בריף</th>
+            </tr></thead>
+            <tbody>
+              ${ps.map(p => `<tr>
+                <td class="dn" title="${(p.name||'').replace(/"/g,'')}">${stripE(p.name)||p.name||'—'}</td>
+                <td style="font-size:12px;white-space:nowrap">${p.owner||'<span class="muted">—</span>'}</td>
+                <td style="font-size:12px;white-space:nowrap">${p.pm||'<span class="muted">—</span>'}</td>
+                <td>${stageBadge(p.devStage)}</td>
+                <td>${impactBadge(p.bizImpact)}</td>
+                <td style="font-size:11px;color:rgba(26,29,35,.65);white-space:nowrap">${stripE(p.devType||'')||'<span class="muted">—</span>'}</td>
+                <td style="font-size:11px;font-weight:600;white-space:nowrap">${p.quarter||'<span class="muted">—</span>'}</td>
+                <td class="mono">${p.spPlan||'<span class="muted">—</span>'}</td>
+                <td class="mono">${p.spAct||'<span class="muted">—</span>'}</td>
+                <td><span class="mono ltr">${fmtDate(p.deadline)}</span></td>
+                <td>${healthHtml(p.health)}</td>
+                <td>${p.status ? `<span class="sbadge ${STATUS_KEYS[p.status]||'backlog'}" style="font-size:10px">${p.status}</span>` : '<span class="muted">—</span>'}</td>
+                <td>${p.briefUrl ? `<a href="${p.briefUrl}" target="_blank" style="font-size:11px;color:var(--blue-fg);text-decoration:none;white-space:nowrap">📎 ${p.briefText||'BRIEF'}</a>` : '<span class="muted">—</span>'}</td>
+              </tr>`).join('')}
+            </tbody>
+          </table>
+          <div class="tfoot">${ps.length} אפיקים · SP בפועל: ${spActTotal} / מתוכנן: ${spPlanTotal}</div>
+        </div>`}
+    </div>
+  </div>`;
+}
+
+// ══════════════════════════════════════════════════
 // REFRESH
 // ══════════════════════════════════════════════════
 async function refreshData() {
@@ -907,8 +1196,9 @@ async function refreshData() {
   btn.disabled = true;
   btn.classList.add('spinning');
   try {
-    const raw = await fetchRaw();
-    allProjects = processItems(raw);
+    const [raw, pipeRaw] = await Promise.all([fetchRaw(), fetchPipeline()]);
+    allProjects      = processItems(raw);
+    pipelineProjects = processPipeline(pipeRaw);
     updateMeta(raw.length);
     buildTeamFilter();
     buildSidebar();
@@ -938,8 +1228,9 @@ function buildTeamFilter() {
 // ══════════════════════════════════════════════════
 async function init() {
   try {
-    const raw = await fetchRaw();
-    allProjects = processItems(raw);
+    const [raw, pipeRaw] = await Promise.all([fetchRaw(), fetchPipeline()]);
+    allProjects      = processItems(raw);
+    pipelineProjects = processPipeline(pipeRaw);
     updateMeta(raw.length);
     buildTeamFilter();
     buildSidebar();
