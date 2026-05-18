@@ -272,6 +272,24 @@ body::before{content:"";position:fixed;inset:0;background-image:url("data:image/
 .pgroup-label{font-family:'Suez One',serif;font-size:16px;color:var(--ink)}
 .pgroup-count{font-size:11.5px;color:rgba(26,29,35,.45);margin-right:auto}
 .pgroup-late{font-size:11px;color:var(--red-fg);font-weight:600}
+/* ── Pipeline stage tile strip ── */
+.pipe-tile-strip{display:flex;gap:8px;flex-wrap:wrap}
+.pipe-tile{background:var(--paper);border:1.5px solid var(--ink);border-radius:8px;box-shadow:2px 2px 0 var(--ink);padding:10px 12px 9px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;min-width:84px;transition:all .12s;text-align:center;user-select:none}
+.pipe-tile:hover{background:var(--paper-shade);transform:translate(-1px,-1px);box-shadow:3px 3px 0 var(--ink)}
+.pipe-tile.pt-active{background:var(--ink);color:var(--paper);box-shadow:none;transform:translate(1px,1px)}
+.pt-badge{font-size:9px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:2px 7px;border-radius:3px;color:var(--paper);white-space:nowrap;max-width:120px;overflow:hidden;text-overflow:ellipsis}
+.pt-count{font-family:'Suez One',serif;font-size:26px;line-height:1;font-weight:700;color:var(--ink)}
+.pt-sp{font-family:'JetBrains Mono',monospace;font-size:9.5px;color:rgba(26,29,35,.5)}
+.pipe-tile.pt-active .pt-count,.pipe-tile.pt-active .pt-sp{color:var(--paper);opacity:1}
+.pipe-tile.pt-late{border-color:var(--red-fg);box-shadow:2px 2px 0 var(--red-fg)}
+.pipe-tile.pt-late:hover{box-shadow:3px 3px 0 var(--red-fg)}
+.pipe-tile.pt-late.pt-active{background:var(--red-fg)}
+.pipe-tile.pt-late .pt-count{color:var(--red-fg)}
+.pipe-tile.pt-late.pt-active .pt-count{color:var(--paper)}
+.pipe-tile.pt-nodl{border-color:var(--yellow-fg);box-shadow:2px 2px 0 rgba(180,83,9,.35)}
+.pipe-tile.pt-nodl.pt-active{background:var(--yellow-fg)}
+.pipe-tile.pt-nodl .pt-count{color:var(--yellow-fg)}
+.pipe-tile.pt-nodl.pt-active .pt-count{color:var(--ink)}
 
 /* ── Tech World Page ── */
 .tk-analysis{display:grid;grid-template-columns:1fr 1fr;gap:16px}
@@ -1384,7 +1402,7 @@ function renderWorldPage(ps) {
 // ══════════════════════════════════════════════════
 
 // Pipeline filter state (persists across re-renders)
-const pipeF = { groupBy: 'stage', sort: 'stage', hideDone: true, dept: 'all' };
+const pipeF = { groupBy: 'stage', sort: 'stage', hideDone: true, dept: 'all', stageFilter: null };
 
 function stageColor(s) {
   const m = {
@@ -1537,7 +1555,11 @@ function renderPipeline(ps) {
 
   // ── Filter ──
   let filtered = ps;
-  if (pipeF.hideDone) filtered = filtered.filter(p => !PIPELINE_DONE_STAGES.has(p.devStage) && !PIPELINE_CANCEL_STAGES.has(p.devStage));
+  // Stage filter tile takes priority; hideDone only applies when no stage tile is active
+  if      (pipeF.stageFilter === '__late__')  filtered = filtered.filter(p => p.health === 'red');
+  else if (pipeF.stageFilter === '__nodl__')  filtered = filtered.filter(p => p.health === 'no-deadline' && !PIPELINE_DONE_STAGES.has(p.devStage) && !PIPELINE_CANCEL_STAGES.has(p.devStage));
+  else if (pipeF.stageFilter)                filtered = filtered.filter(p => p.devStage === pipeF.stageFilter);
+  if (pipeF.hideDone && !pipeF.stageFilter)  filtered = filtered.filter(p => !PIPELINE_DONE_STAGES.has(p.devStage) && !PIPELINE_CANCEL_STAGES.has(p.devStage));
   if (pipeF.dept !== 'all') filtered = filtered.filter(p => p.department === pipeF.dept);
   if (filterSearch) filtered = filtered.filter(p => (p.name||'').toLowerCase().includes(filterSearch));
 
@@ -1588,6 +1610,15 @@ function renderPipeline(ps) {
     }).join('');
   }
 
+  // ── Stage tile data ──
+  const stageTiles = PIPELINE_STAGE_ORDER.map(s => {
+    const items = ps.filter(p => p.devStage === s);
+    if (!items.length) return null;
+    return { stage: s, count: items.length, sp: items.reduce((a,p)=>a+p.spAct,0) };
+  }).filter(Boolean);
+  const lateItems = ps.filter(p => p.health === 'red');
+  const noDlItems = ps.filter(p => p.health === 'no-deadline' && !PIPELINE_DONE_STAGES.has(p.devStage) && !PIPELINE_CANCEL_STAGES.has(p.devStage));
+
   document.getElementById('content').innerHTML = `
   <div class="page">
     <div class="page-head">
@@ -1597,38 +1628,40 @@ function renderPipeline(ps) {
       </div>
     </div>
 
-    <!-- KPI -->
-    <div class="kpi-strip kpi-strip-6">
-      <div class="kpi">
-        <div class="kpi-label">סה״כ אפיקים</div>
-        <div class="kpi-value">${ps.length}</div>
-        <div class="kpi-sub">${active.length} פעילים</div>
+    <!-- Stage tile strip — clickable filter -->
+    <div class="pipe-tile-strip">
+
+      <div class="pipe-tile ${!pipeF.stageFilter?'pt-active':''}"
+           onclick="pipeF.stageFilter=null;renderPipeline(pipelineProjects)">
+        <div class="pt-badge" style="background:rgba(26,29,35,.55)">הכל</div>
+        <div class="pt-count">${ps.length}</div>
+        <div class="pt-sp">SP ${spActTotal}</div>
       </div>
-      <div class="kpi">
-        <div class="kpi-label">In Development</div>
-        <div class="kpi-value" style="color:#D05A72">${inDev}</div>
-        <div class="kpi-sub">בפיתוח פעיל</div>
-      </div>
-      <div class="kpi">
-        <div class="kpi-label">QA & Testing</div>
-        <div class="kpi-value" style="color:#7c3aed">${inQA}</div>
-        <div class="kpi-sub">בבדיקות</div>
-      </div>
-      <div class="kpi">
-        <div class="kpi-label">הושלמו</div>
-        <div class="kpi-value success">${done}</div>
-        <div class="kpi-sub">Deployed / Go Live</div>
-      </div>
-      <div class="kpi" data-dashed>
-        <div class="kpi-label">באיחור</div>
-        <div class="kpi-value danger">${late}</div>
-        <div class="kpi-sub">${noDeadline} ללא דד-ליין</div>
-      </div>
-      <div class="kpi">
-        <div class="kpi-label">Story Points</div>
-        <div class="kpi-value" style="font-size:${spActTotal>999?'20px':'30px'}">${spActTotal||0}</div>
-        <div class="kpi-sub">מתוכנן: ${spPlanTotal} SP</div>
-      </div>
+
+      ${stageTiles.map(t => `
+      <div class="pipe-tile ${pipeF.stageFilter===t.stage?'pt-active':''}"
+           onclick="pipeF.stageFilter=pipeF.stageFilter==='${t.stage}'?null:'${t.stage}';renderPipeline(pipelineProjects)">
+        <div class="pt-badge" style="background:${stageColor(t.stage)}">${t.stage}</div>
+        <div class="pt-count">${t.count}</div>
+        <div class="pt-sp">SP ${t.sp||0}</div>
+      </div>`).join('')}
+
+      ${lateItems.length ? `
+      <div class="pipe-tile pt-late ${pipeF.stageFilter==='__late__'?'pt-active':''}"
+           onclick="pipeF.stageFilter=pipeF.stageFilter==='__late__'?null:'__late__';renderPipeline(pipelineProjects)">
+        <div class="pt-badge" style="background:#b91c1c">⚠ באיחור</div>
+        <div class="pt-count">${lateItems.length}</div>
+        <div class="pt-sp">SP ${lateItems.reduce((a,p)=>a+p.spAct,0)}</div>
+      </div>` : ''}
+
+      ${noDlItems.length ? `
+      <div class="pipe-tile pt-nodl ${pipeF.stageFilter==='__nodl__'?'pt-active':''}"
+           onclick="pipeF.stageFilter=pipeF.stageFilter==='__nodl__'?null:'__nodl__';renderPipeline(pipelineProjects)">
+        <div class="pt-badge" style="background:#d97706">ללא דד-ליין</div>
+        <div class="pt-count">${noDlItems.length}</div>
+        <div class="pt-sp">—</div>
+      </div>` : ''}
+
     </div>
 
     <!-- Filter bar -->
