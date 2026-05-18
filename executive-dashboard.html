@@ -359,6 +359,63 @@ body::before{content:"";position:fixed;inset:0;background-image:url("data:image/
 /* Table row with late indicator */
 .dtw tbody tr[data-late]{border-right:3px solid var(--red-fg)}
 .dtw tbody tr[data-risk]{border-right:3px solid var(--yellow-fg)}
+
+/* ── Roadmap Page ── */
+.rm-quarter-block{margin-bottom:36px}
+.rm-quarter-head{display:flex;align-items:center;gap:12px;margin-bottom:16px;padding-bottom:10px;border-bottom:2.5px solid var(--ink)}
+.rm-q-label{font-family:'Suez One',serif;font-size:22px;color:var(--ink)}
+.rm-q-count{font-size:12px;color:rgba(26,29,35,.5);font-weight:500}
+.rm-q-late{font-size:12px;font-weight:700;color:var(--red-fg);display:flex;align-items:center;gap:4px;margin-right:auto}
+.rm-timeline{display:flex;flex-direction:column;gap:10px}
+
+/* Launch row card */
+.rm-row{display:grid;grid-template-columns:280px 1fr 160px;gap:0;border:1.5px solid var(--ink);border-radius:8px;overflow:hidden;box-shadow:2px 2px 0 var(--ink);background:var(--paper);transition:box-shadow .12s,transform .12s}
+.rm-row:hover{transform:translate(-1px,-1px);box-shadow:3px 3px 0 var(--ink)}
+.rm-row[data-late]{border-color:var(--red-fg);box-shadow:2px 2px 0 var(--red-fg)}
+.rm-row[data-late]:hover{box-shadow:3px 3px 0 var(--red-fg)}
+.rm-row[data-risk]{border-color:var(--yellow-fg)}
+.rm-row[data-done]{border-color:rgba(26,29,35,.25);box-shadow:1px 1px 0 rgba(26,29,35,.15);opacity:.75}
+
+/* Left panel - project info */
+.rm-left{padding:12px 16px;border-inline-end:1.5px solid var(--ink-softer);display:flex;flex-direction:column;gap:5px;background:var(--paper)}
+.rm-row[data-late] .rm-left{background:var(--red-bg)}
+.rm-row[data-done] .rm-left{background:var(--paper-deep)}
+.rm-flag{font-size:16px;flex-shrink:0}
+.rm-name{font-family:'Suez One',serif;font-size:14px;color:var(--ink);line-height:1.22;display:flex;align-items:flex-start;gap:6px}
+.rm-tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:2px}
+.rm-tag{font-size:9.5px;font-weight:700;padding:1px 7px;border-radius:3px;white-space:nowrap;letter-spacing:.04em}
+.rm-tag.stage{background:#1a1d23;color:#f8f5ee}
+.rm-tag.env{background:var(--paper-shade);color:rgba(26,29,35,.7);border:1px solid var(--ink-soft)}
+.rm-tag.biz{background:var(--accent-soft);color:var(--accent-deep);border:1px solid var(--accent-soft)}
+.rm-owner{font-size:11px;color:rgba(26,29,35,.55);margin-top:2px}
+
+/* Middle panel - gantt bar */
+.rm-mid{padding:12px 20px;display:flex;flex-direction:column;justify-content:center;gap:6px}
+.rm-dates-row{display:flex;justify-content:space-between;align-items:baseline;font-size:11px;color:rgba(26,29,35,.5)}
+.rm-gantt{position:relative;height:20px;border:1.3px solid var(--ink);border-radius:4px;overflow:hidden;background:var(--paper-shade)}
+.rm-gantt-baseline{position:absolute;top:0;bottom:0;left:0;background:rgba(26,29,35,.08)}
+.rm-gantt-done{position:absolute;top:0;bottom:0;left:0;background:#16a34a}
+.rm-gantt-active{position:absolute;top:0;bottom:0;background:#D05A72;opacity:.85}
+.rm-gantt-today{position:absolute;top:0;bottom:0;width:2px;background:var(--ink);z-index:2}
+.rm-gantt-label{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:var(--ink);z-index:3;mix-blend-mode:multiply}
+.rm-pct-row{display:flex;align-items:center;gap:8px;font-size:11px}
+.rm-pct-num{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:12px}
+
+/* Right panel - status */
+.rm-right{padding:12px 16px;display:flex;flex-direction:column;align-items:flex-end;justify-content:center;gap:5px;border-inline-start:1.5px solid var(--ink-softer)}
+.rm-days{font-family:'Suez One',serif;font-size:32px;line-height:1;font-weight:700;color:var(--ink)}
+.rm-days.red{color:var(--red-fg)}
+.rm-days.yellow{color:var(--yellow-fg)}
+.rm-days.green{color:var(--accent2)}
+.rm-days.done{color:rgba(26,29,35,.35)}
+.rm-days-unit{font-size:11px;color:rgba(26,29,35,.5);margin-top:1px;text-align:left}
+.rm-var{font-size:10px;font-weight:700;margin-top:4px;display:flex;align-items:center;gap:3px}
+.rm-var.late{color:var(--red-fg)}
+.rm-var.early{color:var(--green-fg)}
+.rm-var.none{color:rgba(26,29,35,.35)}
+
+/* Roadmap filter bar */
+.rm-filters{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px}
 </style>
 </head>
 <body>
@@ -674,8 +731,11 @@ function processItems(rawItems) {
         name: boardName,
         type: '', team: '', world: 'other', quarter: '',
         deadline: null, tlStart: null, tlEnd: null,
+        launchDate: null, baselineDate: null,
         items: [], effortA: 0, effortP: 0, frList: [],
         devPriorityArr: [], departmentArr: [], ownerArr: [],
+        devStageArr: [], bizImpactArr: [], quarterTArr: [],
+        environmentArr: [], strategicGoalArr: [], launchTypeArr: [],
       });
     }
     const p = map.get(boardName);
@@ -689,11 +749,23 @@ function processItems(rawItems) {
     const tl = parseTL(cv(item, C.TIMELINE).r);
     if (tl.from && (!p.tlStart || tl.from < p.tlStart)) p.tlStart = tl.from;
     if (tl.to   && (!p.tlEnd   || tl.to   > p.tlEnd))   p.tlEnd   = tl.to;
+    // Launch date = latest completion date across tasks
+    const ld = parseDate(cv(item, C.COMPLETION_DATE).t);
+    if (ld && (!p.launchDate || ld > p.launchDate)) p.launchDate = ld;
+    // Baseline = earliest baseline date across tasks
+    const bd = parseDate(cv(item, C.BASELINE_DATE).t);
+    if (bd && (!p.baselineDate || bd < p.baselineDate)) p.baselineDate = bd;
     if (!p.type    && cv(item, C.PROJECT_TYPE).t) p.type    = cv(item, C.PROJECT_TYPE).t;
     if (!p.quarter && cv(item, C.QUARTER).t)      p.quarter = cv(item, C.QUARTER).t;
-    const devPri = cv(item, C.DEV_PRIORITY).t; if (devPri) p.devPriorityArr.push(devPri);
-    const dept   = cv(item, C.DEPARTMENT_T).t;  if (dept)   p.departmentArr.push(dept);
-    const owner  = cv(item, C.OWNER).t;          if (owner)  p.ownerArr.push(owner);
+    const devPri = cv(item, C.DEV_PRIORITY).t;   if (devPri) p.devPriorityArr.push(devPri);
+    const dept   = cv(item, C.DEPARTMENT_T).t;   if (dept)   p.departmentArr.push(dept);
+    const owner  = cv(item, C.OWNER).t;           if (owner)  p.ownerArr.push(owner);
+    const devSt  = cv(item, C.DEV_STAGE).t;       if (devSt)  p.devStageArr.push(devSt);
+    const biz    = cv(item, C.BIZ_IMPACT).t;      if (biz)    p.bizImpactArr.push(biz);
+    const qT     = cv(item, C.QUARTER_T).t;       if (qT)     p.quarterTArr.push(qT);
+    const env    = cv(item, C.ENVIRONMENT).t;     if (env)    p.environmentArr.push(env);
+    const sg     = cv(item, C.STRATEGIC_GOAL).t;  if (sg)     p.strategicGoalArr.push(sg);
+    const lt     = cv(item, C.LAUNCH_TYPE).t;     if (lt)     p.launchTypeArr.push(lt);
   }
 
   const projects = [];
@@ -711,22 +783,28 @@ function processItems(rawItems) {
     const mainStatus  = allFinished ? 'הסתיימה' : allBacklog ? 'בנק משימות' : 'בעבודה';
 
     const type = p.type;
+    const todayMs = new Date().setHours(0,0,0,0);
+    const launchDate   = p.launchDate;
+    const baselineDate = p.baselineDate;
+
     let health;
     if (type === '✨ Department') {
       health = 'dept';
-    } else if (mainStatus === 'הסתיימה') {
+    } else if (allFinished) {
       health = 'done';
     } else if (mainStatus === 'מבוטלת') {
       health = 'cancel';
-    } else if (!p.deadline) {
-      health = 'no-deadline';
     } else {
-      const deadlineMs = new Date(new Date(p.deadline).toDateString()).getTime();
-      const tlEndMs    = p.tlEnd ? new Date(new Date(p.tlEnd).toDateString()).getTime() : null;
-      if (tlEndMs === null)          health = 'no-deadline';
-      else if (tlEndMs > deadlineMs) health = 'red';
-      else if (tlEndMs === deadlineMs) health = 'yellow';
-      else                           health = 'green';
+      // Use launchDate if available, otherwise fall back to deadline/tlEnd
+      const refDate = launchDate || p.deadline || p.tlEnd;
+      if (!refDate) {
+        health = 'no-deadline';
+      } else {
+        const refMs = new Date(new Date(refDate).toDateString()).getTime();
+        if (refMs < todayMs)                        health = 'red';    // overdue
+        else if (refMs <= todayMs + 14 * 864e5)     health = 'yellow'; // within 2 weeks
+        else                                         health = 'green';
+      }
     }
 
     const world = TYPE_TO_WORLD[type] || 'other';
@@ -735,13 +813,20 @@ function processItems(rawItems) {
     projects.push({
       name: p.name, type, team, world, quarter: p.quarter,
       deadline: p.deadline, tlStart: p.tlStart, tlEnd: p.tlEnd,
+      launchDate, baselineDate,
       total, done, cancelled, blocked, completionPct: pct,
       mainStatus, statusArr,
       effortA: Math.round(p.effortA), effortP: Math.round(p.effortP),
       avgFR, health,
-      devPriority: majority(p.devPriorityArr) || null,
-      department:  majority(p.departmentArr)  || null,
-      owner:       p.ownerArr[0]              || null,
+      devPriority:   majority(p.devPriorityArr)    || null,
+      department:    majority(p.departmentArr)     || null,
+      owner:         p.ownerArr[0]                 || null,
+      devStage:      majority(p.devStageArr)       || null,
+      bizImpact:     majority(p.bizImpactArr)      || null,
+      quarterT:      majority(p.quarterTArr)       || null,
+      environment:   majority(p.environmentArr)    || null,
+      strategicGoal: majority(p.strategicGoalArr)  || null,
+      launchType:    majority(p.launchTypeArr)     || null,
     });
   }
   return projects.sort((a, b) => b.total - a.total);
@@ -920,6 +1005,7 @@ function renderWorld(ps) {
   else if (activeWorld === 'pipeline') renderPipeline(pipelineProjects);
   else if (activeWorld === 'tech')     renderTechPage(ps);
   else if (activeWorld === 'product')  renderProductPage(ps);
+  else if (activeWorld === 'launches') renderRoadmap(allProjects.filter(p => p.launchDate || p.deadline));
   else renderWorldPage(ps);
 }
 
@@ -984,28 +1070,44 @@ function renderProductPage(ps) {
 
   // ── Table rows ──
   const tableRows = filtered.map(p => {
-    // Variance: only for done projects with timeline data
-    const varDays = (p.mainStatus === 'הסתיימה' && p.tlEnd && p.deadline)
-      ? Math.round((p.tlEnd.getTime() - p.deadline.getTime()) / 864e5) : null;
+    const refDate  = p.launchDate || p.deadline;
+    const days     = refDate ? Math.round((refDate.getTime()-todayMs)/864e5) : null;
+    const dlStyle  = days!==null&&days<0?'color:var(--red-fg);font-weight:600':days!==null&&days<=14?'color:var(--yellow-fg)':'';
+    const lateAttr = p.health==='red' ? 'data-late' : p.health==='yellow' ? 'data-risk' : '';
+
+    // Variance: baseline vs launch date
+    const varDays = (p.baselineDate && refDate)
+      ? Math.round((refDate.getTime() - p.baselineDate.getTime()) / 864e5) : null;
     const varHtml = varDays !== null
-      ? `<div><span class="variance-badge ${varDays>0?'late':'early'}">${varDays>0?'+':''}${varDays}י׳</span></div>` : '';
+      ? `<span class="variance-badge ${varDays>0?'late':'early'}">${varDays>0?'+':''}${varDays}י׳</span>` : '';
 
-    const days = p.deadline ? Math.round((p.deadline.getTime()-todayMs)/864e5) : null;
-    const dlStyle = days!==null&&days<0?'color:var(--red-fg);font-weight:600':days!==null&&days<=7?'color:var(--yellow-fg)':'';
+    // Dev stage pill
+    const stageColor = { 'Go Live':'#059669','Launch Prep':'#d97706','In Development':'#D05A72',
+      'QA & Testing':'#7c3aed','UI/UX Design':'#a855f7','Discovery & Planning':'#3b82f6',
+      'Technical Specs':'#6366f1','Backlog':'#94a3b8','On Hold':'#64748b' };
+    const stageBg = stageColor[p.devStage] || '#94a3b8';
+    const stagePill = p.devStage
+      ? `<span style="font-size:9.5px;font-weight:700;padding:2px 7px;border-radius:4px;background:${stageBg};color:#fff;white-space:nowrap">${p.devStage}</span>` : '<span class="muted">—</span>';
 
-    return `<tr>
-      <td class="dn" title="${(p.name||'').replace(/"/g,'')}">${stripE(p.name)||p.name}</td>
-      <td>${typeChipHtml(p.type)}</td>
-      <td><span class="launch-cat" style="font-size:10px">${stripE(p.type||'').trim()||'—'}</span></td>
+    const redFlag = p.health==='red' ? '<span style="font-size:14px" title="באיחור!">🚩</span>' : '';
+
+    return `<tr ${lateAttr}>
+      <td class="dn" title="${(p.name||'').replace(/"/g,'')}">
+        ${redFlag}${stripE(p.name)||p.name}
+      </td>
+      <td>${stagePill}</td>
+      <td style="font-size:12px;color:rgba(26,29,35,.65)">${p.environment||p.bizImpact ? `<span style="font-size:11px;color:rgba(26,29,35,.5)">${p.environment||''}</span>` : '<span class="muted">—</span>'}</td>
       <td style="font-size:12px;color:rgba(26,29,35,.65)">${p.owner||'<span class="muted">—</span>'}</td>
-      <td class="td-planned"><span class="muted" style="font-size:11px;font-style:italic">— placeholder</span></td>
-      <td>
-        <span class="mono ltr" style="${dlStyle}">${fmtDate(p.deadline)}</span>
+      <td class="td-planned">
+        <span class="mono ltr" style="font-size:11.5px">${fmtDate(p.baselineDate)}</span>
         ${varHtml}
       </td>
+      <td>
+        <span class="mono ltr" style="${dlStyle}">${fmtDate(refDate)}</span>
+      </td>
+      <td>${miniBar(p.completionPct, p.health)}</td>
       <td>${statusHtml(p.mainStatus)}</td>
       <td>${healthHtml(p.health)}</td>
-      <td><button onclick="void(0)" style="height:24px;padding:0 10px;border:1.3px solid var(--ink);border-radius:4px;background:var(--paper);font-family:'Heebo',sans-serif;font-size:11px;cursor:pointer;box-shadow:1px 1px 0 var(--ink);transition:all .12s" onmouseover="this.style.background='var(--accent)';this.style.color='var(--paper)'" onmouseout="this.style.background='var(--paper)';this.style.color='inherit'">פתח</button></td>
     </tr>`;
   }).join('');
 
@@ -1059,18 +1161,6 @@ function renderProductPage(ps) {
       </div>
     </div>
 
-    <!-- Baseline placeholder note -->
-    <div class="placeholder-note">
-      <div class="placeholder-icon">⚠️</div>
-      <div>
-        <div class="placeholder-title">עמודת Planned (Baseline) — placeholder</div>
-        <div class="placeholder-body">
-          עמודת ה-Planned מציגה כרגע placeholder — עמודת תאריך Baseline טרם הוגדרה בבורד ה-Monday.<br>
-          כשעמודת "Planned Launch" תתווסף לבורד, הדאטה יתמלא אוטומטית. הנתון "בפועל" מבוסס על הדד-ליין הנוכחי.
-        </div>
-      </div>
-    </div>
-
     <!-- Category tabs + table -->
     <div class="ms-card" style="overflow:hidden">
       <div class="ms-card-head">
@@ -1104,14 +1194,14 @@ function renderProductPage(ps) {
             <table class="dtw">
               <thead><tr>
                 <th>שם הפרויקט</th>
-                <th>סוג</th>
-                <th>קטגוריה</th>
+                <th>שלב מוצר</th>
+                <th>חברה / סביבה</th>
                 <th>אחראי</th>
-                <th style="background:rgba(253,246,178,.4)">Planned <span style="font-size:9px;font-weight:400;background:var(--yellow-bg);color:var(--yellow-fg);padding:1px 5px;border-radius:3px;margin-right:3px">placeholder</span></th>
-                <th>בפועל</th>
+                <th style="background:rgba(253,246,178,.4)">בייסליין</th>
+                <th>תאריך השקה</th>
+                <th>התקדמות</th>
                 <th>סטטוס</th>
                 <th>בריאות</th>
-                <th>תיאור</th>
               </tr></thead>
               <tbody>${tableRows}</tbody>
             </table>
@@ -1543,6 +1633,234 @@ function renderOverview(ps) {
 // ══════════════════════════════════════════════════
 // WORLD PAGE (Tech / Product / Campaigns / Launches / Departments)
 // ══════════════════════════════════════════════════
+// ══════════════════════════════════════════════════
+// ROADMAP PAGE — launch timeline with red flags
+// ══════════════════════════════════════════════════
+const rmF = { hideCompleted: false, env: 'all' };
+
+function setRmHideCompleted(v) { rmF.hideCompleted=v; renderRoadmap(window.__rmPs); }
+function setRmEnv(v)           { rmF.env=v;           renderRoadmap(window.__rmPs); }
+
+function renderRoadmap(ps) {
+  window.__rmPs = ps;
+  const todayMs = new Date().setHours(0,0,0,0);
+  const today   = new Date(todayMs);
+
+  // Only projects that have a launchDate or deadline
+  let proj = ps.filter(p => p.launchDate || p.deadline);
+  if (rmF.hideCompleted) proj = proj.filter(p => p.health !== 'done' && p.health !== 'cancel');
+  if (rmF.env !== 'all') proj = proj.filter(p => (p.environment||'').includes(rmF.env));
+
+  // Sort by launch date ascending
+  proj = proj.slice().sort((a,b) => {
+    const da = (a.launchDate||a.deadline).getTime();
+    const db = (b.launchDate||b.deadline).getTime();
+    return da - db;
+  });
+
+  // KPI
+  const total      = proj.length;
+  const lateProj   = proj.filter(p => p.health === 'red');
+  const riskProj   = proj.filter(p => p.health === 'yellow');
+  const doneProj   = proj.filter(p => p.health === 'done');
+  const upcoming30 = proj.filter(p => {
+    const d = p.launchDate||p.deadline;
+    return d && d.getTime() >= todayMs && d.getTime() <= todayMs + 30*864e5;
+  });
+
+  // Find span for gantt bars (min baseline or earliest launch, max latest launch)
+  const allDates = proj.flatMap(p => [p.baselineDate, p.launchDate, p.deadline].filter(Boolean));
+  const spanMin  = allDates.length ? new Date(Math.min(...allDates.map(d=>d.getTime()))) : new Date();
+  const spanMax  = allDates.length ? new Date(Math.max(...allDates.map(d=>d.getTime()))) : new Date();
+  const spanMs   = Math.max(spanMax.getTime() - spanMin.getTime(), 864e5);
+
+  // Env options
+  const envSet = new Set(proj.map(p => p.environment).filter(Boolean));
+
+  // Group by quarter label
+  function getQuarterLabel(d) {
+    if (!d) return 'ללא תאריך';
+    const y = d.getFullYear(), m = d.getMonth();
+    const q = Math.floor(m/3)+1;
+    return `Q${q} ${y}`;
+  }
+
+  const quarterMap = new Map();
+  proj.forEach(p => {
+    const refDate = p.launchDate || p.deadline;
+    const qLabel  = getQuarterLabel(refDate);
+    if (!quarterMap.has(qLabel)) quarterMap.set(qLabel, { label: qLabel, date: refDate, items: [] });
+    quarterMap.get(qLabel).items.push(p);
+  });
+
+  // Sort quarters
+  const quarters = [...quarterMap.values()].sort((a,b) => a.date - b.date);
+
+  // ── Single row HTML ──
+  function rowHtml(p) {
+    const refDate    = p.launchDate || p.deadline;
+    const isDone     = p.health === 'done';
+    const isLate     = p.health === 'red';
+    const isRisk     = p.health === 'yellow';
+
+    const diffDays   = refDate ? Math.round((refDate.getTime() - todayMs) / 864e5) : null;
+    const daysColor  = isDone ? 'done' : isLate ? 'red' : isRisk ? 'yellow' : 'green';
+    const daysText   = isDone ? '✓'
+      : diffDays === null ? '—'
+      : diffDays === 0    ? 'היום'
+      : Math.abs(diffDays).toString();
+    const daysUnit   = isDone ? 'הושלם'
+      : diffDays === null ? ''
+      : diffDays < 0      ? `ימי איחור`
+      : diffDays === 0    ? ''
+      : 'ימים';
+
+    // Stage pill
+    const stageColors = { 'Go Live':'#059669','Launch Prep':'#d97706','In Development':'#D05A72',
+      'QA & Testing':'#7c3aed','UI/UX Design':'#a855f7','Discovery & Planning':'#3b82f6',
+      'Technical Specs':'#6366f1','Backlog':'#94a3b8','On Hold':'#64748b' };
+    const stageBg = stageColors[p.devStage] || '#64748b';
+
+    // Gantt bar calculation (as % of global span)
+    function pct(d) {
+      if (!d) return null;
+      return Math.max(0, Math.min(100, Math.round((d.getTime()-spanMin.getTime())/spanMs*100)));
+    }
+    const blPct  = pct(p.baselineDate);
+    const ldPct  = pct(refDate);
+    const todPct = pct(today);
+    const donePct = p.completionPct;
+
+    // Baseline → launch width
+    const barLeft  = blPct !== null ? blPct : (ldPct || 0);
+    const barRight = ldPct !== null ? ldPct : barLeft;
+    const barW     = Math.max(1, barRight - barLeft);
+
+    // Variance
+    const varDays   = (p.baselineDate && refDate) ? Math.round((refDate.getTime()-p.baselineDate.getTime())/864e5) : null;
+    const varClass  = varDays === null ? 'none' : varDays > 0 ? 'late' : 'early';
+    const varTxt    = varDays === null ? '' : varDays > 0 ? `+${varDays}י׳ מבייסליין` : `${varDays}י׳ מבייסליין`;
+
+    return `<div class="rm-row" ${isLate?'data-late':isRisk?'data-risk':isDone?'data-done':''}>
+      <!-- Left: info -->
+      <div class="rm-left">
+        <div class="rm-name">
+          ${isLate ? '<span class="rm-flag">🚩</span>' : isDone ? '<span class="rm-flag">✅</span>' : ''}
+          <span>${stripE(p.name)||p.name}</span>
+        </div>
+        <div class="rm-tags">
+          ${p.devStage   ? `<span class="rm-tag stage" style="background:${stageBg}">${p.devStage}</span>` : ''}
+          ${p.environment? `<span class="rm-tag env">${p.environment}</span>` : ''}
+          ${p.bizImpact  ? `<span class="rm-tag biz">${p.bizImpact}</span>` : ''}
+        </div>
+        <div class="rm-owner">${p.owner ? `👤 ${p.owner}` : p.team||''}</div>
+      </div>
+
+      <!-- Middle: gantt -->
+      <div class="rm-mid">
+        <div class="rm-dates-row">
+          <span>בייסליין: <strong class="ltr">${fmtDate(p.baselineDate)}</strong></span>
+          <span>השקה: <strong class="ltr" style="${isLate?'color:var(--red-fg)':''}">${fmtDate(refDate)}</strong></span>
+        </div>
+        <div class="rm-gantt">
+          ${blPct!==null&&ldPct!==null ? `<div class="rm-gantt-baseline" style="left:${barLeft}%;width:${barW}%"></div>` : ''}
+          ${isDone
+            ? `<div class="rm-gantt-done" style="width:${Math.min(ldPct||100,100)}%"></div>`
+            : `<div class="rm-gantt-active" style="left:${barLeft}%;width:${Math.min(barW*donePct/100,barW)}%"></div>`}
+          ${todPct!==null ? `<div class="rm-gantt-today" style="left:${Math.min(Math.max(todPct,0),99)}%"></div>` : ''}
+          <div class="rm-gantt-label">${donePct}%</div>
+        </div>
+        <div class="rm-pct-row">
+          <div class="mini-track" style="width:80px"><div class="mini-fill ${isDone?'success':isLate?'accent':''}" style="width:${donePct}%"></div></div>
+          <span class="rm-pct-num">${donePct}%</span>
+          <span style="font-size:11px;color:rgba(26,29,35,.5)">${p.done}/${p.total} משימות</span>
+          ${p.blocked ? `<span style="font-size:11px;font-weight:700;color:var(--red-fg)">· 🛑 ${p.blocked} חסומות</span>` : ''}
+        </div>
+      </div>
+
+      <!-- Right: countdown -->
+      <div class="rm-right">
+        <div class="rm-days ${daysColor}">${daysText}</div>
+        <div class="rm-days-unit">${daysUnit}</div>
+        ${varTxt ? `<div class="rm-var ${varClass}">${varDays>0?'⬆':'⬇'} ${varTxt}</div>` : ''}
+      </div>
+    </div>`;
+  }
+
+  // ── Quarter block HTML ──
+  function quarterBlockHtml(q) {
+    const lateCount = q.items.filter(p=>p.health==='red').length;
+    const rowsHtml  = q.items.map(rowHtml).join('');
+    return `<div class="rm-quarter-block">
+      <div class="rm-quarter-head">
+        <span class="rm-q-label">${q.label}</span>
+        <span class="rm-q-count">${q.items.length} פרויקטים</span>
+        ${lateCount ? `<span class="rm-q-late">🚩 ${lateCount} באיחור</span>` : ''}
+      </div>
+      <div class="rm-timeline">${rowsHtml}</div>
+    </div>`;
+  }
+
+  document.getElementById('content').innerHTML = `
+  <div class="page">
+    <div class="page-head">
+      <div>
+        <h1 class="page-title">🚀 רוד-מאפ השקות</h1>
+        <div class="page-sub">ציר זמן השקות לפי תאריך בייסליין ותאריך מטרה · 🚩 דגל אדום = פרויקט שחרג מהתאריך</div>
+      </div>
+    </div>
+
+    <!-- KPI strip -->
+    <div class="kpi-strip kpi-strip-6" style="grid-template-columns:repeat(5,1fr)">
+      <div class="kpi">
+        <div class="kpi-label">פרויקטים ברוד-מאפ</div>
+        <div class="kpi-value">${total}</div>
+        <div class="kpi-sub">עם תאריך השקה</div>
+      </div>
+      <div class="kpi" data-dashed style="border-color:var(--red-fg)">
+        <div class="kpi-label">🚩 באיחור</div>
+        <div class="kpi-value danger">${lateProj.length}</div>
+        <div class="kpi-sub">עברו את התאריך</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">⚠ בסיכון</div>
+        <div class="kpi-value warning">${riskProj.length}</div>
+        <div class="kpi-sub">פחות מ-14 ימים</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">ב-30 ימים הבאים</div>
+        <div class="kpi-value">${upcoming30.length}</div>
+        <div class="kpi-sub">צפויים להשיק</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">✅ הושלמו</div>
+        <div class="kpi-value success">${doneProj.length}</div>
+        <div class="kpi-sub">מתוך ${total}</div>
+      </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="pf-bar rm-filters">
+      <span class="pf-label">סביבה:</span>
+      <select class="pf-select" onchange="setRmEnv(this.value)">
+        <option value="all" ${rmF.env==='all'?'selected':''}>כולן</option>
+        ${[...envSet].sort().map(e=>`<option value="${e}" ${rmF.env===e?'selected':''}>${e}</option>`).join('')}
+      </select>
+      <div class="pf-div"></div>
+      <button class="pf-toggle ${rmF.hideCompleted?'on':''}" onclick="setRmHideCompleted(!rmF.hideCompleted)">
+        ${rmF.hideCompleted ? '👁 הצג הושלמו' : '🙈 הסתר הושלמו'}
+      </button>
+      <span style="margin-right:auto;font-size:11px;color:rgba(26,29,35,.42)">${proj.length} פרויקטים מוצגים</span>
+    </div>
+
+    <!-- Quarter blocks -->
+    ${quarters.length === 0
+      ? `<div class="ms-card"><div class="ms-card-body"><div class="empty"><div class="empty-icon">🔍</div><div>לא נמצאו פרויקטים עם תאריך השקה</div></div></div></div>`
+      : quarters.map(quarterBlockHtml).join('')
+    }
+  </div>`;
+}
+
 function renderWorldPage(ps) {
   const w = WORLDS.find(x => x.key === activeWorld);
   const inWork  = ps.filter(p => p.mainStatus !== 'הסתיימה' && p.mainStatus !== 'מבוטלת');
@@ -1944,17 +2262,12 @@ function renderPipeline(ps) {
 // ══════════════════════════════════════════════════
 // REFRESH
 // ══════════════════════════════════════════════════
-async function syncHub() {
-  try {
-    const res = await fetch(HUB_SYNC_URL, {
-      headers: { 'Authorization': `Bearer ${ANON_KEY}` }
-    });
-    const json = await res.json();
-    if (!res.ok || json.error) console.warn('hub-sync warning:', json.error || json);
-    else console.log('hub-sync ok:', json);
-  } catch(e) {
-    console.warn('hub-sync failed (continuing with cached data):', e.message);
-  }
+function syncHubBackground() {
+  // Fire-and-forget — kicks off a fresh Monday→Supabase sync without blocking the UI
+  fetch(HUB_SYNC_URL, { method: 'GET', headers: { 'Authorization': `Bearer ${ANON_KEY}` } })
+    .then(r => r.json())
+    .then(j => console.log('hub-sync background result:', j))
+    .catch(e => console.warn('hub-sync background error:', e.message));
 }
 
 async function refreshData() {
@@ -1962,10 +2275,10 @@ async function refreshData() {
   const originalHTML = btn.innerHTML;
   btn.disabled = true;
   btn.classList.add('spinning');
-  btn.innerHTML = '<span class="refresh-icon spinning">↻</span> מסנכרן עם Monday…';
+  btn.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="spinning"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg> טוען נתונים…';
   try {
-    await syncHub();
-    btn.innerHTML = '<span class="refresh-icon spinning">↻</span> טוען נתונים…';
+    // Kick off background sync with Monday (doesn't block dashboard load)
+    syncHubBackground();
     const [raw, pipeRaw] = await Promise.all([fetchRaw(), fetchPipeline()]);
     allProjects      = processItems(raw);
     pipelineProjects = processPipeline(pipeRaw);
