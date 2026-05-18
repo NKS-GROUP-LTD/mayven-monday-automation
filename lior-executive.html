@@ -1,0 +1,1025 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Executive | ליאור בירנבאום</title>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&family=Suez+One&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<style>
+:root{
+  --paper:#f8f5ee;--paper-deep:#f3eee2;--paper-shade:#ece6d3;
+  --ink:#1a1d23;--ink-soft:rgba(26,29,35,.20);--ink-softer:rgba(26,29,35,.10);
+  --accent:#D05A72;--accent-deep:#A8485C;--accent-soft:#F4D8E1;
+  --accent2:#2D9E74;--accent2-soft:#CDEEDF;
+  --red-fg:#B91C1C;   --red-bg:#FEE2E2;
+  --yellow-fg:#B45309;--yellow-bg:#FEF3C7;
+  --green-fg:#15803D; --green-bg:#DCFCE7;
+  --orange-fg:#C2410C;--orange-bg:#FFEDD5;
+  --blue-fg:#1D4ED8;  --blue-bg:#DBEAFE;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);font-family:'Heebo',sans-serif;font-size:13px;line-height:1.5;-webkit-font-smoothing:antialiased;position:relative;min-height:100vh}
+body::before{content:"";position:fixed;inset:0;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.045 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");pointer-events:none;z-index:1;opacity:.7;mix-blend-mode:multiply}
+
+/* ── TOP BAR ── */
+.topbar{position:sticky;top:0;z-index:100;background:var(--paper);border-bottom:1.5px solid var(--ink);display:flex;align-items:center;justify-content:space-between;padding:0 28px;height:52px;gap:16px}
+.topbar-left{display:flex;align-items:center;gap:14px}
+.brand{font-family:'Suez One',serif;font-size:17px;letter-spacing:-.3px}
+.brand span{color:var(--accent)}
+.manager-badge{display:flex;align-items:center;gap:8px;padding:5px 12px;background:var(--ink);color:var(--paper);border-radius:6px;font-size:12px;font-weight:600;letter-spacing:.3px}
+.manager-avatar{width:26px;height:26px;border-radius:50%;background:var(--accent);color:var(--paper);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
+.dept-tag{font-size:11.5px;color:rgba(26,29,35,.55);border:1px solid var(--ink-soft);padding:3px 10px;border-radius:12px}
+.topbar-right{display:flex;align-items:center;gap:10px}
+.ts{font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(26,29,35,.45)}
+.refresh-btn{display:flex;align-items:center;gap:5px;height:30px;padding:0 12px;border:1.5px solid var(--ink);border-radius:6px;background:var(--paper);font-family:'Heebo',sans-serif;font-size:12px;font-weight:500;color:var(--ink);cursor:pointer;box-shadow:2px 2px 0 var(--ink);transition:all .12s}
+.refresh-btn:hover{background:var(--paper-deep)}
+.refresh-btn:active{transform:translate(1px,1px);box-shadow:none}
+.refresh-btn:disabled{opacity:.4;cursor:not-allowed}
+@keyframes spin{to{transform:rotate(360deg)}}
+.refresh-btn.spinning svg{animation:spin .75s linear infinite}
+
+/* ── TABS ── */
+.tabs{display:flex;align-items:center;gap:2px;padding:0 28px;border-bottom:1.5px solid var(--ink-soft);background:var(--paper);position:sticky;top:52px;z-index:90}
+.tab{height:40px;padding:0 18px;border:none;background:none;font-family:'Heebo',sans-serif;font-size:13px;font-weight:500;color:rgba(26,29,35,.55);cursor:pointer;position:relative;transition:color .12s}
+.tab:hover{color:var(--ink)}
+.tab.active{color:var(--ink);font-weight:700}
+.tab.active::after{content:"";position:absolute;bottom:-1.5px;left:0;right:0;height:2.5px;background:var(--accent);border-radius:2px 2px 0 0}
+.tab-badge{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:var(--accent);color:var(--paper);font-size:10px;font-weight:700;margin-right:5px;vertical-align:middle}
+
+/* ── CONTENT ── */
+.content{padding:28px;max-width:1200px;margin:0 auto}
+.section{margin-bottom:32px}
+.section-title{font-family:'Suez One',serif;font-size:16px;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.section-title .cnt{font-family:'JetBrains Mono',monospace;font-size:12px;color:rgba(26,29,35,.45);font-style:normal;font-weight:400}
+.section-sub{font-size:11.5px;color:rgba(26,29,35,.5);margin-bottom:14px;margin-top:-8px}
+
+/* ── KPI STRIP ── */
+.kpi-strip{display:grid;gap:12px;margin-bottom:28px}
+.kpi-4{grid-template-columns:repeat(4,1fr)}
+.kpi-3{grid-template-columns:repeat(3,1fr)}
+.kpi{background:var(--paper);border:1.5px solid var(--ink);border-radius:10px;padding:16px 18px;box-shadow:3px 3px 0 var(--ink)}
+.kpi-label{font-size:11.5px;color:rgba(26,29,35,.55);margin-bottom:4px;font-weight:500}
+.kpi-val{font-family:'JetBrains Mono',monospace;font-size:28px;font-weight:500;line-height:1.1;letter-spacing:-1px}
+.kpi-val.red{color:var(--red-fg)}
+.kpi-val.green{color:var(--green-fg)}
+.kpi-val.yellow{color:var(--yellow-fg)}
+.kpi-val.orange{color:var(--orange-fg)}
+.kpi-sub{font-size:11px;color:rgba(26,29,35,.45);margin-top:4px}
+
+/* ── TABLE ── */
+.tbl-wrap{border:1.5px solid var(--ink);border-radius:10px;overflow:hidden;box-shadow:3px 3px 0 var(--ink)}
+table{width:100%;border-collapse:collapse}
+thead{background:var(--paper-shade)}
+th{padding:9px 14px;font-size:11.5px;font-weight:600;color:rgba(26,29,35,.65);text-align:right;border-bottom:1.5px solid var(--ink-soft)}
+td{padding:9px 14px;border-bottom:1px solid var(--ink-softer);font-size:12.5px;vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--paper-deep)}
+.dn{direction:ltr;text-align:left}
+.task-name{max-width:320px;font-weight:500}
+.task-name a{color:var(--ink);text-decoration:none}
+.task-name a:hover{color:var(--accent)}
+.mono{font-family:'JetBrains Mono',monospace;font-size:11.5px}
+
+/* ── PILLS ── */
+.hpill{display:inline-flex;align-items:center;gap:3px;height:20px;padding:0 8px;border-radius:10px;font-size:11px;font-weight:600;white-space:nowrap;border:1.3px solid currentColor;background:var(--paper)}
+.hpill.green{color:var(--green-fg)}
+.hpill.yellow{color:var(--yellow-fg)}
+.hpill.red{color:var(--red-fg)}
+.hpill.orange{color:var(--orange-fg)}
+.hpill.done{color:rgba(26,29,35,.45)}
+.hpill.cancel{color:rgba(26,29,35,.3)}
+.hpill.backlog{color:rgba(26,29,35,.4)}
+.hpill.no-deadline{color:var(--red-fg);opacity:.7}
+
+.sbadge{display:inline-flex;align-items:center;height:20px;padding:0 8px;border-radius:4px;font-size:11px;font-weight:500;background:var(--paper-shade);color:rgba(26,29,35,.7);white-space:nowrap}
+.sbadge.done{color:var(--green-fg);background:var(--green-bg)}
+.sbadge.active{color:var(--blue-fg);background:var(--blue-bg)}
+.sbadge.backlog{color:rgba(26,29,35,.5)}
+.sbadge.cancel{color:rgba(26,29,35,.35)}
+.sbadge.red{color:var(--red-fg);background:var(--red-bg)}
+
+.person-chip{display:inline-flex;align-items:center;gap:5px;height:20px;padding:0 8px;border-radius:10px;background:var(--paper-shade);font-size:11px;font-weight:500}
+.person-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+
+/* ── PERSON SECTION ── */
+.person-block{margin-bottom:24px}
+.person-header{display:flex;align-items:center;gap:10px;margin-bottom:10px;padding-bottom:8px;border-bottom:1px dashed var(--ink-soft)}
+.person-name{font-weight:700;font-size:14px}
+.person-role{font-size:11.5px;color:rgba(26,29,35,.5)}
+.person-stats{display:flex;gap:12px;margin-right:auto}
+.pstat{font-size:11px;color:rgba(26,29,35,.55)}
+.pstat strong{color:var(--ink);font-weight:700}
+
+/* ── MINI BAR ── */
+.mini-bar{display:flex;align-items:center;gap:6px;min-width:80px}
+.mini-track{flex:1;height:4px;background:var(--ink-softer);border-radius:2px;overflow:hidden}
+.mini-fill{height:100%;border-radius:2px;background:var(--ink-soft);transition:width .3s}
+.mini-fill.green{background:var(--green-fg)}
+.mini-fill.red{background:var(--red-fg)}
+.mini-fill.orange{background:var(--orange-fg)}
+
+/* ── EMPTY ── */
+.empty{padding:40px;text-align:center;color:rgba(26,29,35,.4);font-size:13px}
+
+/* ── LOADER ── */
+#loader{position:fixed;inset:0;background:var(--paper);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;z-index:999}
+.spin-ring{width:36px;height:36px;border:3px solid var(--ink-softer);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite}
+.load-text{font-size:13px;color:var(--ink);font-weight:500}
+.load-prog{font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(26,29,35,.45)}
+
+/* ── PERSON COLORS ── */
+.dot-lior{background:#D05A72}
+.dot-maayan{background:#2D9E74}
+.dot-sagit{background:#1D4ED8}
+.dot-eden{background:#7C3AED}
+
+/* hide inactive tabs */
+.tab-content{display:none}
+.tab-content.active{display:block}
+</style>
+</head>
+<body>
+
+<!-- LOADER -->
+<div id="loader">
+  <div class="spin-ring"></div>
+  <div class="load-text">טוען נתונים…</div>
+  <div class="load-prog" id="loadProg"></div>
+</div>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="topbar-left">
+    <div class="brand">Mayven <span>·</span> Executive</div>
+    <div class="manager-badge">
+      <div class="manager-avatar">ל</div>
+      ליאור בירנבאום
+    </div>
+    <div class="dept-tag">☎️ Customer Service &amp; Sales</div>
+  </div>
+  <div class="topbar-right">
+    <span class="ts" id="tsLabel"></span>
+    <button class="refresh-btn" id="refreshBtn" onclick="refreshData()">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
+      רענון נתונים
+    </button>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs">
+  <button class="tab active" onclick="switchTab('overview')">📊 סקירה</button>
+  <button class="tab" onclick="switchTab('devs')" id="tab-devs">🔧 פיתוחים</button>
+  <button class="tab" onclick="switchTab('bugs')" id="tab-bugs">🐞 באגים</button>
+  <button class="tab" onclick="switchTab('team')" id="tab-team">👥 צוות</button>
+  <button class="tab" onclick="switchTab('personal')" id="tab-personal">🙋 ליאור אישי</button>
+</div>
+
+<!-- CONTENT -->
+<div class="content">
+
+  <!-- ══ TAB: OVERVIEW ══ -->
+  <div class="tab-content active" id="tab-overview">
+    <div id="overviewContent"></div>
+  </div>
+
+  <!-- ══ TAB: DEVS ══ -->
+  <div class="tab-content" id="tab-devs-content">
+    <div id="devsContent"></div>
+  </div>
+
+  <!-- ══ TAB: BUGS ══ -->
+  <div class="tab-content" id="tab-bugs-content">
+    <div id="bugsContent"></div>
+  </div>
+
+  <!-- ══ TAB: TEAM ══ -->
+  <div class="tab-content" id="tab-team-content">
+    <div id="teamContent"></div>
+  </div>
+
+  <!-- ══ TAB: PERSONAL ══ -->
+  <div class="tab-content" id="tab-personal-content">
+    <div id="personalContent"></div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════
+// CONFIG
+// ══════════════════════════════════════════════════
+const SUPABASE_URL = 'https://hrdniczngcoymqjpmvqn.supabase.co';
+const ANON_KEY     = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhyZG5pY3puZ2NveW1xanBtdnFuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg3NjQ3NjMsImV4cCI6MjA5NDM0MDc2M30.Z7ieddQrShW2fInB43BSHYQI1IdpxVqrJSY3npZkTnQ';
+const BOARD_ID     = 18400570216;
+const PAGE_SIZE    = 1000;
+
+// Manager definition
+const MANAGER = {
+  name: 'Lior Birnbaum',
+  dept: 'Customer service and sales',
+  team: [
+    { key:'lior',   name:'Lior Birnbaum',    he:'ליאור בירנבאום',  role:'שותף מנהל',         dot:'dot-lior'   },
+    { key:'maayan', name:'Maayan Carmel',     he:'מעיין כרמל',     role:'שירות לקוחות',      dot:'dot-maayan' },
+    { key:'sagit',  name:'sagit cohen',       he:'שגית כהן',       role:'שירות לקוחות',      dot:'dot-sagit'  },
+    { key:'eden',   name:'Eden Ismah-moshe',  he:'עידן ישמח-משה',  role:'פיתוח (WeDev)',     dot:'dot-eden'   },
+  ],
+};
+
+// Column IDs
+const C = {
+  // Identification
+  BOARD_NAME:      'text_mm1rz19m',
+  GROUP_NAME:      'text_mm1sma80',
+  // People
+  OWNER:           'multiple_person_mm0pepdk',
+  TEAM:            'multiple_person_mm0pfs7x',
+  MANAGER_APPROVAL:'multiple_person_mm0pwp6q',
+  CREATED_BY:      'multiple_person_mm0p6kqe',
+  BUSINESS_OWNER:  'multiple_person_mm3e4yy4',  // Business Owner [T]
+  // Statuses
+  STATUS:          'color_mm0pdjry',
+  DEV_STATUS:      'color_mm1jhvap',            // Dev Status
+  DEV_PRIORITY:    'color_mm1rz2vt',            // Dev Priority
+  PRIORITY:        'color_mm0prghm',            // Priority
+  // Dates & Time
+  DEADLINE:        'date_mm0ppepz',
+  TIMELINE:        'timerange_mm0pbdag',
+  COMPLETION_DATE: 'date_mm0p2hfk',
+  // Project type
+  PROJECT_TYPE:    'color_mm3a8hzs',
+  // [T] columns
+  DEV_TYPE:        'color_mm3e690x',            // Dev Type [T]
+  DEV_STAGE:       'color_mm3e98bb',            // Dev Stage [T]
+  ENVIRONMENT:     'dropdown_mm3ezsvq',         // Environment [T]
+  STRATEGIC_GOAL:  'dropdown_mm3ersa1',         // Strategic Goal [T]
+  BIZ_IMPACT:      'color_mm3emh6c',            // Business Impact [T]
+  QUARTER_T:       'dropdown_mm3eqtpn',         // Quarter [T]
+  DEPARTMENT_T:    'color_mm3en599',            // Department [T]
+  // Effort
+  EFFORT:          'numeric_mm0pr6mf',
+  PLANNED_EFFORT:  'numeric_mm0p7e5k',
+  FIX_ROUNDS:      'numeric_mm0ppf5f',
+  UNPLANNED:       'boolean_mm1j6345',
+};
+
+const STATUS_MAP = {
+  'הסתיימה':'done','מבוטלת':'cancel','בעבודה':'active',
+  'בנק משימות':'backlog','ממתין':'waiting','מאושר':'approved',
+  'דגל אדום':'red','מחיקה':'cancel','יש לבצע תיקונים :)':'red',
+};
+
+const BUG_KEYWORDS = ['bug','באג','תקלה','bugs colony','tech bug'];
+
+// ══════════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════════
+const db = window.supabase.createClient(SUPABASE_URL, ANON_KEY);
+let allItems = []; // raw items
+let activeTab = 'overview';
+
+// ══════════════════════════════════════════════════
+// HELPERS
+// ══════════════════════════════════════════════════
+function cv(item, colId) {
+  const r = item.column_values?.find(r => r.column_id === colId);
+  return r ? { t: r.text_value, r: r.value } : { t: null, r: null };
+}
+function parseDate(txt) {
+  if (!txt) return null;
+  const d = new Date(txt);
+  return isNaN(d.getTime()) ? null : d;
+}
+function parseTL(raw) {
+  try {
+    const v = typeof raw === 'string' ? JSON.parse(raw) : raw;
+    return { from: v?.from ? new Date(v.from) : null, to: v?.to ? new Date(v.to) : null };
+  } catch { return { from: null, to: null }; }
+}
+function fmtDate(d) {
+  if (!d) return '—';
+  return d.toLocaleDateString('he-IL', { day:'2-digit', month:'2-digit', year:'2-digit' });
+}
+function daysDiff(d) {
+  if (!d) return null;
+  return Math.round((d.getTime() - Date.now()) / 864e5);
+}
+function stripEmoji(s) {
+  return (s||'').replace(/[\u{1F000}-\u{1FFFF}]|[\u{2600}-\u{27BF}]|[\u{FE00}-\u{FEFF}]/gu,'').trim();
+}
+function setLP(msg) { const el = document.getElementById('loadProg'); if(el) el.textContent = msg; }
+
+// Task-level health based on timeline vs today and status
+function taskHealth(item) {
+  const status = cv(item, C.STATUS).t || '';
+  if (status === 'הסתיימה' || status === 'מבוטלת' || status === 'מחיקה') return 'done';
+  if (status === 'בנק משימות') return 'backlog';
+  const tl = parseTL(cv(item, C.TIMELINE).r);
+  const deadline = parseDate(cv(item, C.DEADLINE).t);
+  const endDate = tl.to || deadline;
+  if (!endDate) return 'no-deadline';
+  const todayMs = new Date(new Date().toDateString()).getTime();
+  const endMs   = new Date(new Date(endDate).toDateString()).getTime();
+  if (endMs < todayMs)  return 'red';
+  if (endMs === todayMs) return 'orange';
+  return 'green';
+}
+
+function healthHtml(h) {
+  const map = {
+    green:        ['✓','בזמן','green'],
+    yellow:       ['⚠','בסיכון','yellow'],
+    red:          ['✕','באיחור','red'],
+    orange:       ['!','יום אחרון','orange'],
+    done:         ['✓','הסתיים','done'],
+    cancel:       ['·','בוטל','cancel'],
+    backlog:      ['·','בק לוג','backlog'],
+    'no-deadline':['—','ללא תאריך','no-deadline'],
+  };
+  const [icon, label, cls] = map[h] || map['no-deadline'];
+  return `<span class="hpill ${cls}">${icon} ${label}</span>`;
+}
+
+function statusHtml(s) {
+  const key = STATUS_MAP[s] || 'backlog';
+  const label = s || '—';
+  return `<span class="sbadge ${key}">${label}</span>`;
+}
+
+function itemUrl(item) {
+  return `https://mayven-team.monday.com/boards/${BOARD_ID}/pulses/${item.id}`;
+}
+
+function ownerOf(item) {
+  return cv(item, C.OWNER).t || '';
+}
+
+function isTeamMember(item) {
+  const owner = ownerOf(item).toLowerCase();
+  return MANAGER.team.some(m => owner.includes(m.name.toLowerCase().split(' ')[0].toLowerCase()));
+}
+
+function isDeptTask(item) {
+  const dept = cv(item, C.TEAM).t || '';
+  return dept.toLowerCase().includes('customer service') || ownerOf(item) === MANAGER.name;
+}
+
+function isBug(item) {
+  const proj = (cv(item, C.BOARD_NAME).t || '').toLowerCase();
+  return BUG_KEYWORDS.some(k => proj.includes(k));
+}
+
+function personTasks(personName) {
+  return allItems.filter(i => {
+    const o = ownerOf(i).toLowerCase();
+    return o.includes(personName.toLowerCase().split(' ')[0].toLowerCase());
+  });
+}
+
+function miniBar(pct, h) {
+  const cls = h==='done'?'green': h==='red'?'red': h==='orange'?'orange': '';
+  return `<div class="mini-bar">
+    <div class="mini-track"><div class="mini-fill ${cls}" style="width:${pct}%"></div></div>
+    <span class="mono">${pct}%</span>
+  </div>`;
+}
+
+// ══════════════════════════════════════════════════
+// FETCH
+// ══════════════════════════════════════════════════
+async function fetchRaw() {
+  const items = [];
+  let from = 0;
+  for (;;) {
+    setLP(`נטענו ${items.length.toLocaleString('he-IL')} משימות…`);
+    const { data, error } = await db
+      .from('items')
+      .select('id, name, parent_item_id, column_values!inner(column_id, text_value, value)')
+      .eq('column_values.board_id', BOARD_ID)
+      .is('parent_item_id', null)
+      .range(from, from + PAGE_SIZE - 1);
+    if (error) throw error;
+    if (!data || !data.length) break;
+    items.push(...data);
+    if (data.length < PAGE_SIZE) break;
+    from += PAGE_SIZE;
+  }
+  return items;
+}
+
+// ══════════════════════════════════════════════════
+// TABS
+// ══════════════════════════════════════════════════
+function switchTab(tab) {
+  activeTab = tab;
+  document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  // find the tab button by onclick
+  document.querySelectorAll('.tab').forEach(b => {
+    if (b.getAttribute('onclick') === `switchTab('${tab}')`) b.classList.add('active');
+  });
+  const contentEl = document.getElementById(tab === 'overview' ? 'tab-overview' : `tab-${tab}-content`);
+  if (contentEl) contentEl.classList.add('active');
+}
+
+// ══════════════════════════════════════════════════
+// RENDER: OVERVIEW
+// ══════════════════════════════════════════════════
+function renderOverview() {
+  const teamItems = allItems.filter(i => isDeptTask(i) || isTeamMember(i));
+  const open = teamItems.filter(i => {
+    const s = cv(i, C.STATUS).t;
+    return s !== 'הסתיימה' && s !== 'מבוטלת' && s !== 'מחיקה';
+  });
+  const late = open.filter(i => taskHealth(i) === 'red');
+  const today = open.filter(i => taskHealth(i) === 'orange');
+  const inWork = open.filter(i => (cv(i, C.STATUS).t || '') === 'בעבודה');
+  const done = teamItems.filter(i => cv(i, C.STATUS).t === 'הסתיימה').length;
+
+  // Dev projects the dept is part of
+  const devProjects = getDevProjects();
+  const openDevs = devProjects.filter(p => p.status !== 'done' && p.status !== 'cancel');
+  const lateDevs = openDevs.filter(p => p.health === 'red' || p.health === 'no-deadline');
+
+  // Bugs
+  const bugs = allItems.filter(i => isDeptTask(i) && isBug(i) && cv(i, C.STATUS).t !== 'הסתיימה' && cv(i, C.STATUS).t !== 'מבוטלת');
+
+  // Lior personal open
+  const liorOpen = allItems.filter(i => {
+    const o = ownerOf(i);
+    return o.includes('Lior') && cv(i, C.STATUS).t !== 'הסתיימה' && cv(i, C.STATUS).t !== 'מבוטלת';
+  });
+
+  // Top late tasks
+  const topLate = open.filter(i => taskHealth(i) === 'red')
+    .sort((a,b) => {
+      const da = parseDate(cv(a,C.DEADLINE).t), db2 = parseDate(cv(b,C.DEADLINE).t);
+      return (da||new Date(0)) - (db2||new Date(0));
+    }).slice(0, 8);
+
+  // In progress tasks
+  const topInWork = inWork.slice(0, 8);
+
+  document.getElementById('overviewContent').innerHTML = `
+    <div class="kpi-strip kpi-4" style="margin-top:20px">
+      <div class="kpi">
+        <div class="kpi-label">משימות פתוחות</div>
+        <div class="kpi-val">${open.length}</div>
+        <div class="kpi-sub">${teamItems.length} משימות סה״כ</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">באיחור</div>
+        <div class="kpi-val red">${late.length}</div>
+        <div class="kpi-sub">${today.length} ביום אחרון</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">בעבודה</div>
+        <div class="kpi-val" style="color:var(--blue-fg)">${inWork.length}</div>
+        <div class="kpi-sub">${openDevs.length} פיתוחים פתוחים</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">הסתיימו</div>
+        <div class="kpi-val green">${done}</div>
+        <div class="kpi-sub">באגים פתוחים: ${bugs.length}</div>
+      </div>
+    </div>
+
+    ${topLate.length ? `
+    <div class="section">
+      <div class="section-title">🔴 משימות באיחור <span class="cnt">${late.length}</span></div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr>
+            <th>משימה</th><th>בעלים</th><th>פרויקט</th><th>דד-ליין</th><th>סטטוס</th>
+          </tr></thead>
+          <tbody>
+            ${topLate.map(i => {
+              const dl = parseDate(cv(i,C.DEADLINE).t);
+              const diff = daysDiff(dl);
+              return `<tr>
+                <td class="task-name"><a href="${itemUrl(i)}" target="_blank">${stripEmoji(i.name)||i.name}</a></td>
+                <td>${personChip(ownerOf(i))}</td>
+                <td style="font-size:11.5px;color:rgba(26,29,35,.55)">${cv(i,C.BOARD_NAME).t||'—'}</td>
+                <td class="mono" style="color:var(--red-fg)">${fmtDate(dl)}${diff!==null?` <span style="font-size:10px">(${Math.abs(diff)}י׳ עבר)</span>`:''}</td>
+                <td>${statusHtml(cv(i,C.STATUS).t)}</td>
+              </tr>`;
+            }).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>` : ''}
+
+    ${topInWork.length ? `
+    <div class="section">
+      <div class="section-title">🔵 מה בטיפול עכשיו <span class="cnt">${inWork.length}</span></div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr>
+            <th>משימה</th><th>בעלים</th><th>פרויקט</th><th>דד-ליין</th><th>בריאות</th>
+          </tr></thead>
+          <tbody>
+            ${topInWork.map(i => `<tr>
+              <td class="task-name"><a href="${itemUrl(i)}" target="_blank">${stripEmoji(i.name)||i.name}</a></td>
+              <td>${personChip(ownerOf(i))}</td>
+              <td style="font-size:11.5px;color:rgba(26,29,35,.55)">${cv(i,C.BOARD_NAME).t||'—'}</td>
+              <td class="mono">${fmtDate(parseDate(cv(i,C.DEADLINE).t))}</td>
+              <td>${healthHtml(taskHealth(i))}</td>
+            </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>` : ''}
+
+    ${liorOpen.length ? `
+    <div class="section">
+      <div class="section-title">🙋 משימות אישיות של ליאור <span class="cnt">${liorOpen.length}</span></div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr>
+            <th>משימה</th><th>פרויקט</th><th>דד-ליין</th><th>בריאות</th><th>סטטוס</th>
+          </tr></thead>
+          <tbody>
+            ${liorOpen.slice(0,8).map(i => `<tr>
+              <td class="task-name"><a href="${itemUrl(i)}" target="_blank">${stripEmoji(i.name)||i.name}</a></td>
+              <td style="font-size:11.5px;color:rgba(26,29,35,.55)">${cv(i,C.BOARD_NAME).t||'—'}</td>
+              <td class="mono">${fmtDate(parseDate(cv(i,C.DEADLINE).t))}</td>
+              <td>${healthHtml(taskHealth(i))}</td>
+              <td>${statusHtml(cv(i,C.STATUS).t)}</td>
+            </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>` : ''}
+  `;
+}
+
+// ══════════════════════════════════════════════════
+// DEV PROJECTS
+// ══════════════════════════════════════════════════
+function getDevProjects() {
+  const map = new Map();
+  for (const item of allItems) {
+    const proj = cv(item, C.BOARD_NAME).t;
+    if (!proj) continue;
+    const type = cv(item, C.PROJECT_TYPE).t || '';
+    if (type === '✨ Department') continue;
+    // Only include projects where at least one task is from the CS team
+    const owner = ownerOf(item);
+    const dept  = cv(item, C.TEAM).t || '';
+    const isCS  = dept.toLowerCase().includes('customer service') || MANAGER.team.some(m => owner.includes(m.name.split(' ')[0]));
+    if (!isCS) continue;
+    if (!map.has(proj)) map.set(proj, { name: proj, type, items: [],
+      businessOwner: null, devStage: null, devType: null,
+      bizImpact: null, strategicGoal: null, quarter: null, deptT: null });
+    const p = map.get(proj);
+    p.items.push(item);
+    // Collect [T] fields — take first non-null value found
+    if (!p.businessOwner) p.businessOwner = cv(item, C.BUSINESS_OWNER).t || null;
+    if (!p.devStage)      p.devStage      = cv(item, C.DEV_STAGE).t      || null;
+    if (!p.devType)       p.devType       = cv(item, C.DEV_TYPE).t        || null;
+    if (!p.bizImpact)     p.bizImpact     = cv(item, C.BIZ_IMPACT).t      || null;
+    if (!p.strategicGoal) p.strategicGoal = cv(item, C.STRATEGIC_GOAL).t  || null;
+    if (!p.quarter)       p.quarter       = cv(item, C.QUARTER_T).t        || null;
+    if (!p.deptT)         p.deptT         = cv(item, C.DEPARTMENT_T).t     || null;
+  }
+  return Array.from(map.values()).map(p => {
+    const statuses = p.items.map(i => cv(i, C.STATUS).t);
+    const allDone    = statuses.every(s => s === 'הסתיימה' || s === 'מבוטלת');
+    const allBacklog = statuses.every(s => s === 'בנק משימות');
+    const mainStatus = allDone ? 'done' : allBacklog ? 'backlog' : 'active';
+    const done = statuses.filter(s => s === 'הסתיימה' || s === 'מבוטלת').length;
+    const pct  = p.items.length ? Math.round(done / p.items.length * 100) : 0;
+
+    // Deadline = latest deadline across all tasks
+    const deadline = p.items.reduce((mx, i) => {
+      const d = parseDate(cv(i, C.DEADLINE).t);
+      return d && (!mx || d > mx) ? d : mx;
+    }, null);
+
+    // Timeline end = latest timeline end
+    const tlEnd = p.items.reduce((mx, i) => {
+      const tl = parseTL(cv(i, C.TIMELINE).r);
+      return tl.to && (!mx || tl.to > mx) ? tl.to : mx;
+    }, null);
+
+    // Fix rounds avg
+    const frList = p.items.map(i => parseFloat(cv(i, C.FIX_ROUNDS).t)).filter(n => n > 0);
+    const avgFR  = frList.length ? +(frList.reduce((a,b)=>a+b,0)/frList.length).toFixed(1) : 0;
+
+    // Health: timeline vs deadline
+    let health = 'no-deadline';
+    if (mainStatus === 'done') { health = 'done'; }
+    else if (deadline) {
+      const todayMs = new Date(new Date().toDateString()).getTime();
+      const dlMs    = new Date(new Date(deadline).toDateString()).getTime();
+      const endMs   = tlEnd ? new Date(new Date(tlEnd).toDateString()).getTime() : null;
+      if (endMs === null)       health = 'no-deadline';
+      else if (endMs > dlMs)   health = 'red';
+      else if (endMs === dlMs) health = 'yellow';
+      else                     health = 'green';
+    }
+
+    return {
+      name: p.name, type: p.type, status: mainStatus, health, pct,
+      total: p.items.length, done, deadline, tlEnd, avgFR,
+      businessOwner: p.businessOwner,
+      devStage:      p.devStage,
+      devType:       p.devType,
+      bizImpact:     p.bizImpact,
+      strategicGoal: p.strategicGoal,
+      quarter:       p.quarter,
+      deptT:         p.deptT,
+    };
+  }).sort((a,b) => {
+    const order = { red:0, 'no-deadline':1, yellow:2, green:3, backlog:4, done:5 };
+    return (order[a.health]??9) - (order[b.health]??9);
+  });
+}
+
+// ══════════════════════════════════════════════════
+// RENDER: DEVS
+// ══════════════════════════════════════════════════
+function devStatusBadge(s) {
+  if (!s) return '<span style="color:rgba(26,29,35,.3)">—</span>';
+  const map = {
+    'Backlog':'backlog','BackLog':'backlog','On Hold':'backlog',
+    'In Development':'active','In Progress':'active',
+    'QA & Testing':'waiting','QA':'waiting',
+    'Go Live':'approved','Deployed':'done','Done':'done',
+  };
+  const key = map[s] || 'backlog';
+  return `<span class="sbadge ${key}">${s}</span>`;
+}
+function bizImpactBadge(s) {
+  if (!s) return '<span style="color:rgba(26,29,35,.3)">—</span>';
+  const cls = s==='גבוה'?'red':s==='בינוני'?'waiting':'backlog';
+  return `<span class="sbadge ${cls}">${s}</span>`;
+}
+
+function renderDevs() {
+  const devs = getDevProjects();
+  const open = devs.filter(p => p.status !== 'done');
+  const done = devs.filter(p => p.status === 'done');
+  const late = open.filter(p => p.health==='red'||p.health==='no-deadline');
+
+  document.getElementById('devsContent').innerHTML = `
+    <div class="kpi-strip kpi-4" style="margin-top:20px">
+      <div class="kpi">
+        <div class="kpi-label">פרויקטים פתוחים</div>
+        <div class="kpi-val">${open.length}</div>
+        <div class="kpi-sub">${devs.length} סה״כ</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">באיחור / ללא תאריך</div>
+        <div class="kpi-val red">${late.length}</div>
+        <div class="kpi-sub">${open.filter(p=>p.health==='yellow').length} בסיכון</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">הושלמו</div>
+        <div class="kpi-val green">${done.length}</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">ממוצע Fix Rounds</div>
+        <div class="kpi-val" style="font-size:22px">${
+          (() => { const all=devs.filter(p=>p.avgFR>0); return all.length ? (all.reduce((s,p)=>s+p.avgFR,0)/all.length).toFixed(1) : '—'; })()
+        }</div>
+        <div class="kpi-sub">סבבי תיקון ממוצע</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">פרויקטים פתוחים <span class="cnt">${open.length}</span></div>
+      ${open.length ? `
+      <div class="tbl-wrap" style="overflow-x:auto">
+        <table style="min-width:900px">
+          <thead><tr>
+            <th>פרויקט</th>
+            <th>Business Owner</th>
+            <th>Dev Stage</th>
+            <th>Dev Type</th>
+            <th>Impact</th>
+            <th>Quarter</th>
+            <th>התקדמות</th>
+            <th>דד-ליין</th>
+            <th>בריאות</th>
+          </tr></thead>
+          <tbody>
+            ${open.map(p => `<tr>
+              <td style="font-weight:600;max-width:220px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${p.name}">${p.name}</td>
+              <td>${p.businessOwner ? `<span class="person-chip"><span class="person-dot" style="background:var(--accent)"></span>${p.businessOwner.split(',')[0].trim()}</span>` : '<span style="color:rgba(26,29,35,.3)">—</span>'}</td>
+              <td>${devStatusBadge(p.devStage)}</td>
+              <td style="font-size:11.5px;color:rgba(26,29,35,.65)">${p.devType||'—'}</td>
+              <td>${bizImpactBadge(p.bizImpact)}</td>
+              <td class="mono" style="font-size:11px">${p.quarter||'—'}</td>
+              <td>${miniBar(p.pct, p.health)}</td>
+              <td class="mono">${fmtDate(p.deadline)}</td>
+              <td>${healthHtml(p.health)}</td>
+            </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>` : '<div class="empty">אין פרויקטים פתוחים</div>'}
+    </div>
+
+    ${done.length ? `
+    <div class="section">
+      <div class="section-title" style="margin-top:8px">✓ הושלמו <span class="cnt">${done.length}</span></div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr>
+            <th>פרויקט</th><th>Business Owner</th><th>Dev Type</th><th>Quarter</th><th>משימות</th><th>Fix Rounds</th>
+          </tr></thead>
+          <tbody>
+            ${done.map(p => `<tr>
+              <td style="font-weight:600;color:rgba(26,29,35,.55)">${p.name}</td>
+              <td style="font-size:11.5px">${p.businessOwner||'—'}</td>
+              <td style="font-size:11.5px">${p.devType||'—'}</td>
+              <td class="mono" style="font-size:11px">${p.quarter||'—'}</td>
+              <td class="mono">${p.done}/${p.total}</td>
+              <td class="mono" style="color:${p.avgFR>2?'var(--red-fg)':p.avgFR>1?'var(--yellow-fg)':'inherit'}">${p.avgFR||'—'}</td>
+            </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>` : ''}
+  `;
+}
+
+// ══════════════════════════════════════════════════
+// RENDER: BUGS
+// ══════════════════════════════════════════════════
+function renderBugs() {
+  // All bugs (tasks in bug-related projects)
+  const bugItems = allItems.filter(i => isBug(i));
+  // CS-related bugs (where CS team is involved)
+  const csBugs = bugItems.filter(i => isDeptTask(i) || isTeamMember(i));
+  const open = csBugs.filter(i => cv(i, C.STATUS).t !== 'הסתיימה' && cv(i, C.STATUS).t !== 'מבוטלת');
+  const done = csBugs.filter(i => cv(i, C.STATUS).t === 'הסתיימה' || cv(i, C.STATUS).t === 'מבוטלת');
+
+  // Group by project
+  const byProj = {};
+  open.forEach(i => {
+    const p = cv(i, C.BOARD_NAME).t || 'ללא פרויקט';
+    if (!byProj[p]) byProj[p] = [];
+    byProj[p].push(i);
+  });
+
+  document.getElementById('bugsContent').innerHTML = `
+    <div class="kpi-strip kpi-3" style="margin-top:20px">
+      <div class="kpi">
+        <div class="kpi-label">באגים פתוחים</div>
+        <div class="kpi-val red">${open.length}</div>
+        <div class="kpi-sub">המחלקה מעורבת</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">בעבודה</div>
+        <div class="kpi-val" style="color:var(--blue-fg)">${open.filter(i=>(cv(i,C.STATUS).t||'')==='בעבודה').length}</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">נסגרו</div>
+        <div class="kpi-val green">${done.length}</div>
+      </div>
+    </div>
+
+    ${Object.keys(byProj).length ? Object.entries(byProj).map(([proj, items]) => `
+    <div class="section">
+      <div class="section-title">🐞 ${proj} <span class="cnt">${items.length}</span></div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr>
+            <th>משימה</th><th>בעלים</th><th>דד-ליין</th><th>בריאות</th><th>סטטוס</th>
+          </tr></thead>
+          <tbody>
+            ${items.map(i => `<tr>
+              <td class="task-name"><a href="${itemUrl(i)}" target="_blank">${stripEmoji(i.name)||i.name}</a></td>
+              <td>${personChip(ownerOf(i))}</td>
+              <td class="mono">${fmtDate(parseDate(cv(i,C.DEADLINE).t))}</td>
+              <td>${healthHtml(taskHealth(i))}</td>
+              <td>${statusHtml(cv(i,C.STATUS).t)}</td>
+            </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>`).join('') : '<div class="empty" style="margin-top:20px">אין באגים פתוחים של המחלקה 🎉</div>'}
+  `;
+}
+
+// ══════════════════════════════════════════════════
+// RENDER: TEAM
+// ══════════════════════════════════════════════════
+function renderTeam() {
+  let html = '<div style="margin-top:20px">';
+
+  // Overall KPIs first
+  const allTeamOpen = [];
+  MANAGER.team.forEach(m => {
+    const tasks = personTasks(m.name).filter(i => {
+      const s = cv(i,C.STATUS).t;
+      return s !== 'הסתיימה' && s !== 'מבוטלת' && s !== 'מחיקה';
+    });
+    allTeamOpen.push(...tasks);
+  });
+  const late = allTeamOpen.filter(i => taskHealth(i) === 'red');
+  const inWork = allTeamOpen.filter(i => (cv(i,C.STATUS).t||'') === 'בעבודה');
+  html += `<div class="kpi-strip kpi-3" style="margin-bottom:28px">
+    <div class="kpi"><div class="kpi-label">פתוחות בצוות</div><div class="kpi-val">${allTeamOpen.length}</div></div>
+    <div class="kpi"><div class="kpi-label">באיחור</div><div class="kpi-val red">${late.length}</div></div>
+    <div class="kpi"><div class="kpi-label">בעבודה</div><div class="kpi-val" style="color:var(--blue-fg)">${inWork.length}</div></div>
+  </div>`;
+
+  MANAGER.team.forEach(m => {
+    const tasks = personTasks(m.name);
+    const open = tasks.filter(i => { const s=cv(i,C.STATUS).t; return s!=='הסתיימה'&&s!=='מבוטלת'&&s!=='מחיקה'; });
+    const late  = open.filter(i => taskHealth(i)==='red');
+    const done  = tasks.filter(i => cv(i,C.STATUS).t==='הסתיימה').length;
+
+    // Sort: late first, then by status
+    const sorted = [...open].sort((a,b) => {
+      const ha = taskHealth(a), hb = taskHealth(b);
+      const order = {red:0,orange:1,'no-deadline':2,green:3,yellow:4,backlog:5,done:6};
+      return (order[ha]??9)-(order[hb]??9);
+    });
+
+    html += `<div class="person-block">
+      <div class="person-header">
+        <div class="manager-avatar" style="background:${dotColor(m.dot)}">${m.he[0]}</div>
+        <div>
+          <div class="person-name">${m.he}</div>
+          <div class="person-role">${m.role}</div>
+        </div>
+        <div class="person-stats">
+          <span class="pstat">פתוחות: <strong>${open.length}</strong></span>
+          <span class="pstat" style="color:var(--red-fg)">באיחור: <strong>${late.length}</strong></span>
+          <span class="pstat" style="color:var(--green-fg)">הסתיימו: <strong>${done}</strong></span>
+        </div>
+      </div>`;
+
+    if (sorted.length) {
+      html += `<div class="tbl-wrap"><table>
+        <thead><tr><th>משימה</th><th>פרויקט</th><th>דד-ליין</th><th>בריאות</th><th>סטטוס</th></tr></thead>
+        <tbody>
+          ${sorted.slice(0,12).map(i => `<tr>
+            <td class="task-name"><a href="${itemUrl(i)}" target="_blank">${stripEmoji(i.name)||i.name}</a></td>
+            <td style="font-size:11.5px;color:rgba(26,29,35,.55)">${cv(i,C.BOARD_NAME).t||'—'}</td>
+            <td class="mono">${fmtDate(parseDate(cv(i,C.DEADLINE).t))}</td>
+            <td>${healthHtml(taskHealth(i))}</td>
+            <td>${statusHtml(cv(i,C.STATUS).t)}</td>
+          </tr>`).join('')}
+          ${sorted.length > 12 ? `<tr><td colspan="5" style="text-align:center;color:rgba(26,29,35,.4);font-size:11.5px;padding:8px">ועוד ${sorted.length-12} משימות…</td></tr>` : ''}
+        </tbody>
+      </table></div>`;
+    } else {
+      html += `<div class="empty" style="padding:16px">אין משימות פתוחות ✓</div>`;
+    }
+    html += '</div>';
+  });
+
+  html += '</div>';
+  document.getElementById('teamContent').innerHTML = html;
+}
+
+// ══════════════════════════════════════════════════
+// RENDER: PERSONAL (LIOR)
+// ══════════════════════════════════════════════════
+function renderPersonal() {
+  const tasks = personTasks(MANAGER.name);
+  const open = tasks.filter(i => { const s=cv(i,C.STATUS).t; return s!=='הסתיימה'&&s!=='מבוטלת'&&s!=='מחיקה'; });
+  const late = open.filter(i => taskHealth(i)==='red');
+  const inWork = open.filter(i => (cv(i,C.STATUS).t||'')==='בעבודה');
+  const done = tasks.filter(i => cv(i,C.STATUS).t==='הסתיימה').length;
+
+  const sorted = [...open].sort((a,b) => {
+    const order = {red:0,orange:1,'no-deadline':2,green:3,backlog:4};
+    return (order[taskHealth(a)]??9)-(order[taskHealth(b)]??9);
+  });
+
+  const byProj = {};
+  tasks.forEach(i => {
+    const p = cv(i,C.BOARD_NAME).t||'ללא פרויקט';
+    if (!byProj[p]) byProj[p] = [];
+    byProj[p].push(i);
+  });
+
+  document.getElementById('personalContent').innerHTML = `
+    <div class="kpi-strip kpi-4" style="margin-top:20px">
+      <div class="kpi"><div class="kpi-label">פתוחות</div><div class="kpi-val">${open.length}</div><div class="kpi-sub">${tasks.length} סה״כ</div></div>
+      <div class="kpi"><div class="kpi-label">באיחור</div><div class="kpi-val red">${late.length}</div></div>
+      <div class="kpi"><div class="kpi-label">בעבודה</div><div class="kpi-val" style="color:var(--blue-fg)">${inWork.length}</div></div>
+      <div class="kpi"><div class="kpi-label">הסתיימו</div><div class="kpi-val green">${done}</div></div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">כל המשימות הפתוחות <span class="cnt">${open.length}</span></div>
+      ${sorted.length ? `
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>משימה</th><th>פרויקט</th><th>דד-ליין</th><th>בריאות</th><th>סטטוס</th></tr></thead>
+        <tbody>
+          ${sorted.map(i => `<tr>
+            <td class="task-name"><a href="${itemUrl(i)}" target="_blank">${stripEmoji(i.name)||i.name}</a></td>
+            <td style="font-size:11.5px;color:rgba(26,29,35,.55)">${cv(i,C.BOARD_NAME).t||'—'}</td>
+            <td class="mono">${fmtDate(parseDate(cv(i,C.DEADLINE).t))}</td>
+            <td>${healthHtml(taskHealth(i))}</td>
+            <td>${statusHtml(cv(i,C.STATUS).t)}</td>
+          </tr>`).join('')}
+        </tbody>
+      </table></div>` : '<div class="empty">אין משימות פתוחות ✓</div>'}
+    </div>
+
+    <div class="section">
+      <div class="section-title">לפי פרויקט <span class="cnt">${Object.keys(byProj).length}</span></div>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>פרויקט</th><th>פתוחות</th><th>הסתיימו</th><th>סה״כ</th></tr></thead>
+        <tbody>
+          ${Object.entries(byProj).sort((a,b)=>b[1].length-a[1].length).map(([proj,items]) => {
+            const o = items.filter(i=>{const s=cv(i,C.STATUS).t;return s!=='הסתיימה'&&s!=='מבוטלת';}).length;
+            const d = items.filter(i=>cv(i,C.STATUS).t==='הסתיימה').length;
+            return `<tr>
+              <td style="font-weight:600">${proj}</td>
+              <td class="mono">${o}</td>
+              <td class="mono" style="color:var(--green-fg)">${d}</td>
+              <td class="mono">${items.length}</td>
+            </tr>`;
+          }).join('')}
+        </tbody>
+      </table></div>
+    </div>
+  `;
+}
+
+// ══════════════════════════════════════════════════
+// HELPERS
+// ══════════════════════════════════════════════════
+function personChip(ownerStr) {
+  if (!ownerStr) return '<span style="color:rgba(26,29,35,.35)">—</span>';
+  const m = MANAGER.team.find(p => ownerStr.toLowerCase().includes(p.name.toLowerCase().split(' ')[0].toLowerCase()));
+  if (m) return `<span class="person-chip"><span class="person-dot ${m.dot}"></span>${m.he}</span>`;
+  // fallback — show first name
+  const first = ownerStr.split(' ')[0];
+  return `<span class="person-chip"><span class="person-dot" style="background:#999"></span>${first}</span>`;
+}
+
+function dotColor(cls) {
+  const map = { 'dot-lior':'#D05A72','dot-maayan':'#2D9E74','dot-sagit':'#1D4ED8','dot-eden':'#7C3AED' };
+  return map[cls] || '#999';
+}
+
+function updateMeta() {
+  const now = new Date();
+  document.getElementById('tsLabel').textContent = `עדכון ${now.toLocaleTimeString('he-IL',{hour:'2-digit',minute:'2-digit'})}`;
+}
+
+function updateTabBadges() {
+  const devs = getDevProjects().filter(p=>p.status!=='done').length;
+  const bugs = allItems.filter(i=>isBug(i)&&(isDeptTask(i)||isTeamMember(i))&&cv(i,C.STATUS).t!=='הסתיימה'&&cv(i,C.STATUS).t!=='מבוטלת').length;
+  const teamOpen = MANAGER.team.reduce((s,m)=>s+personTasks(m.name).filter(i=>{const st=cv(i,C.STATUS).t;return st!=='הסתיימה'&&st!=='מבוטלת'&&st!=='מחיקה';}).length,0);
+  const liorOpen = personTasks(MANAGER.name).filter(i=>{const s=cv(i,C.STATUS).t;return s!=='הסתיימה'&&s!=='מבוטלת';}).length;
+  // Update tab labels
+  document.querySelectorAll('.tab').forEach(b => {
+    const oc = b.getAttribute('onclick');
+    if(oc==="switchTab('devs')") b.innerHTML = `🔧 פיתוחים <span class="tab-badge">${devs}</span>`;
+    if(oc==="switchTab('bugs')") b.innerHTML = `🐞 באגים <span class="tab-badge" style="background:var(--red-fg)">${bugs}</span>`;
+    if(oc==="switchTab('team')") b.innerHTML = `👥 צוות <span class="tab-badge" style="background:var(--blue-fg)">${teamOpen}</span>`;
+    if(oc==="switchTab('personal')") b.innerHTML = `🙋 ליאור אישי <span class="tab-badge" style="background:var(--accent)">${liorOpen}</span>`;
+  });
+}
+
+// ══════════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════════
+async function init() {
+  try {
+    allItems = await fetchRaw();
+    renderAll();
+    updateMeta();
+    updateTabBadges();
+  } catch(e) {
+    console.error(e);
+    document.getElementById('loader').innerHTML = `<div style="color:var(--red-fg);font-size:14px">שגיאה בטעינה: ${e.message}</div>`;
+    return;
+  }
+  document.getElementById('loader').style.display = 'none';
+}
+
+function renderAll() {
+  renderOverview();
+  renderDevs();
+  renderBugs();
+  renderTeam();
+  renderPersonal();
+}
+
+async function refreshData() {
+  const btn = document.getElementById('refreshBtn');
+  btn.disabled = true; btn.classList.add('spinning');
+  try {
+    allItems = await fetchRaw();
+    renderAll();
+    updateMeta();
+    updateTabBadges();
+  } catch(e) { console.error(e); }
+  finally { btn.disabled = false; btn.classList.remove('spinning'); }
+}
+
+init();
+</script>
+</body>
+</html>
