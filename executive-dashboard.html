@@ -1,0 +1,947 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>🌶️ Mayven Executive Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&family=Suez+One&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ── Palette ── */
+:root{
+  --paper:#f8f5ee;--paper-deep:#f3eee2;--paper-shade:#ece6d3;
+  --ink:#1a1d23;--ink-soft:rgba(26,29,35,.20);--ink-softer:rgba(26,29,35,.10);
+  --accent:#D05A72;--accent-deep:#A8485C;--accent-soft:#F4D8E1;
+  --accent2:#2D9E74;--accent2-soft:#CDEEDF;
+  --red-fg:#B91C1C;--red-bg:#FEE2E2;
+  --yellow-fg:#B45309;--yellow-bg:#FEF3C7;
+  --green-fg:#15803D;--green-bg:#DCFCE7;
+  --blue-fg:#1D4ED8;--blue-bg:#DBEAFE;
+  --orange-fg:#C2410C;--orange-bg:#FFEDD5;
+  --purple-fg:#6D28D9;--purple-bg:#EDE9FE;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{background:var(--paper);color:var(--ink);font-family:'Heebo',sans-serif;font-size:13px;line-height:1.5;-webkit-font-smoothing:antialiased;position:relative}
+body::before{content:"";position:fixed;inset:0;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.045 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");pointer-events:none;z-index:1;opacity:.7;mix-blend-mode:multiply}
+#root{position:relative;z-index:2}
+.ltr{direction:ltr;unicode-bidi:isolate;display:inline-block}
+.mono{font-family:'JetBrains Mono',monospace;font-variant-numeric:tabular-nums}
+.muted{color:rgba(26,29,35,.62)}
+
+/* ── Loading ── */
+#loading{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;background:var(--paper);z-index:999}
+.spin{width:36px;height:36px;border:2px solid var(--ink-soft);border-top-color:var(--accent);border-radius:50%;animation:spin .75s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.load-label{font-family:'Heebo',sans-serif;font-size:13px;color:var(--ink)}
+.load-prog{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--accent);margin-top:4px}
+
+/* ── Frame ── */
+#app{display:none;height:100vh}
+.ms-frame{display:flex;height:100vh;background:var(--paper)}
+.ms-main{flex:1;display:flex;flex-direction:column;min-width:0;overflow:hidden}
+.ms-content{flex:1;overflow:auto;padding:26px 32px 60px}
+
+/* ── Sidebar ── */
+.sb{width:240px;height:100%;background:var(--paper-deep);border-inline-start:1.5px solid var(--ink);flex-shrink:0;display:flex;flex-direction:column;font-size:13px;position:relative;z-index:3}
+.sb-brand{padding:18px 18px 14px;display:flex;align-items:center;gap:12px;border-bottom:1.5px dashed var(--ink-soft)}
+.sb-mark{width:36px;height:36px;border-radius:6px;background:var(--paper);border:1.5px solid var(--ink);box-shadow:2px 2px 0 var(--ink);display:flex;align-items:center;justify-content:center;font-family:'Suez One',serif;font-size:22px;color:var(--accent);flex-shrink:0}
+.sb-brand-name{font-family:'Suez One',serif;font-size:18px;line-height:1.1;color:var(--ink)}
+.sb-brand-sub{font-size:11px;color:rgba(26,29,35,.55);margin-top:2px;letter-spacing:.02em}
+.sb-nav{flex:1;overflow-y:auto;padding:14px 10px;display:flex;flex-direction:column;gap:4px}
+.sb-item{position:relative;width:100%;appearance:none;background:transparent;border:1.5px solid transparent;height:42px;padding:0 14px;display:flex;align-items:center;gap:10px;color:rgba(26,29,35,.7);cursor:pointer;font-family:'Heebo',sans-serif;font-size:13.5px;font-weight:500;text-align:right;border-radius:6px;transition:background .12s,color .12s,border-color .12s}
+.sb-item:hover{background:var(--paper);color:var(--ink)}
+.sb-item.active{background:var(--paper);border-color:var(--ink);color:var(--ink);box-shadow:2px 2px 0 var(--ink)}
+.sb-bar{position:absolute;right:-1.5px;top:6px;bottom:6px;width:4px;background:var(--accent);border-radius:2px 0 0 2px}
+.sb-icon{width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;font-size:15px}
+.sb-item.active .sb-icon{color:var(--accent)}
+.sb-label{flex:1}
+.sb-badge{background:var(--ink);color:var(--paper);font-size:10.5px;padding:2px 7px;border-radius:10px;font-weight:600;line-height:1.3}
+.sb-item.active .sb-badge{background:var(--accent);color:var(--paper)}
+.sb-footer{padding:14px;display:flex;align-items:center;gap:10px;border-top:1.5px dashed var(--ink-soft)}
+.sb-avatar{width:32px;height:32px;border-radius:50%;background:var(--accent);color:var(--paper);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;border:1.5px solid var(--ink)}
+.sb-user-name{color:var(--ink);font-size:13px;font-weight:500;line-height:1.2}
+.sb-user-role{color:rgba(26,29,35,.55);font-size:11px;margin-top:1px}
+
+/* ── TopBar ── */
+.tb{height:56px;border-bottom:1.5px solid var(--ink);background:var(--paper);display:flex;align-items:center;padding:0 26px;gap:14px;flex-shrink:0}
+.tb-title{display:flex;align-items:baseline;gap:8px;flex-shrink:0}
+.tb-brand{font-family:'Suez One',serif;font-size:14px;font-weight:700;color:var(--ink)}
+.tb-sep{color:var(--ink-soft)}
+.tb-curr{font-size:14px;font-weight:600;color:var(--ink)}
+.tb-en{font-size:11px;color:rgba(26,29,35,.55);letter-spacing:.04em}
+.tb-actions{flex:1;display:flex;align-items:center;gap:10px;justify-content:flex-end}
+.tb-search{display:flex;align-items:center;gap:8px;height:34px;padding:0 12px;border:1.5px solid var(--ink);border-radius:6px;background:var(--paper);font-size:13px;min-width:200px;font-family:'Heebo',sans-serif;box-shadow:2px 2px 0 var(--ink)}
+.tb-search input{border:none;background:transparent;outline:none;font-family:'Heebo',sans-serif;font-size:13px;color:var(--ink);width:100%}
+.tb-search input::placeholder{color:rgba(26,29,35,.45)}
+.tb-select{appearance:none;height:34px;padding:0 28px 0 12px;border:1.5px solid var(--ink);border-radius:6px;background:var(--paper) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%231a1d23' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>") no-repeat left 10px center;font-family:'Heebo',sans-serif;font-size:13px;font-weight:500;color:var(--ink);cursor:pointer;box-shadow:2px 2px 0 var(--ink)}
+.tb-select:focus{outline:none}
+.tb-date{font-size:12px;color:rgba(26,29,35,.65);padding:0 4px}
+.refresh-btn{display:flex;align-items:center;gap:6px;height:34px;padding:0 14px;border:1.5px solid var(--ink);border-radius:6px;background:var(--paper);font-family:'Heebo',sans-serif;font-size:13px;font-weight:500;color:var(--ink);cursor:pointer;box-shadow:2px 2px 0 var(--ink);transition:all .15s}
+.refresh-btn:hover{background:var(--paper-deep)}
+.refresh-btn:active{transform:translate(1px,1px);box-shadow:none}
+.refresh-btn:disabled{opacity:.4;cursor:not-allowed}
+.refresh-btn.spinning svg{animation:spin .75s linear infinite}
+
+/* ── Page ── */
+.page{display:flex;flex-direction:column;gap:22px;max-width:1480px;margin:0 auto}
+.page-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;padding-bottom:16px;border-bottom:1.5px solid var(--ink)}
+.page-title{font-family:'Suez One',serif;font-size:34px;font-weight:700;margin:0;line-height:1;color:var(--ink)}
+.page-sub{font-family:'Heebo',sans-serif;font-size:13px;color:rgba(26,29,35,.62);margin-top:8px}
+
+/* ── Card ── */
+.ms-card{background:var(--paper);border:1.5px solid var(--ink);border-radius:8px;overflow:hidden;box-shadow:3px 3px 0 var(--ink)}
+.ms-card-head{display:flex;justify-content:space-between;align-items:flex-start;padding:14px 20px 10px;gap:12px;border-bottom:1.5px dashed var(--ink-soft)}
+.ms-card-title{font-family:'Suez One',serif;font-size:18px;font-weight:700;color:var(--ink);line-height:1.2}
+.ms-card-sub{font-family:'Heebo',sans-serif;font-size:12px;color:rgba(26,29,35,.6);margin-top:4px}
+.ms-card-body{padding:16px 20px}
+.card-action{font-size:12px;color:var(--accent);text-decoration:none;font-weight:600;white-space:nowrap}
+
+/* ── Hero stat ── */
+.hero-stat{background:var(--paper);border:2px solid var(--ink);border-radius:10px;box-shadow:4px 4px 0 var(--ink);padding:22px 28px;display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap}
+.hero-stat-left{display:flex;align-items:baseline;gap:18px}
+.hero-val{font-family:'Suez One',serif;font-size:96px;line-height:.9;font-weight:700;color:var(--accent);letter-spacing:-.02em}
+.hero-label{font-family:'Suez One',serif;font-size:22px;font-weight:700;color:var(--ink);line-height:1.1}
+.hero-sub{font-size:13px;color:rgba(26,29,35,.62);margin-top:6px}
+.hero-right{font-size:12px;color:rgba(26,29,35,.5);letter-spacing:.04em;text-transform:uppercase}
+
+/* ── KPI strip ── */
+.kpi-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.kpi-strip-3{grid-template-columns:repeat(3,1fr)}
+.kpi-strip-6{grid-template-columns:repeat(6,1fr)}
+.kpi{background:var(--paper);border:1.5px solid var(--ink);border-radius:6px;box-shadow:2px 3px 0 var(--ink);padding:14px 18px 12px;display:flex;flex-direction:column;gap:4px}
+.kpi[data-dashed]{border-style:dashed}
+.kpi-label{display:flex;align-items:center;gap:6px;font-size:12px;color:rgba(26,29,35,.7);font-weight:500;letter-spacing:.02em}
+.kpi-value{font-family:'Suez One',serif;font-size:38px;font-weight:700;line-height:1;letter-spacing:-.01em;color:var(--ink)}
+.kpi-value.accent{color:var(--accent)}
+.kpi-value.danger{color:var(--red-fg)}
+.kpi-value.warning{color:var(--yellow-fg)}
+.kpi-value.success{color:var(--green-fg)}
+.kpi-sub{font-size:11.5px;color:rgba(26,29,35,.6);line-height:1.4}
+
+/* ── Pipeline ── */
+.pipeline{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;align-items:stretch}
+.pcell{position:relative;background:var(--paper);border:1.5px solid var(--ink);border-radius:6px;box-shadow:2px 2px 0 var(--ink);padding:12px 16px}
+.pcell[data-cancel]{border-style:dashed;opacity:.55}
+.pcell[data-active]{background:var(--accent-soft)}
+.pcell-label{font-size:12px;color:rgba(26,29,35,.65);font-weight:500}
+.pcell-num{font-family:'Suez One',serif;font-size:38px;line-height:.9;font-weight:700;color:var(--ink);margin-top:6px}
+.pcell[data-active] .pcell-num{color:var(--accent)}
+.pcell-sub{font-size:11px;color:rgba(26,29,35,.55);margin-top:2px}
+.pcell-bar{margin-top:10px;height:8px;border:1.4px solid var(--ink);border-radius:3px;overflow:hidden;background:var(--paper)}
+.pcell-bar-fill{height:100%;background:var(--ink);opacity:.7}
+.pcell[data-active] .pcell-bar-fill{background:var(--accent);opacity:1}
+.pcell[data-cancel] .pcell-bar-fill{background-image:repeating-linear-gradient(45deg,var(--ink) 0 2px,transparent 2px 5px);opacity:.4}
+
+/* ── Attention list ── */
+.att-list{display:flex;flex-direction:column}
+.att-row{display:flex;align-items:center;gap:12px;padding:12px 20px;border-top:1px dashed var(--ink-soft)}
+.att-row:first-child{border-top:none}
+.att-main{flex:1;min-width:0}
+.att-name{font-size:13.5px;font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.att-meta{font-size:11.5px;color:rgba(26,29,35,.58);margin-top:2px;display:flex;gap:6px;align-items:center}
+.att-dot{opacity:.4}
+.att-badge{border:1.5px dashed var(--accent);border-radius:6px;padding:4px 10px;background:var(--accent-soft);text-align:center;flex-shrink:0}
+.att-num{font-family:'Suez One',serif;font-size:18px;color:var(--accent-deep);line-height:1}
+.att-num-label{display:block;font-size:10px;color:var(--accent-deep);margin-top:2px}
+
+/* ── Health pills ── */
+.hpill{display:inline-flex;align-items:center;gap:4px;height:22px;padding:0 9px;border-radius:12px;font-size:11.5px;font-weight:500;white-space:nowrap;border:1.4px solid currentColor;background:var(--paper)}
+.hpill.green{color:var(--green-fg)}
+.hpill.yellow{color:var(--yellow-fg)}
+.hpill.red{color:var(--red-fg)}
+.hpill.orange{color:var(--orange-fg)}
+.hpill.done{color:rgba(26,29,35,.55)}
+.hpill.cancel{color:rgba(26,29,35,.4)}
+.hpill.no-deadline{color:var(--red-fg);opacity:.7}
+.hpill.dept{color:rgba(26,29,35,.45)}
+
+/* ── Status badge ── */
+.sbadge{display:inline-flex;align-items:center;gap:4px;height:22px;padding:0 9px;border-radius:12px;font-size:11.5px;font-weight:500;white-space:nowrap;border:1.4px solid currentColor;background:var(--paper)}
+.sbadge.active{color:var(--blue-fg)}
+.sbadge.done{color:var(--green-fg)}
+.sbadge.cancel{color:rgba(26,29,35,.45)}
+.sbadge.backlog{color:rgba(26,29,35,.55)}
+.sbadge.approved{color:var(--purple-fg)}
+.sbadge.blocked{color:var(--red-fg)}
+.sbadge.waiting{color:var(--yellow-fg)}
+
+/* ── Project list / table ── */
+.dtw-wrap{overflow-x:auto}
+.dtw{width:100%;border-collapse:collapse;font-family:'Heebo',sans-serif;font-size:13px}
+.dtw thead tr{background:var(--paper-shade);border-bottom:1.5px solid var(--ink)}
+.dtw thead th{padding:10px 14px;text-align:right;font-weight:600;font-size:11.5px;color:var(--ink);letter-spacing:.04em;text-transform:uppercase;white-space:nowrap;cursor:pointer;user-select:none}
+.dtw thead th:hover{color:var(--accent)}
+.dtw tbody tr{border-bottom:1px dashed var(--ink-soft);transition:background .08s}
+.dtw tbody tr:hover{background:var(--paper-deep)}
+.dtw tbody tr:last-child{border-bottom:none}
+.dtw td{padding:11px 14px;vertical-align:middle}
+.dtw .dn{font-weight:600;color:var(--ink);max-width:240px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dtw td.muted{color:rgba(26,29,35,.62)}
+.tfoot{padding:10px 14px;border-top:1.5px dashed var(--ink-soft);font-size:12px;color:rgba(26,29,35,.55);text-align:center;background:var(--paper-deep)}
+
+/* ── Progress bar (inline) ── */
+.mini-bar{display:flex;align-items:center;gap:7px}
+.mini-track{width:60px;height:7px;border:1.2px solid var(--ink);border-radius:3px;overflow:hidden;background:var(--paper);flex-shrink:0}
+.mini-fill{height:100%;background:var(--ink);opacity:.65}
+.mini-fill.accent{background:var(--accent);opacity:1}
+.mini-fill.success{background:var(--accent2);opacity:1}
+
+/* ── Grids ── */
+.row-1-1{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.row-2-1{display:grid;grid-template-columns:1.4fr 1fr;gap:16px}
+
+/* ── Type chip ── */
+.type-chip{display:inline-flex;align-items:center;gap:5px;padding:2px 9px;border:1.3px solid var(--ink-soft);border-radius:4px;background:var(--paper-deep);font-size:12px;color:rgba(26,29,35,.75);font-weight:500;white-space:nowrap}
+
+/* ── Empty ── */
+.empty{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:180px;gap:10px;color:rgba(26,29,35,.45)}
+.empty-icon{font-size:32px;opacity:.3}
+
+/* ── Due this week table ── */
+.dtw-dl{width:100%;border-collapse:collapse;font-size:13px}
+.dtw-dl th{padding:8px 14px;text-align:right;font-weight:600;font-size:11px;color:rgba(26,29,35,.65);letter-spacing:.04em;text-transform:uppercase;border-bottom:1.5px solid var(--ink)}
+.dtw-dl td{padding:10px 14px;border-bottom:1px dashed var(--ink-soft);vertical-align:middle}
+.dtw-dl tbody tr:hover td{background:var(--paper-deep)}
+.dl-rel{color:rgba(26,29,35,.5);font-size:11.5px;margin-right:5px}
+</style>
+</head>
+<body>
+<div id="root">
+
+<!-- Loading -->
+<div id="loading">
+  <div class="spin"></div>
+  <div class="load-label">🌶️ טוען Mayven Executive Dashboard…</div>
+  <div class="load-prog" id="loadProg">מאתחל…</div>
+</div>
+
+<!-- App -->
+<div id="app">
+<div class="ms-frame">
+
+  <!-- Sidebar -->
+  <aside class="sb" id="sidebar">
+    <div class="sb-brand">
+      <div class="sb-mark">M</div>
+      <div>
+        <div class="sb-brand-name">Mayven</div>
+        <div class="sb-brand-sub">Executive Dashboard</div>
+      </div>
+    </div>
+    <nav class="sb-nav" id="sbNav"></nav>
+    <div class="sb-footer">
+      <div class="sb-avatar">מ.כ</div>
+      <div>
+        <div class="sb-user-name">מיכל כ.</div>
+        <div class="sb-user-role">מנכ״לית</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <div class="ms-main">
+    <!-- TopBar -->
+    <header class="tb">
+      <div class="tb-title">
+        <span class="tb-brand">Mayven · Executive</span>
+        <span class="tb-sep">·</span>
+        <span class="tb-curr" id="tbCurr">סקירה כללית</span>
+        <span class="tb-en" id="tbEn">Overview</span>
+      </div>
+      <div class="tb-actions">
+        <div class="tb-search">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          <input type="text" id="srch" placeholder="חפש פרויקט…" oninput="applyFilters()">
+        </div>
+        <select class="tb-select" id="selTeam" onchange="applyFilters()">
+          <option value="all">כל הצוותות</option>
+        </select>
+        <button class="refresh-btn" id="refreshBtn" onclick="refreshData()">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+          רענן נתונים
+        </button>
+        <span class="tb-date" id="tbDate"></span>
+      </div>
+    </header>
+
+    <!-- Content -->
+    <div class="ms-content" id="content"></div>
+  </div>
+
+</div>
+</div>
+
+</div><!-- #root -->
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script>
+// ══════════════════════════════════════════════════
+// CONFIG
+// ══════════════════════════════════════════════════
+const SUPABASE_URL = 'https://hrdniczngcoymqjpmvqn.supabase.co';
+const ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhyZG5pY3puZ2NveW1xanBtdnFuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg3NjQ3NjMsImV4cCI6MjA5NDM0MDc2M30.Z7ieddQrShW2fInB43BSHYQI1IdpxVqrJSY3npZkTnQ';
+const BOARD_ID = 18400570216;
+const PAGE_SIZE = 1000;
+
+const C = {
+  BOARD_NAME:   'text_mm1rz19m',
+  PROJECT_TYPE: 'color_mm3a8hzs',
+  TEAM:         'multiple_person_mm0pfs7x',
+  OWNER:        'multiple_person_mm0pepdk',
+  STATUS:       'color_mm0pdjry',
+  ON_TIME:      'color_mm1rgerb',
+  DEADLINE:     'date_mm0ppepz',
+  TIMELINE:     'timerange_mm0pbdag',
+  EFFORT:       'numeric_mm0pr6mf',
+  PLANNED:      'numeric_mm0p7e5k',
+  FIX_ROUNDS:   'numeric_mm0ppf5f',
+  QUARTER:      'color_mm2jkkq1',
+};
+
+// ── Worlds ──
+const WORLDS = [
+  { key:'overview',    he:'סקירה כללית',       en:'Overview',    icon:'📊' },
+  { key:'tech',        he:'פיתוח טכנולוגי',    en:'Tech & Dev',  icon:'👩‍💻' },
+  { key:'product',     he:'מוצר חדש',           en:'New Product', icon:'📦' },
+  { key:'campaigns',   he:'קמפיינים',           en:'Campaigns',   icon:'🎀' },
+  { key:'launches',    he:'השקות',              en:'Launches',    icon:'🚀' },
+  { key:'departments', he:'מחלקות',             en:'Departments', icon:'✨' },
+];
+
+// ── Type → World mapping (with Monday emoji) ──
+const TYPE_TO_WORLD = {
+  '👩‍💻 Website Dev':          'tech',
+  '📊A/B Tests':              'tech',
+  '🧬 Subscription':          'tech',
+  '📦 New Product':           'product',
+  '📦 New Product- Gummies':  'product',
+  '🎁 PR Box':                'product',
+  '🛍️ Accessories':           'product',
+  '🎀 Wellness Club👑':       'campaigns',
+  '🌀Changing Projects🔄':    'campaigns',
+  '⚡ Promotion 15%':         'campaigns',
+  '🚀Product Launch':         'launches',
+  '✨ Department':             'departments',
+};
+
+const TEAM_FOR_TYPE = {
+  '👩‍💻 Website Dev':         'צוות פיתוח',
+  '📊A/B Tests':             'צוות פיתוח',
+  '🧬 Subscription':         'צוות פיתוח',
+  '📦 New Product':          'צוות מוצר',
+  '📦 New Product- Gummies': 'צוות מוצר',
+  '🎁 PR Box':               'צוות מוצר',
+  '🛍️ Accessories':          'צוות מוצר',
+  '🚀Product Launch':        'צוות מוצר',
+  '🎀 Wellness Club👑':      'צוות שיווק',
+  '🌀Changing Projects🔄':   'צוות שיווק',
+  '⚡ Promotion 15%':        'צוות שיווק',
+  '✨ Department':            'הנהלה',
+};
+
+const STATUS_KEYS = {
+  'בעבודה':'active','הסתיימה':'done','מבוטלת':'cancel',
+  'ממתין':'waiting','מאושר':'approved','בנק משימות':'backlog','דגל אדום':'blocked',
+};
+
+const PIPELINE_ORDER = ['בנק משימות','ממתין','מאושר','בעבודה','הסתיימה','מבוטלת'];
+
+// ══════════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════════
+const db = window.supabase.createClient(SUPABASE_URL, ANON_KEY);
+let allProjects = [];
+let activeWorld = 'overview';
+let filterTeam  = 'all';
+let filterSearch = '';
+
+// ══════════════════════════════════════════════════
+// FETCH
+// ══════════════════════════════════════════════════
+async function fetchRaw() {
+  setLP('שולף פרויקטים מ-Monday…');
+  const items = [];
+  let from = 0;
+  for (;;) {
+    const { data, error } = await db
+      .from('items')
+      .select('id, name, parent_item_id, column_values!inner(column_id, text_value, value)')
+      .eq('column_values.board_id', BOARD_ID)
+      .is('parent_item_id', null)
+      .range(from, from + PAGE_SIZE - 1);
+    if (error) throw error;
+    if (!data || !data.length) break;
+    items.push(...data);
+    setLP(`נטענו ${items.length.toLocaleString('he-IL')} משימות…`);
+    if (data.length < PAGE_SIZE) break;
+    from += PAGE_SIZE;
+  }
+  return items;
+}
+
+// ══════════════════════════════════════════════════
+// HELPERS
+// ══════════════════════════════════════════════════
+function cv(item, colId) {
+  const r = item.column_values?.find(r => r.column_id === colId);
+  return r ? { t: r.text_value, r: r.value } : { t: null, r: null };
+}
+function parseDate(txt) {
+  if (!txt) return null;
+  const d = new Date(txt);
+  return isNaN(d.getTime()) ? null : d;
+}
+function parseTL(raw) {
+  try {
+    const v = typeof raw === 'string' ? JSON.parse(raw) : raw;
+    return { from: v?.from ? new Date(v.from) : null, to: v?.to ? new Date(v.to) : null };
+  } catch { return { from: null, to: null }; }
+}
+function fmtDate(d) {
+  if (!d) return '—';
+  return d.toLocaleDateString('he-IL', { day:'2-digit', month:'2-digit', year:'2-digit' });
+}
+function fmtN(n) {
+  if (!n && n !== 0) return '—';
+  return Number(n).toLocaleString('he-IL');
+}
+function stripE(s) {
+  return (s||'').replace(/[\u{1F000}-\u{1FFFF}]|[\u{2600}-\u{27BF}]|[\u{FE00}-\u{FEFF}]/gu,'').trim();
+}
+function setLP(msg) {
+  const el = document.getElementById('loadProg');
+  if (el) el.textContent = msg;
+}
+function majority(arr) {
+  const c = {};
+  arr.forEach(v => { if(v) c[v]=(c[v]||0)+1; });
+  let best=null, mx=0;
+  for(const [k,n] of Object.entries(c)) if(n>mx){mx=n;best=k;}
+  return best;
+}
+
+// ══════════════════════════════════════════════════
+// PROCESS ITEMS → PROJECTS
+// ══════════════════════════════════════════════════
+function processItems(rawItems) {
+  const map = new Map();
+  for (const item of rawItems) {
+    const boardName = cv(item, C.BOARD_NAME).t;
+    if (!boardName) continue;
+    if (!map.has(boardName)) {
+      map.set(boardName, {
+        name: boardName,
+        type: '', team: '', world: 'other', quarter: '',
+        deadline: null, tlStart: null, tlEnd: null,
+        items: [], effortA: 0, effortP: 0, frList: [],
+      });
+    }
+    const p = map.get(boardName);
+    p.items.push(item);
+    p.effortA += parseFloat(cv(item, C.EFFORT).t) || 0;
+    p.effortP += parseFloat(cv(item, C.PLANNED).t) || 0;
+    const fr = parseFloat(cv(item, C.FIX_ROUNDS).t) || 0;
+    if (fr > 0) p.frList.push(fr);
+    const dl = parseDate(cv(item, C.DEADLINE).t);
+    if (dl && (!p.deadline || dl > p.deadline)) p.deadline = dl;
+    const tl = parseTL(cv(item, C.TIMELINE).r);
+    if (tl.from && (!p.tlStart || tl.from < p.tlStart)) p.tlStart = tl.from;
+    if (tl.to   && (!p.tlEnd   || tl.to   > p.tlEnd))   p.tlEnd   = tl.to;
+    if (!p.type    && cv(item, C.PROJECT_TYPE).t) p.type    = cv(item, C.PROJECT_TYPE).t;
+    if (!p.quarter && cv(item, C.QUARTER).t)      p.quarter = cv(item, C.QUARTER).t;
+  }
+
+  const projects = [];
+  for (const [, p] of map) {
+    const total     = p.items.length;
+    const statusArr = p.items.map(i => cv(i, C.STATUS).t);
+    const done      = statusArr.filter(s => s === 'הסתיימה').length;
+    const cancelled = statusArr.filter(s => s === 'מבוטלת').length;
+    const blocked   = statusArr.filter(s => s === 'דגל אדום').length;
+    const pct       = total ? Math.round((done + cancelled) / total * 100) : 0;
+    const avgFR     = p.frList.length ? parseFloat((p.frList.reduce((a,b)=>a+b,0)/p.frList.length).toFixed(1)) : 0;
+
+    // mainStatus: all done/cancelled → הסתיימה | all backlog → בנק משימות | else → בעבודה
+    const allFinished = statusArr.every(s => s === 'הסתיימה' || s === 'מבוטלת');
+    const allBacklog  = statusArr.every(s => s === 'בנק משימות');
+    const mainStatus  = allFinished ? 'הסתיימה' : allBacklog ? 'בנק משימות' : 'בעבודה';
+
+    // Health: ignore On Time? column — calculate from timeline vs deadline
+    const type = p.type;
+    let health;
+    if (type === '✨ Department') {
+      health = 'dept'; // department logic defined separately
+    } else if (mainStatus === 'הסתיימה') {
+      health = 'done';
+    } else if (mainStatus === 'מבוטלת') {
+      health = 'cancel';
+    } else if (!p.deadline) {
+      health = 'no-deadline';
+    } else {
+      const todayMs  = new Date(new Date().toDateString()).getTime();
+      const deadlineMs = new Date(new Date(p.deadline).toDateString()).getTime();
+      const tlEndMs  = p.tlEnd ? new Date(new Date(p.tlEnd).toDateString()).getTime() : null;
+      if (tlEndMs === null) {
+        health = 'no-deadline'; // no timeline → treat same as no deadline
+      } else if (tlEndMs > deadlineMs) {
+        health = 'red';    // timeline overruns deadline
+      } else if (tlEndMs === deadlineMs) {
+        health = 'yellow'; // ends exactly on deadline → at risk
+      } else {
+        health = 'green';  // timeline finishes before deadline
+      }
+    }
+
+    const world = TYPE_TO_WORLD[type] || 'other';
+    const team  = TEAM_FOR_TYPE[type] || p.team || 'הנהלה';
+
+    projects.push({
+      name: p.name, type, team, world, quarter: p.quarter,
+      deadline: p.deadline, tlStart: p.tlStart, tlEnd: p.tlEnd,
+      total, done, cancelled, blocked, completionPct: pct,
+      mainStatus, statusArr,
+      effortA: Math.round(p.effortA), effortP: Math.round(p.effortP),
+      avgFR, health,
+    });
+  }
+  return projects.sort((a, b) => b.total - a.total);
+}
+
+// ══════════════════════════════════════════════════
+// SIDEBAR
+// ══════════════════════════════════════════════════
+function buildSidebar() {
+  const counts = {};
+  WORLDS.forEach(w => counts[w.key] = 0);
+  allProjects.forEach(p => {
+    if (p.mainStatus === 'הסתיימה' || p.mainStatus === 'מבוטלת') return;
+    counts[p.world] = (counts[p.world] || 0) + 1;
+  });
+  counts.overview = allProjects.filter(p => p.mainStatus !== 'הסתיימה' && p.mainStatus !== 'מבוטלת').length;
+
+  document.getElementById('sbNav').innerHTML = WORLDS.map(w => {
+    const active = w.key === activeWorld ? 'active' : '';
+    const cnt = counts[w.key];
+    return `<button class="sb-item ${active}" onclick="navTo('${w.key}')">
+      ${active ? '<span class="sb-bar"></span>' : ''}
+      <span class="sb-icon">${w.icon}</span>
+      <span class="sb-label">${w.he}</span>
+      ${cnt ? `<span class="sb-badge">${cnt}</span>` : ''}
+    </button>`;
+  }).join('');
+}
+
+function navTo(key) {
+  activeWorld = key;
+  const w = WORLDS.find(x => x.key === key);
+  document.getElementById('tbCurr').textContent = w?.he || '';
+  document.getElementById('tbEn').textContent   = w?.en || '';
+  buildSidebar();
+  applyFilters();
+}
+
+// ══════════════════════════════════════════════════
+// FILTER
+// ══════════════════════════════════════════════════
+function applyFilters() {
+  filterSearch = (document.getElementById('srch')?.value || '').toLowerCase();
+  filterTeam   = document.getElementById('selTeam')?.value || 'all';
+
+  let ps = allProjects.filter(p => {
+    if (activeWorld !== 'overview' && p.world !== activeWorld) return false;
+    if (filterTeam !== 'all' && p.team !== filterTeam) return false;
+    if (filterSearch && !p.name.toLowerCase().includes(filterSearch) && !(p.type||'').toLowerCase().includes(filterSearch)) return false;
+    return true;
+  });
+
+  renderWorld(ps);
+}
+
+// ══════════════════════════════════════════════════
+// HEALTH / STATUS HTML
+// ══════════════════════════════════════════════════
+function healthHtml(h) {
+  const map = {
+    green:        ['✓','בזמן','green'],
+    yellow:       ['⚠','בסיכון','yellow'],
+    red:          ['✕','באיחור','red'],
+    orange:       ['!','יום אחרון','orange'],
+    done:         ['✓','הסתיים','done'],
+    cancel:       ['·','בוטל','cancel'],
+    'no-deadline':['—','ללא דד-ליין','no-deadline'],
+    dept:         ['·','מחלקה','dept'],
+    backlog:      ['·','בק לוג','cancel'],
+  };
+  const [icon, label, cls] = map[h] || map.green;
+  return `<span class="hpill ${cls}">${icon} ${label}</span>`;
+}
+
+function statusHtml(s) {
+  const key = STATUS_KEYS[s] || 'backlog';
+  return `<span class="sbadge ${key}">${s || '—'}</span>`;
+}
+
+function typeChipHtml(type) {
+  if (!type) return '<span class="muted">—</span>';
+  return `<span class="type-chip">${type}</span>`;
+}
+
+// ══════════════════════════════════════════════════
+// MINI PROGRESS BAR
+// ══════════════════════════════════════════════════
+function miniBar(pct, health) {
+  const cls = health === 'done' ? 'success' : health === 'red' ? 'accent' : '';
+  return `<div class="mini-bar">
+    <div class="mini-track"><div class="mini-fill ${cls}" style="width:${pct}%"></div></div>
+    <span class="mono" style="font-size:11px">${pct}%</span>
+  </div>`;
+}
+
+// ══════════════════════════════════════════════════
+// RENDER DISPATCHER
+// ══════════════════════════════════════════════════
+function renderWorld(ps) {
+  if (activeWorld === 'overview') renderOverview(ps);
+  else renderWorldPage(ps);
+}
+
+// ══════════════════════════════════════════════════
+// OVERVIEW PAGE
+// ══════════════════════════════════════════════════
+function renderOverview(ps) {
+  const now = Date.now();
+  const active  = ps.filter(p => p.mainStatus === 'בעבודה');
+  const inWork  = ps.filter(p => p.mainStatus !== 'הסתיימה' && p.mainStatus !== 'מבוטלת');
+  const red     = inWork.filter(p => p.health === 'red' || p.health === 'no-deadline');
+  const yellow  = inWork.filter(p => p.health === 'yellow' || p.health === 'orange');
+  const green   = inWork.filter(p => p.health === 'green');
+  const pct = n => inWork.length ? Math.round(n/inWork.length*100) : 0;
+
+  // Total tasks
+  const totalTasks = ps.reduce((s,p) => s+p.total, 0);
+  const doneTasks  = ps.reduce((s,p) => s+p.done+p.cancelled, 0);
+  const taskPct    = totalTasks ? Math.round(doneTasks/totalTasks*100) : 0;
+  const effortA    = ps.reduce((s,p) => s+p.effortA, 0);
+  const effortP    = ps.reduce((s,p) => s+p.effortP, 0);
+
+  // Pipeline by status
+  const pipeline = PIPELINE_ORDER.map(status => ({
+    label: status,
+    count: ps.filter(p => p.mainStatus === status).length,
+    tasks: ps.filter(p => p.mainStatus === status).reduce((s,p) => s+p.total, 0),
+    key:   STATUS_KEYS[status] || 'backlog',
+  }));
+  const maxPipe = Math.max(...pipeline.map(p => p.count), 1);
+
+  // Due this week
+  const weekEnd = now + 7*864e5;
+  const dueWeek = ps.filter(p => p.deadline && p.deadline.getTime() >= now - 864e5 && p.deadline.getTime() <= weekEnd && p.mainStatus !== 'הסתיימה' && p.mainStatus !== 'מבוטלת')
+    .sort((a,b) => a.deadline - b.deadline);
+
+  // Quarter from current date
+  const nowDate = new Date(now);
+  const qIdx = Math.floor(nowDate.getMonth()/3);
+  const qStart = new Date(nowDate.getFullYear(), qIdx*3, 1).getTime();
+  const qEnd   = new Date(nowDate.getFullYear(), qIdx*3+3, 1).getTime();
+  const activeQ = ps.filter(p => p.deadline && p.deadline.getTime() >= qStart && p.deadline.getTime() < qEnd && p.mainStatus !== 'מבוטלת');
+
+  document.getElementById('content').innerHTML = `
+  <div class="page">
+    <div class="page-head">
+      <div>
+        <h1 class="page-title">סקירה כללית</h1>
+        <div class="page-sub">עדכון · ${nowDate.toLocaleDateString('he-IL',{weekday:'long',day:'numeric',month:'long',year:'numeric'})} · ${ps.length} פרויקטים סה״כ</div>
+      </div>
+    </div>
+
+    <!-- Hero -->
+    <div class="hero-stat">
+      <div class="hero-stat-left">
+        <div class="hero-val">${activeQ.length}</div>
+        <div>
+          <div class="hero-label">פרויקטים פעילים ברבעון</div>
+          <div class="hero-sub">Q${qIdx+1} ${nowDate.getFullYear()} · עם דד-ליין ברבעון הנוכחי</div>
+        </div>
+      </div>
+      <div class="hero-right">◇ נכון להיום ◇</div>
+    </div>
+
+    <!-- KPI 6-strip -->
+    <div class="kpi-strip kpi-strip-6">
+      <div class="kpi">
+        <div class="kpi-label">פרויקטים</div>
+        <div class="kpi-value">${ps.length}</div>
+        <div class="kpi-sub">${inWork.length} פעילים</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">משימות</div>
+        <div class="kpi-value">${totalTasks.toLocaleString('he-IL')}</div>
+        <div class="kpi-sub">${taskPct}% הושלמו</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">עומדים בזמן</div>
+        <div class="kpi-value success">${pct(green.length)}%</div>
+        <div class="kpi-sub">${green.length} מתוך ${inWork.length}</div>
+      </div>
+      <div class="kpi" data-dashed>
+        <div class="kpi-label">באיחור</div>
+        <div class="kpi-value danger">${pct(red.length)}%</div>
+        <div class="kpi-sub">${red.length} פרויקטים</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">בסיכון</div>
+        <div class="kpi-value warning">${pct(yellow.length)}%</div>
+        <div class="kpi-sub">${yellow.length} פרויקטים</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">שעות בפועל</div>
+        <div class="kpi-value" style="font-size:26px">${fmtN(effortA)}</div>
+        <div class="kpi-sub">מתוכנן: ${fmtN(effortP)}ש׳</div>
+      </div>
+    </div>
+
+    <!-- Pipeline -->
+    <div class="ms-card">
+      <div class="ms-card-head">
+        <div>
+          <div class="ms-card-title">מצב הפרויקטים</div>
+          <div class="ms-card-sub">לפי שלב בתהליך · ממתין → אישור → בעבודה → סיום</div>
+        </div>
+      </div>
+      <div class="ms-card-body">
+        <div class="pipeline">
+          ${pipeline.map(p => {
+            const w = maxPipe > 0 ? (p.count / maxPipe * 100) : 0;
+            const isActive  = p.key === 'active';
+            const isCancel  = p.key === 'cancel';
+            return `<div class="pcell" ${isActive?'data-active':''} ${isCancel?'data-cancel':''}>
+              <div class="pcell-label">${p.label}</div>
+              <div class="pcell-num">${p.count}</div>
+              <div class="pcell-sub">${p.tasks} משימות</div>
+              <div class="pcell-bar"><div class="pcell-bar-fill" style="width:${w}%"></div></div>
+            </div>`;
+          }).join('')}
+        </div>
+      </div>
+    </div>
+
+    <!-- Row: Due this week + Needs attention -->
+    <div class="row-2-1">
+      <div class="ms-card">
+        <div class="ms-card-head">
+          <div>
+            <div class="ms-card-title">דד-ליינים השבוע</div>
+            <div class="ms-card-sub">${dueWeek.length} פרויקטים בשבעת הימים הקרובים</div>
+          </div>
+        </div>
+        ${dueWeek.length === 0
+          ? `<div class="ms-card-body"><div class="empty"><div class="empty-icon">📅</div><div>אין דד-ליינים השבוע</div></div></div>`
+          : `<div class="dtw-wrap">
+              <table class="dtw-dl">
+                <thead><tr><th>פרויקט</th><th>סוג</th><th>דד-ליין</th><th>עמידה</th></tr></thead>
+                <tbody>${dueWeek.slice(0,10).map(p => {
+                  const days = Math.round((p.deadline.getTime() - now) / 864e5);
+                  const rel  = days < 0 ? `(${Math.abs(days)} י׳ איחור)` : days === 0 ? '(היום!)' : `(בעוד ${days})`;
+                  return `<tr>
+                    <td class="dn" style="max-width:180px;font-weight:600">${stripE(p.name)||p.name}</td>
+                    <td>${typeChipHtml(p.type)}</td>
+                    <td><span class="mono ltr">${fmtDate(p.deadline)}</span> <span class="dl-rel">${rel}</span></td>
+                    <td>${healthHtml(p.health)}</td>
+                  </tr>`;
+                }).join('')}</tbody>
+              </table>
+            </div>`
+        }
+      </div>
+
+      <div class="ms-card">
+        <div class="ms-card-head">
+          <div>
+            <div class="ms-card-title">דורש תשומת לב</div>
+            <div class="ms-card-sub">${red.length} פרויקטים באיחור</div>
+          </div>
+        </div>
+        ${red.length === 0
+          ? `<div class="ms-card-body"><div class="empty"><div class="empty-icon">✅</div><div>אין פרויקטים באיחור</div></div></div>`
+          : `<div class="att-list">${red.slice(0,7).map(p => {
+              const overdue = p.deadline ? Math.max(0, Math.round((Date.now() - p.deadline.getTime()) / 864e5)) : 0;
+              return `<div class="att-row">
+                <div class="att-main">
+                  <div class="att-name">${stripE(p.name)||p.name}</div>
+                  <div class="att-meta">
+                    <span>${p.type||'—'}</span>
+                    <span class="att-dot">·</span>
+                    <span>${p.team}</span>
+                  </div>
+                </div>
+                <div class="att-badge">
+                  <div class="att-num">${overdue}</div>
+                  <span class="att-num-label">ימי איחור</span>
+                </div>
+              </div>`;
+            }).join('')}</div>`
+        }
+      </div>
+    </div>
+  </div>`;
+}
+
+// ══════════════════════════════════════════════════
+// WORLD PAGE (Tech / Product / Campaigns / Launches / Departments)
+// ══════════════════════════════════════════════════
+function renderWorldPage(ps) {
+  const w = WORLDS.find(x => x.key === activeWorld);
+  const inWork  = ps.filter(p => p.mainStatus !== 'הסתיימה' && p.mainStatus !== 'מבוטלת');
+  const done    = ps.filter(p => p.mainStatus === 'הסתיימה').length;
+  const red     = ps.filter(p => p.health === 'red' || p.health === 'no-deadline').length;
+  const atRisk  = ps.filter(p => p.health === 'yellow' || p.health === 'orange').length;
+  const totalT  = ps.reduce((s,p) => s+p.total, 0);
+
+  // Sort by health then total
+  const sorted = ps.slice().sort((a,b) => {
+    const hOrder = {red:0,yellow:1,green:2,done:3,cancel:4};
+    const ha = hOrder[a.health]??5, hb = hOrder[b.health]??5;
+    return ha !== hb ? ha - hb : b.total - a.total;
+  });
+
+  document.getElementById('content').innerHTML = `
+  <div class="page">
+    <div class="page-head">
+      <div>
+        <h1 class="page-title">${w?.he || activeWorld}</h1>
+        <div class="page-sub">${ps.length} פרויקטים · ${totalT.toLocaleString('he-IL')} משימות</div>
+      </div>
+    </div>
+
+    <!-- KPI strip -->
+    <div class="kpi-strip">
+      <div class="kpi">
+        <div class="kpi-label">פרויקטים</div>
+        <div class="kpi-value">${ps.length}</div>
+        <div class="kpi-sub">${inWork.length} פעילים</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">הסתיימו</div>
+        <div class="kpi-value success">${done}</div>
+        <div class="kpi-sub">מתוך ${ps.length}</div>
+      </div>
+      <div class="kpi" data-dashed>
+        <div class="kpi-label">באיחור</div>
+        <div class="kpi-value danger">${red}</div>
+        <div class="kpi-sub">דורשים טיפול</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">בסיכון</div>
+        <div class="kpi-value warning">${atRisk}</div>
+        <div class="kpi-sub">פחות מ-7 ימים</div>
+      </div>
+    </div>
+
+    <!-- Projects table -->
+    <div class="ms-card">
+      <div class="ms-card-head">
+        <div>
+          <div class="ms-card-title">פרויקטים — ${w?.he}</div>
+          <div class="ms-card-sub">ממוין לפי בריאות ← כמות משימות</div>
+        </div>
+      </div>
+      ${sorted.length === 0
+        ? `<div class="ms-card-body"><div class="empty"><div class="empty-icon">🔍</div><div>לא נמצאו פרויקטים</div></div></div>`
+        : `<div class="dtw-wrap">
+            <table class="dtw">
+              <thead><tr>
+                <th>שם פרויקט</th>
+                <th>סוג</th>
+                <th>משימות</th>
+                <th>% השלמה</th>
+                <th>Blocked</th>
+                <th>דד-ליין</th>
+                <th>Fix Rounds</th>
+                <th>שעות בפועל</th>
+                <th>בריאות</th>
+                <th>סטטוס</th>
+              </tr></thead>
+              <tbody>
+                ${sorted.map(p => `
+                  <tr>
+                    <td class="dn" title="${p.name}">${stripE(p.name)||p.name}</td>
+                    <td>${typeChipHtml(p.type)}</td>
+                    <td class="mono" style="color:var(--ink);font-weight:600">${p.total}</td>
+                    <td>${miniBar(p.completionPct, p.health)}</td>
+                    <td class="mono" style="color:${p.blocked?'var(--red-fg)':'rgba(26,29,35,.45)'}">${p.blocked}</td>
+                    <td><span class="mono ltr">${fmtDate(p.deadline)}</span></td>
+                    <td class="mono" style="color:var(--yellow-fg)">${p.avgFR||'—'}</td>
+                    <td class="mono">${p.effortA ? fmtN(p.effortA)+'ש׳' : '—'}</td>
+                    <td>${healthHtml(p.health)}</td>
+                    <td>${statusHtml(p.mainStatus)}</td>
+                  </tr>`).join('')}
+              </tbody>
+            </table>
+            <div class="tfoot">${sorted.length} פרויקטים · ${totalT.toLocaleString('he-IL')} משימות סה״כ</div>
+          </div>`
+      }
+    </div>
+  </div>`;
+}
+
+// ══════════════════════════════════════════════════
+// REFRESH
+// ══════════════════════════════════════════════════
+async function refreshData() {
+  const btn = document.getElementById('refreshBtn');
+  btn.disabled = true;
+  btn.classList.add('spinning');
+  try {
+    const raw = await fetchRaw();
+    allProjects = processItems(raw);
+    updateMeta(raw.length);
+    buildTeamFilter();
+    buildSidebar();
+    applyFilters();
+  } catch(e) { console.error(e); }
+  finally {
+    btn.disabled = false;
+    btn.classList.remove('spinning');
+  }
+}
+
+function updateMeta(rawCount) {
+  const today = new Date().toLocaleDateString('he-IL',{day:'2-digit',month:'2-digit',year:'numeric'});
+  document.getElementById('tbDate').textContent = `נכון ל-${today}`;
+}
+
+function buildTeamFilter() {
+  const teams = [...new Set(allProjects.map(p=>p.team).filter(Boolean))].sort();
+  const sel = document.getElementById('selTeam');
+  if (!sel) return;
+  sel.innerHTML = `<option value="all">כל הצוותות</option>` +
+    teams.map(t => `<option value="${t}">${t}</option>`).join('');
+}
+
+// ══════════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════════
+async function init() {
+  try {
+    const raw = await fetchRaw();
+    allProjects = processItems(raw);
+    updateMeta(raw.length);
+    buildTeamFilter();
+    buildSidebar();
+    applyFilters();
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+  } catch(err) {
+    console.error(err);
+    document.getElementById('loading').innerHTML = `
+      <div style="text-align:center;color:var(--accent)">
+        <div style="font-family:'Suez One',serif;font-size:20px">שגיאה בטעינת הנתונים</div>
+        <div style="font-size:11px;color:rgba(26,29,35,.55);margin-top:8px">${err.message}</div>
+      </div>`;
+  }
+}
+
+init();
+</script>
+</body>
+</html>
