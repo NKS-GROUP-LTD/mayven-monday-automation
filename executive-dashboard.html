@@ -291,6 +291,44 @@ body::before{content:"";position:fixed;inset:0;background-image:url("data:image/
 .pipe-tile.pt-nodl .pt-count{color:var(--yellow-fg)}
 .pipe-tile.pt-nodl.pt-active .pt-count{color:var(--ink)}
 
+/* ── Product World Page ── */
+.launch-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.launch-card{background:var(--paper);border:1.5px solid var(--ink);border-radius:10px;box-shadow:3px 3px 0 var(--ink);padding:14px 16px 12px;display:flex;flex-direction:column;gap:7px;transition:box-shadow .12s,transform .12s}
+.launch-card:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--ink)}
+.launch-card.urgent{background:var(--accent-soft);border-color:var(--accent-deep);box-shadow:3px 3px 0 var(--accent-deep)}
+.launch-card.urgent:hover{box-shadow:4px 4px 0 var(--accent-deep)}
+.launch-card.overdue{border-color:var(--red-fg);border-style:dashed;box-shadow:3px 3px 0 rgba(185,28,28,.3)}
+.launch-card-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.launch-cat{font-size:10.5px;font-weight:700;padding:2px 9px;border:1.3px solid var(--ink);border-radius:4px;background:var(--paper);white-space:nowrap;color:var(--ink)}
+.launch-card.urgent .launch-cat{background:rgba(255,255,255,.6);border-color:var(--accent-deep);color:var(--accent-deep)}
+.launch-name{font-family:'Suez One',serif;font-size:15px;color:var(--ink);line-height:1.22}
+.launch-meta{font-size:11.5px;color:rgba(26,29,35,.55)}
+.launch-days-row{display:flex;align-items:baseline;justify-content:space-between;gap:6px;margin-top:2px}
+.launch-days{font-family:'Suez One',serif;font-size:46px;line-height:1;font-weight:700;color:var(--accent)}
+.launch-card.urgent .launch-days{color:var(--accent-deep)}
+.launch-card.overdue .launch-days{color:var(--red-fg)}
+.launch-days-unit{font-size:13px;color:rgba(26,29,35,.5);margin-right:4px}
+.launch-dl{font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(26,29,35,.45)}
+/* Placeholder note */
+.placeholder-note{border:1.5px dashed var(--yellow-fg);border-radius:8px;background:rgba(253,246,178,.3);padding:13px 18px;display:flex;align-items:flex-start;gap:12px}
+.placeholder-icon{font-size:18px;flex-shrink:0;margin-top:1px}
+.placeholder-title{font-size:13px;font-weight:700;color:var(--yellow-fg);margin-bottom:3px}
+.placeholder-body{font-size:12px;color:rgba(26,29,35,.6);line-height:1.6}
+/* Product type tabs */
+.prod-tabs-wrap{border-bottom:1.5px solid var(--ink)}
+.prod-tabs{display:flex;gap:4px;flex-wrap:wrap}
+.prod-tab{padding:7px 14px;border:1.5px solid var(--ink);border-bottom:none;border-radius:6px 6px 0 0;background:var(--paper-shade);font-family:'Heebo',sans-serif;font-size:12.5px;font-weight:500;color:rgba(26,29,35,.55);cursor:pointer;display:flex;align-items:center;gap:6px;position:relative;margin-bottom:-1.5px;transition:background .1s,color .1s}
+.prod-tab:hover{background:var(--paper-deep);color:var(--ink)}
+.prod-tab.active{background:var(--paper);color:var(--ink);font-weight:700;z-index:1;border-color:var(--ink);box-shadow:-2px -2px 0 var(--ink)}
+.tab-badge{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;padding:0 4px;border-radius:10px;background:var(--ink);color:var(--paper);font-size:9.5px;font-weight:700}
+.prod-tab.active .tab-badge{background:var(--accent);color:var(--paper)}
+/* Variance badge */
+.variance-badge{display:inline-flex;align-items:center;height:16px;padding:0 5px;border-radius:3px;border:1.2px solid currentColor;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;white-space:nowrap;margin-top:2px}
+.variance-badge.late{color:var(--red-fg);background:var(--red-bg)}
+.variance-badge.early{color:var(--green-fg);background:var(--green-bg)}
+/* Planned cell */
+.td-planned{background:rgba(253,246,178,.28)}
+
 /* ── Tech World Page ── */
 .tk-analysis{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 .tk-bar-row{display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:6px;margin-bottom:3px;border:1.4px solid transparent;transition:background .1s,border-color .1s}
@@ -875,10 +913,210 @@ function miniBar(pct, health) {
 // RENDER DISPATCHER
 // ══════════════════════════════════════════════════
 function renderWorld(ps) {
-  if (activeWorld === 'overview')    renderOverview(ps);
+  if (activeWorld === 'overview')      renderOverview(ps);
   else if (activeWorld === 'pipeline') renderPipeline(pipelineProjects);
-  else if (activeWorld === 'tech')   renderTechPage(ps);
+  else if (activeWorld === 'tech')     renderTechPage(ps);
+  else if (activeWorld === 'product')  renderProductPage(ps);
   else renderWorldPage(ps);
+}
+
+// ══════════════════════════════════════════════════
+// PRODUCT WORLD PAGE
+// ══════════════════════════════════════════════════
+const prodF = { tab: 'all' };
+
+function renderProductPage(ps) {
+  window.__prodPs = ps;
+  const todayMs = new Date().setHours(0,0,0,0);
+
+  // ── KPI ──
+  const inWork = ps.filter(p => p.mainStatus !== 'הסתיימה' && p.mainStatus !== 'מבוטלת');
+  const in30   = inWork.filter(p => p.deadline && p.deadline.getTime() >= todayMs && p.deadline.getTime() <= todayMs + 30*864e5);
+  const late   = inWork.filter(p => p.health === 'red');
+  const cats   = new Set(ps.map(p => stripE(p.type||'').trim()).filter(Boolean));
+
+  // ── Launch cards (active + deadline, sorted soonest first, max 6) ──
+  const launches = inWork
+    .filter(p => p.deadline)
+    .sort((a,b) => a.deadline - b.deadline)
+    .slice(0, 6);
+
+  function launchCard(p) {
+    const diff      = Math.round((p.deadline.getTime() - todayMs) / 864e5);
+    const isUrgent  = diff >= 0 && diff < 7;
+    const isOverdue = diff < 0;
+    const absDiff   = Math.abs(diff);
+    const unit      = isOverdue ? 'ימי איחור' : diff === 0 ? 'היום' : 'ימים';
+    return `<div class="launch-card ${isUrgent?'urgent':''} ${isOverdue?'overdue':''}">
+      <div class="launch-card-top">
+        <span class="launch-cat">${stripE(p.type||'').trim()||'—'}</span>
+        ${healthHtml(p.health)}
+      </div>
+      <div class="launch-name">${stripE(p.name)||p.name}</div>
+      <div class="launch-meta">${p.owner||p.team||'—'}</div>
+      <div class="launch-days-row">
+        <div>
+          <span class="launch-days">${diff===0?'0':absDiff}</span>
+          <span class="launch-days-unit">${unit}</span>
+        </div>
+        <span class="launch-dl ltr">${fmtDate(p.deadline)}</span>
+      </div>
+      ${miniBar(p.completionPct, p.health)}
+    </div>`;
+  }
+
+  // ── Category tabs data ──
+  const catMap = {};
+  ps.forEach(p => {
+    const c = stripE(p.type||'').trim() || 'אחר';
+    catMap[c] = (catMap[c]||0) + 1;
+  });
+  const catEntries = Object.entries(catMap).sort((a,b) => b[1]-a[1]);
+
+  // ── Filter + sort for table ──
+  let filtered = ps;
+  if (prodF.tab !== 'all') filtered = filtered.filter(p => (stripE(p.type||'').trim()||'אחר') === prodF.tab);
+  const hOrd = {red:0,'no-deadline':1,yellow:2,green:3,done:4,cancel:5,dept:6};
+  filtered = filtered.slice().sort((a,b) => (hOrd[a.health]??9)-(hOrd[b.health]??9) || b.total-a.total);
+
+  // ── Table rows ──
+  const tableRows = filtered.map(p => {
+    // Variance: only for done projects with timeline data
+    const varDays = (p.mainStatus === 'הסתיימה' && p.tlEnd && p.deadline)
+      ? Math.round((p.tlEnd.getTime() - p.deadline.getTime()) / 864e5) : null;
+    const varHtml = varDays !== null
+      ? `<div><span class="variance-badge ${varDays>0?'late':'early'}">${varDays>0?'+':''}${varDays}י׳</span></div>` : '';
+
+    const days = p.deadline ? Math.round((p.deadline.getTime()-todayMs)/864e5) : null;
+    const dlStyle = days!==null&&days<0?'color:var(--red-fg);font-weight:600':days!==null&&days<=7?'color:var(--yellow-fg)':'';
+
+    return `<tr>
+      <td class="dn" title="${(p.name||'').replace(/"/g,'')}">${stripE(p.name)||p.name}</td>
+      <td>${typeChipHtml(p.type)}</td>
+      <td><span class="launch-cat" style="font-size:10px">${stripE(p.type||'').trim()||'—'}</span></td>
+      <td style="font-size:12px;color:rgba(26,29,35,.65)">${p.owner||'<span class="muted">—</span>'}</td>
+      <td class="td-planned"><span class="muted" style="font-size:11px;font-style:italic">— placeholder</span></td>
+      <td>
+        <span class="mono ltr" style="${dlStyle}">${fmtDate(p.deadline)}</span>
+        ${varHtml}
+      </td>
+      <td>${statusHtml(p.mainStatus)}</td>
+      <td>${healthHtml(p.health)}</td>
+      <td><button onclick="void(0)" style="height:24px;padding:0 10px;border:1.3px solid var(--ink);border-radius:4px;background:var(--paper);font-family:'Heebo',sans-serif;font-size:11px;cursor:pointer;box-shadow:1px 1px 0 var(--ink);transition:all .12s" onmouseover="this.style.background='var(--accent)';this.style.color='var(--paper)'" onmouseout="this.style.background='var(--paper)';this.style.color='inherit'">פתח</button></td>
+    </tr>`;
+  }).join('');
+
+  document.getElementById('content').innerHTML = `
+  <div class="page">
+    <div class="page-head">
+      <div>
+        <h1 class="page-title">מוצר חדש</h1>
+        <div class="page-sub">${ps.length} פרויקטים · השקות · סמפלים · PR Box · אקססוריז</div>
+      </div>
+    </div>
+
+    <!-- KPI -->
+    <div class="kpi-strip">
+      <div class="kpi">
+        <div class="kpi-label">פרויקטים פעילים</div>
+        <div class="kpi-value">${inWork.length}</div>
+        <div class="kpi-sub">מתוך ${ps.length} סה״כ</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">ב-30 ימים הבאים</div>
+        <div class="kpi-value">${in30.length}</div>
+        <div class="kpi-sub">צפויים לעלות</div>
+      </div>
+      <div class="kpi" data-dashed>
+        <div class="kpi-label">⚠ באיחור</div>
+        <div class="kpi-value danger">${late.length}</div>
+        <div class="kpi-sub">מתוך ${inWork.length} פעילים</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">סוגי מוצר</div>
+        <div class="kpi-value">${cats.size}</div>
+        <div class="kpi-sub">קטגוריות פעילות</div>
+      </div>
+    </div>
+
+    <!-- Launch cards -->
+    <div class="ms-card">
+      <div class="ms-card-head">
+        <div>
+          <div class="ms-card-title">ההשקות הבאות</div>
+          <div class="ms-card-sub">ממוין לפי קרבת המועד · ורוד = פחות מ-7 ימים</div>
+        </div>
+        <a class="card-action" href="#" onclick="return false">לוח השקות מלא ←</a>
+      </div>
+      <div class="ms-card-body">
+        ${launches.length
+          ? `<div class="launch-grid">${launches.map(launchCard).join('')}</div>`
+          : `<div class="empty"><div class="empty-icon">📅</div><div>אין השקות עם תאריכי יעד</div></div>`
+        }
+      </div>
+    </div>
+
+    <!-- Baseline placeholder note -->
+    <div class="placeholder-note">
+      <div class="placeholder-icon">⚠️</div>
+      <div>
+        <div class="placeholder-title">עמודת Planned (Baseline) — placeholder</div>
+        <div class="placeholder-body">
+          עמודת ה-Planned מציגה כרגע placeholder — עמודת תאריך Baseline טרם הוגדרה בבורד ה-Monday.<br>
+          כשעמודת "Planned Launch" תתווסף לבורד, הדאטה יתמלא אוטומטית. הנתון "בפועל" מבוסס על הדד-ליין הנוכחי.
+        </div>
+      </div>
+    </div>
+
+    <!-- Category tabs + table -->
+    <div class="ms-card" style="overflow:hidden">
+      <div class="ms-card-head">
+        <div>
+          <div class="ms-card-title">Planned vs בפועל — לפי מוצר</div>
+          <div class="ms-card-sub">סטיית תאריכים · ${filtered.length} פרויקטים מוצגים</div>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div style="padding:0 0 0 0">
+        <div class="prod-tabs-wrap" style="padding:0 20px">
+          <div class="prod-tabs">
+            <button class="prod-tab ${prodF.tab==='all'?'active':''}"
+              onclick="prodF.tab='all';renderProductPage(window.__prodPs)">
+              הכל <span class="tab-badge">${ps.length}</span>
+            </button>
+            ${catEntries.map(([c,n]) => `
+              <button class="prod-tab ${prodF.tab===c?'active':''}"
+                onclick="prodF.tab='${c.replace(/'/g,"\\'")}';renderProductPage(window.__prodPs)">
+                ${c} <span class="tab-badge">${n}</span>
+              </button>`).join('')}
+          </div>
+        </div>
+      </div>
+
+      <!-- Table -->
+      ${filtered.length === 0
+        ? `<div class="ms-card-body"><div class="empty"><div class="empty-icon">🔍</div><div>לא נמצאו פרויקטים</div></div></div>`
+        : `<div class="dtw-wrap">
+            <table class="dtw">
+              <thead><tr>
+                <th>שם הפרויקט</th>
+                <th>סוג</th>
+                <th>קטגוריה</th>
+                <th>אחראי</th>
+                <th style="background:rgba(253,246,178,.4)">Planned <span style="font-size:9px;font-weight:400;background:var(--yellow-bg);color:var(--yellow-fg);padding:1px 5px;border-radius:3px;margin-right:3px">placeholder</span></th>
+                <th>בפועל</th>
+                <th>סטטוס</th>
+                <th>בריאות</th>
+                <th>תיאור</th>
+              </tr></thead>
+              <tbody>${tableRows}</tbody>
+            </table>
+            <div class="tfoot">${filtered.length} פרויקטים</div>
+          </div>`
+      }
+    </div>
+  </div>`;
 }
 
 // ══════════════════════════════════════════════════
