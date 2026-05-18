@@ -1178,18 +1178,11 @@ function processDepartments(rawItems) {
 
 const deptExpanded = new Set();
 
-function deptPanelId(name) {
-  return 'dp' + btoa(unescape(encodeURIComponent(name))).replace(/[^a-z0-9]/gi, '').slice(0, 20);
-}
-
-function toggleDept(name) {
-  if (deptExpanded.has(name)) deptExpanded.delete(name);
-  else deptExpanded.add(name);
-  const isOpen = deptExpanded.has(name);
-  const panel  = document.getElementById(deptPanelId(name));
+function toggleDept(idx) {
+  const panel = document.getElementById('dept-panel-' + idx);
+  const btn   = document.getElementById('dept-btn-'   + idx);
   if (!panel) return;
-  panel.classList.toggle('open', isOpen);
-  const btn = panel.previousElementSibling;
+  const isOpen = panel.classList.toggle('open');
   if (btn) {
     btn.querySelector('.chev').style.transform = isOpen ? 'rotate(180deg)' : '';
     btn.querySelector('.chev-label').textContent = isOpen ? 'הסתר עומס' : 'הצג עומס לפי עובדים';
@@ -1258,8 +1251,7 @@ function renderDepartmentsPage() {
   }
 
   function deptCardHtml(d, idx) {
-    const panelId = deptPanelId(d.name);
-    const isOpen  = deptExpanded.has(d.name);
+    const isOpen  = false;
     const avatarStack = d.people.slice(0, 5).map((pm, i) =>
       `<div class="dept-av" style="background:${avatarColor(i)}">${initials(pm.name)}</div>`
     ).reverse().join('');
@@ -1316,12 +1308,12 @@ function renderDepartmentsPage() {
         <div class="dept-people-label" style="margin-right:10px">${d.activePeople} עובדים עם משימות פעילות</div>
       </div>` : ''}
 
-      <button class="dept-expand-btn" onclick="toggleDept(${JSON.stringify(d.name)})">
-        <span class="chev-label">${isOpen ? 'הסתר עומס' : 'הצג עומס לפי עובדים'}</span>
-        <span class="chev" style="transform:${isOpen ? 'rotate(180deg)' : ''}">▼</span>
+      <button class="dept-expand-btn" id="dept-btn-${idx}" onclick="toggleDept(${idx})">
+        <span class="chev-label">הצג עומס לפי עובדים</span>
+        <span class="chev">▼</span>
       </button>
 
-      <div class="dept-people-panel ${isOpen ? 'open' : ''}" id="${panelId}">
+      <div class="dept-people-panel" id="dept-panel-${idx}">
         <div class="dept-panel-head">
           <div class="dept-panel-head-lbl">עומס לפי עובד — ${d.people.length} אנשים מקושרים</div>
         </div>
