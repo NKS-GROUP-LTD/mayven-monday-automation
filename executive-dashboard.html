@@ -205,50 +205,104 @@ body::before{content:"";position:fixed;inset:0;background-image:url("data:image/
 .dl-rel{color:rgba(26,29,35,.5);font-size:11.5px;margin-right:5px}
 
 /* ── Pipeline Cards ── */
-.pc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:16px}
-.pcard{background:var(--paper);border:1.5px solid var(--ink);border-radius:10px;box-shadow:3px 3px 0 var(--ink);overflow:hidden;display:flex;flex-direction:column;transition:box-shadow .15s,transform .15s}
-.pcard:hover{box-shadow:4px 4px 0 var(--ink);transform:translate(-1px,-1px)}
-.pcard[data-done]{opacity:.62;border-style:dashed;box-shadow:2px 2px 0 var(--ink-soft)}
-.pcard[data-cancel]{opacity:.42;border-style:dashed;box-shadow:none}
-.pcard-head{padding:12px 15px 10px;border-bottom:1px dashed var(--ink-soft)}
-.pcard-stage-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:7px;gap:8px}
-.pcard-stage{font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;letter-spacing:.05em;text-transform:uppercase;border:1.3px solid currentColor;background:var(--paper);white-space:nowrap}
-.pcard-name{font-family:'Suez One',serif;font-size:14.5px;color:var(--ink);line-height:1.25;margin-bottom:7px}
-.pcard-people{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:11.5px;color:rgba(26,29,35,.65)}
-.pcard-person{display:flex;align-items:center;gap:3px}
-.pcard-person-role{font-size:10px;font-weight:600;opacity:.55;letter-spacing:.03em}
-.pcard-body{padding:11px 15px 10px;flex:1;display:flex;flex-direction:column;gap:9px}
-/* Battery bar */
+.pc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
+
+/* Health-based card borders */
+.pcard{background:var(--paper);border:2px solid var(--ink);border-radius:10px;box-shadow:3px 3px 0 var(--ink);overflow:hidden;display:flex;flex-direction:column;transition:box-shadow .15s,transform .15s}
+.pcard:hover{transform:translate(-1px,-1px)}
+.pcard[data-hlth="red"]   {border-color:var(--red-fg);box-shadow:3px 3px 0 var(--red-fg)}
+.pcard[data-hlth="red"]:hover{box-shadow:4px 4px 0 var(--red-fg)}
+.pcard[data-hlth="yellow"]{border-color:var(--yellow-fg);box-shadow:3px 3px 0 rgba(180,83,9,.35)}
+.pcard[data-hlth="green"] {border-color:var(--accent2);box-shadow:3px 3px 0 rgba(21,128,61,.25)}
+.pcard[data-hlth="done"]  {border-color:rgba(26,29,35,.3);box-shadow:2px 2px 0 rgba(26,29,35,.15)}
+.pcard[data-hlth="cancel"]{border-color:rgba(26,29,35,.2);box-shadow:none}
+
+/* Card header stripe by health */
+.pcard-stripe{height:4px;width:100%}
+.pcard-stripe[data-hlth="red"]          {background:var(--red-fg)}
+.pcard-stripe[data-hlth="yellow"]       {background:var(--yellow-fg)}
+.pcard-stripe[data-hlth="green"]        {background:var(--accent2)}
+.pcard-stripe[data-hlth="no-deadline"]  {background:rgba(26,29,35,.2)}
+.pcard-stripe[data-hlth="done"]         {background:rgba(26,29,35,.15)}
+.pcard-stripe[data-hlth="cancel"]       {background:rgba(26,29,35,.1)}
+
+.pcard-head{padding:12px 15px 11px;border-bottom:1px solid var(--ink-softer)}
+.pcard-stage-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;gap:8px}
+.pcard-stage{font-size:10px;font-weight:700;padding:3px 9px;border-radius:4px;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;color:var(--paper)}
+.pcard-name{font-family:'Suez One',serif;font-size:16px;color:var(--ink);line-height:1.22;margin-bottom:9px}
+.pcard-people{display:flex;flex-wrap:wrap;gap:5px 12px;font-size:12px;color:rgba(26,29,35,.6)}
+.pcard-person{display:flex;align-items:center;gap:4px}
+.pcard-person-role{font-size:9.5px;font-weight:700;padding:1px 4px;border-radius:3px;background:var(--paper-shade);color:rgba(26,29,35,.5);letter-spacing:.05em;text-transform:uppercase}
+
+.pcard-body{padding:13px 15px 11px;flex:1;display:flex;flex-direction:column;gap:11px}
+
+/* Battery */
 .battery-wrap{}
-.battery-label{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px;font-size:11px}
-.battery-label-left{font-weight:600;color:var(--ink)}
-.battery-label-right{color:rgba(26,29,35,.55)}
-.battery-bar{height:12px;border:1.4px solid var(--ink);border-radius:5px;overflow:hidden;background:var(--paper-shade);display:flex}
-.battery-seg{height:100%}
-.battery-legend{display:flex;flex-wrap:wrap;gap:4px 10px;margin-top:5px}
-.bat-leg{display:flex;align-items:center;gap:3px;font-size:10.5px;color:rgba(26,29,35,.7)}
-.bat-dot{width:7px;height:7px;border-radius:2px;flex-shrink:0}
-.no-hub-msg{font-size:11px;color:rgba(26,29,35,.45);font-style:italic;padding:4px 0}
-/* Deadline row */
-.pcard-dl-row{display:flex;align-items:center;gap:10px;font-size:11.5px;flex-wrap:wrap}
-.pcard-dl-item{display:flex;align-items:center;gap:4px;color:rgba(26,29,35,.65)}
-.pcard-dl-val{font-family:'JetBrains Mono',monospace;color:var(--ink);font-weight:500}
-.pcard-foot{padding:8px 15px;border-top:1px dashed var(--ink-soft);display:flex;align-items:center;justify-content:space-between;gap:6px;background:var(--paper-deep)}
-.pcard-sp{font-size:11px;color:rgba(26,29,35,.6);display:flex;gap:8px;align-items:center}
-.pcard-sp-val{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:500;color:var(--ink)}
+.battery-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px}
+.battery-title{font-size:10.5px;font-weight:700;color:rgba(26,29,35,.5);letter-spacing:.06em;text-transform:uppercase}
+.battery-pct{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:var(--ink)}
+.battery-bar{height:14px;border:1.5px solid var(--ink);border-radius:5px;overflow:hidden;background:var(--paper-shade);display:flex}
+.battery-seg{height:100%;transition:width .3s}
+.battery-legend{display:flex;flex-wrap:wrap;gap:4px 10px;margin-top:6px}
+.bat-leg{display:flex;align-items:center;gap:3px;font-size:11px;color:rgba(26,29,35,.65);font-weight:500}
+.bat-dot{width:8px;height:8px;border-radius:2px;flex-shrink:0}
+.no-hub-msg{font-size:11.5px;color:rgba(26,29,35,.38);font-style:italic;padding:6px 0;text-align:center;border:1px dashed var(--ink-softer);border-radius:5px}
+
+/* Info rows */
+.pcard-row{display:flex;align-items:center;gap:8px;font-size:12px;flex-wrap:wrap}
+.pcard-row-icon{font-size:13px;flex-shrink:0}
+.pcard-row-label{color:rgba(26,29,35,.5);white-space:nowrap}
+.pcard-row-val{font-family:'JetBrains Mono',monospace;font-weight:600;color:var(--ink)}
+.pcard-row-rel{font-size:11px;font-weight:600}
+
+.pcard-foot{padding:9px 15px;border-top:1px solid var(--ink-softer);display:flex;align-items:center;justify-content:space-between;gap:6px;background:var(--paper-deep)}
+
 /* Filter bar */
-.pf-bar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:10px 14px;background:var(--paper-deep);border:1.5px solid var(--ink);border-radius:8px;box-shadow:2px 2px 0 var(--ink)}
-.pf-label{font-size:11px;font-weight:600;color:rgba(26,29,35,.55);white-space:nowrap;letter-spacing:.03em;text-transform:uppercase}
-.pf-select{appearance:none;height:28px;padding:0 22px 0 9px;border:1.3px solid var(--ink-soft);border-radius:6px;background:var(--paper) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='9' height='9' viewBox='0 0 24 24' fill='none' stroke='%231a1d23' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>") no-repeat left 5px center;font-family:'Heebo',sans-serif;font-size:12px;color:var(--ink);cursor:pointer}
-.pf-toggle{height:28px;padding:0 11px;border:1.3px solid var(--ink-soft);border-radius:6px;background:var(--paper);font-family:'Heebo',sans-serif;font-size:12px;color:rgba(26,29,35,.75);cursor:pointer;transition:all .12s}
+.pf-bar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:11px 16px;background:var(--paper-deep);border:1.5px solid var(--ink);border-radius:8px;box-shadow:2px 2px 0 var(--ink)}
+.pf-label{font-size:10.5px;font-weight:700;color:rgba(26,29,35,.5);white-space:nowrap;letter-spacing:.05em;text-transform:uppercase}
+.pf-select{appearance:none;height:30px;padding:0 24px 0 10px;border:1.3px solid var(--ink-soft);border-radius:6px;background:var(--paper) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='9' height='9' viewBox='0 0 24 24' fill='none' stroke='%231a1d23' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>") no-repeat left 6px center;font-family:'Heebo',sans-serif;font-size:12.5px;color:var(--ink);cursor:pointer;font-weight:500}
+.pf-toggle{height:30px;padding:0 13px;border:1.3px solid var(--ink-soft);border-radius:6px;background:var(--paper);font-family:'Heebo',sans-serif;font-size:12.5px;color:rgba(26,29,35,.7);cursor:pointer;transition:all .12s;font-weight:500}
 .pf-toggle.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
-.pf-div{height:18px;width:1px;background:var(--ink-soft);margin:0 2px}
-/* Group header */
-.pgroup{margin-bottom:24px}
-.pgroup-head{display:flex;align-items:center;gap:10px;padding-bottom:8px;border-bottom:2px solid var(--ink);margin-bottom:12px}
-.pgroup-head-label{font-family:'Suez One',serif;font-size:15px;color:var(--ink)}
-.pgroup-head-stage{font-size:10.5px;font-weight:700;padding:1px 8px;border-radius:4px;border:1.3px solid currentColor;letter-spacing:.04em;text-transform:uppercase}
-.pgroup-count{font-size:11.5px;color:rgba(26,29,35,.5);margin-right:auto}
+.pf-div{height:20px;width:1px;background:var(--ink-soft);margin:0 2px}
+
+/* Group headers */
+.pgroup{margin-bottom:28px}
+.pgroup-head{display:flex;align-items:center;gap:10px;padding-bottom:9px;border-bottom:2px solid var(--ink);margin-bottom:14px}
+.pgroup-stage-pill{font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;letter-spacing:.06em;text-transform:uppercase;color:var(--paper)}
+.pgroup-label{font-family:'Suez One',serif;font-size:16px;color:var(--ink)}
+.pgroup-count{font-size:11.5px;color:rgba(26,29,35,.45);margin-right:auto}
+.pgroup-late{font-size:11px;color:var(--red-fg);font-weight:600}
+
+/* ── Tech World Page ── */
+.tk-analysis{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.tk-bar-row{display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:6px;margin-bottom:3px;border:1.4px solid transparent;transition:background .1s,border-color .1s}
+.tk-bar-row:last-child{margin-bottom:0}
+.tk-bar-row:hover{background:var(--paper-shade);cursor:pointer}
+.tk-bar-row.tk-active{background:var(--paper);border-color:var(--ink);box-shadow:2px 2px 0 var(--ink)}
+.tk-bar-label{width:130px;flex-shrink:0;font-size:12.5px;font-weight:500;color:var(--ink);text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tk-bar-track{flex:1;height:24px;border:1.3px solid var(--ink);border-radius:4px;overflow:hidden;background:var(--paper-shade);position:relative}
+.tk-bar-fill{height:100%;background:rgba(26,29,35,.13);position:relative;display:flex;align-items:center;min-width:0}
+.tk-bar-fill-late{position:absolute;right:0;top:0;bottom:0;background:#b91c1c;opacity:.75}
+.tk-bar-count{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:var(--ink);padding:0 7px;position:relative;z-index:1;white-space:nowrap}
+.tk-bar-stats{display:flex;align-items:center;gap:5px;flex-shrink:0;min-width:58px;justify-content:flex-end}
+.tk-stat{font-family:'JetBrains Mono',monospace;font-size:11px;padding:1px 6px;border-radius:4px;font-weight:700}
+.tk-stat.red{background:var(--red-bg);color:var(--red-fg)}
+.tk-stat.yellow{background:var(--yellow-bg);color:var(--yellow-fg)}
+.tk-stat.total{color:rgba(26,29,35,.45);font-weight:400}
+/* Priority tags */
+.tk-pri{font-size:11px;font-weight:700;padding:2px 9px;border-radius:4px;white-space:nowrap}
+.tk-pri.high{background:var(--red-bg);color:var(--red-fg)}
+.tk-pri.medium{background:var(--yellow-bg);color:var(--yellow-fg)}
+.tk-pri.low{background:var(--paper-shade);color:rgba(26,29,35,.5)}
+/* Filter chips */
+.filter-chips{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.filter-chips-label{font-size:12px;color:rgba(26,29,35,.5);font-weight:600;margin-left:4px;letter-spacing:.03em}
+.filter-chip{height:30px;padding:0 15px;border:1.5px solid var(--ink);border-radius:20px;background:var(--paper);font-family:'Heebo',sans-serif;font-size:12.5px;font-weight:500;color:var(--ink);cursor:pointer;box-shadow:2px 2px 0 var(--ink);transition:all .12s}
+.filter-chip:hover{background:var(--paper-deep)}
+.filter-chip.active{background:var(--ink);color:var(--paper);box-shadow:none}
+/* Table row with late indicator */
+.dtw tbody tr[data-late]{border-right:3px solid var(--red-fg)}
+.dtw tbody tr[data-risk]{border-right:3px solid var(--yellow-fg)}
 </style>
 </head>
 <body>
@@ -387,9 +441,19 @@ const P = {
 };
 
 const PIPELINE_STAGE_ORDER = [
-  'In Development','QA & Testing','Launch Prep','UI/UX Design',
-  'Technical Specs','Discovery & Planning','Backlog',
-  'Deployed','Go Live','Red Flag 🚩','On Hold','Cancelled','NTH',
+  'Backlog',
+  'Discovery & Planning',
+  'Technical Specs',
+  'UI/UX Design',
+  'In Development',
+  'QA & Testing',
+  'Launch Prep',
+  'Deployed',
+  'Go Live',
+  'On Hold',
+  'Red Flag 🚩',
+  'Cancelled',
+  'NTH',
 ];
 const PIPELINE_DONE_STAGES   = new Set(['Deployed','Go Live']);
 const PIPELINE_CANCEL_STAGES = new Set(['Cancelled']);
@@ -552,6 +616,7 @@ function processItems(rawItems) {
         type: '', team: '', world: 'other', quarter: '',
         deadline: null, tlStart: null, tlEnd: null,
         items: [], effortA: 0, effortP: 0, frList: [],
+        devPriorityArr: [], departmentArr: [], ownerArr: [],
       });
     }
     const p = map.get(boardName);
@@ -567,6 +632,9 @@ function processItems(rawItems) {
     if (tl.to   && (!p.tlEnd   || tl.to   > p.tlEnd))   p.tlEnd   = tl.to;
     if (!p.type    && cv(item, C.PROJECT_TYPE).t) p.type    = cv(item, C.PROJECT_TYPE).t;
     if (!p.quarter && cv(item, C.QUARTER).t)      p.quarter = cv(item, C.QUARTER).t;
+    const devPri = cv(item, C.DEV_PRIORITY).t; if (devPri) p.devPriorityArr.push(devPri);
+    const dept   = cv(item, C.DEPARTMENT_T).t;  if (dept)   p.departmentArr.push(dept);
+    const owner  = cv(item, C.OWNER).t;          if (owner)  p.ownerArr.push(owner);
   }
 
   const projects = [];
@@ -579,16 +647,14 @@ function processItems(rawItems) {
     const pct       = total ? Math.round((done + cancelled) / total * 100) : 0;
     const avgFR     = p.frList.length ? parseFloat((p.frList.reduce((a,b)=>a+b,0)/p.frList.length).toFixed(1)) : 0;
 
-    // mainStatus: all done/cancelled → הסתיימה | all backlog → בנק משימות | else → בעבודה
     const allFinished = statusArr.every(s => s === 'הסתיימה' || s === 'מבוטלת');
     const allBacklog  = statusArr.every(s => s === 'בנק משימות');
     const mainStatus  = allFinished ? 'הסתיימה' : allBacklog ? 'בנק משימות' : 'בעבודה';
 
-    // Health: ignore On Time? column — calculate from timeline vs deadline
     const type = p.type;
     let health;
     if (type === '✨ Department') {
-      health = 'dept'; // department logic defined separately
+      health = 'dept';
     } else if (mainStatus === 'הסתיימה') {
       health = 'done';
     } else if (mainStatus === 'מבוטלת') {
@@ -596,18 +662,12 @@ function processItems(rawItems) {
     } else if (!p.deadline) {
       health = 'no-deadline';
     } else {
-      const todayMs  = new Date(new Date().toDateString()).getTime();
       const deadlineMs = new Date(new Date(p.deadline).toDateString()).getTime();
-      const tlEndMs  = p.tlEnd ? new Date(new Date(p.tlEnd).toDateString()).getTime() : null;
-      if (tlEndMs === null) {
-        health = 'no-deadline'; // no timeline → treat same as no deadline
-      } else if (tlEndMs > deadlineMs) {
-        health = 'red';    // timeline overruns deadline
-      } else if (tlEndMs === deadlineMs) {
-        health = 'yellow'; // ends exactly on deadline → at risk
-      } else {
-        health = 'green';  // timeline finishes before deadline
-      }
+      const tlEndMs    = p.tlEnd ? new Date(new Date(p.tlEnd).toDateString()).getTime() : null;
+      if (tlEndMs === null)          health = 'no-deadline';
+      else if (tlEndMs > deadlineMs) health = 'red';
+      else if (tlEndMs === deadlineMs) health = 'yellow';
+      else                           health = 'green';
     }
 
     const world = TYPE_TO_WORLD[type] || 'other';
@@ -620,6 +680,9 @@ function processItems(rawItems) {
       mainStatus, statusArr,
       effortA: Math.round(p.effortA), effortP: Math.round(p.effortP),
       avgFR, health,
+      devPriority: majority(p.devPriorityArr) || null,
+      department:  majority(p.departmentArr)  || null,
+      owner:       p.ownerArr[0]              || null,
     });
   }
   return projects.sort((a, b) => b.total - a.total);
@@ -794,9 +857,247 @@ function miniBar(pct, health) {
 // RENDER DISPATCHER
 // ══════════════════════════════════════════════════
 function renderWorld(ps) {
-  if (activeWorld === 'overview')  renderOverview(ps);
+  if (activeWorld === 'overview')    renderOverview(ps);
   else if (activeWorld === 'pipeline') renderPipeline(pipelineProjects);
+  else if (activeWorld === 'tech')   renderTechPage(ps);
   else renderWorldPage(ps);
+}
+
+// ══════════════════════════════════════════════════
+// TECH WORLD PAGE
+// ══════════════════════════════════════════════════
+const techF = { priority: 'all', typeActive: null, deptActive: null };
+
+function setTechType(v) {
+  techF.typeActive = (v !== null && techF.typeActive === v) ? null : v;
+  renderTechPage(window.__techPs);
+}
+function setTechDept(v) {
+  techF.deptActive = (v !== null && techF.deptActive === v) ? null : v;
+  renderTechPage(window.__techPs);
+}
+
+function renderTechPage(ps) {
+  window.__techPs = ps;
+
+  const inWork   = ps.filter(p => p.mainStatus !== 'הסתיימה' && p.mainStatus !== 'מבוטלת');
+  const late     = inWork.filter(p => p.health === 'red');
+  const atRisk   = inWork.filter(p => p.health === 'yellow');
+  const noDeadl  = inWork.filter(p => p.health === 'no-deadline');
+  const highPri  = ps.filter(p => {
+    const d = (p.devPriority||'').toLowerCase();
+    return d.includes('גבוה') || d.includes('high');
+  });
+  const abTests  = ps.filter(p => (p.type||'').includes('A/B'));
+  const totalTasks = ps.reduce((s,p)=>s+p.total,0);
+
+  // ── Analysis: by type ──
+  const typeMap = {};
+  ps.forEach(p => {
+    const t = stripE(p.type||'').trim() || 'אחר';
+    if (!typeMap[t]) typeMap[t] = { all:[], late:[], atRisk:[] };
+    typeMap[t].all.push(p);
+    if (p.health==='red')    typeMap[t].late.push(p);
+    if (p.health==='yellow') typeMap[t].atRisk.push(p);
+  });
+  const maxType = Math.max(...Object.values(typeMap).map(d=>d.all.length), 1);
+
+  // ── Analysis: by requesting dept ──
+  const deptMap = {};
+  ps.forEach(p => {
+    const d = p.department || 'ללא מחלקה';
+    if (!deptMap[d]) deptMap[d] = { all:[], late:[], atRisk:[] };
+    deptMap[d].all.push(p);
+    if (p.health==='red')    deptMap[d].late.push(p);
+    if (p.health==='yellow') deptMap[d].atRisk.push(p);
+  });
+  const maxDept = Math.max(...Object.values(deptMap).map(d=>d.all.length), 1);
+
+  // ── Bar row builder ──
+  function barRow(label, data, max, isActive, fn, val) {
+    const w     = Math.round(data.all.length / max * 100);
+    const lateW = data.all.length ? Math.round(data.late.length / data.all.length * 100) : 0;
+    return `<div class="tk-bar-row ${isActive?'tk-active':''}" onclick="${fn}('${val.replace(/'/g,"\\'")}')">
+      <span class="tk-bar-label" title="${label}">${label}</span>
+      <div class="tk-bar-track">
+        <div class="tk-bar-fill" style="width:${w}%">
+          ${lateW ? `<div class="tk-bar-fill-late" style="width:${lateW}%"></div>` : ''}
+          <span class="tk-bar-count">${data.all.length}</span>
+        </div>
+      </div>
+      <div class="tk-bar-stats">
+        ${data.late.length  ? `<span class="tk-stat red">${data.late.length}</span>`   : ''}
+        ${data.atRisk.length? `<span class="tk-stat yellow">${data.atRisk.length}</span>` : ''}
+        <span class="tk-stat total">${data.all.length}</span>
+      </div>
+    </div>`;
+  }
+
+  // ── Filter table ──
+  let filtered = ps;
+  if (techF.typeActive) filtered = filtered.filter(p => (stripE(p.type||'').trim()||'אחר') === techF.typeActive);
+  if (techF.deptActive) filtered = filtered.filter(p => (p.department||'ללא מחלקה') === techF.deptActive);
+  if (techF.priority !== 'all') {
+    const kw = { high:['גבוה','high'], medium:['בינוני','medium','ממוצע'], low:['נמוך','low'] }[techF.priority] || [];
+    filtered = filtered.filter(p => kw.some(k=>(p.devPriority||'').toLowerCase().includes(k)));
+  }
+
+  // Sort: late first, then by-risk, then by total tasks
+  const hOrd = {red:0,'no-deadline':1,yellow:2,green:3,done:4,cancel:5,dept:6};
+  filtered = filtered.slice().sort((a,b)=>{
+    const ha=hOrd[a.health]??9, hb=hOrd[b.health]??9;
+    return ha!==hb ? ha-hb : b.total-a.total;
+  });
+
+  // ── Priority helpers ──
+  const priKey = (d) => {
+    if (!d) return null;
+    const dl = d.toLowerCase();
+    if (dl.includes('גבוה')||dl.includes('high'))     return 'high';
+    if (dl.includes('בינוני')||dl.includes('medium')) return 'medium';
+    if (dl.includes('נמוך')||dl.includes('low'))      return 'low';
+    return null;
+  };
+
+  // ── Duration ──
+  const fmtDur = (p) => {
+    if (p.tlStart && p.tlEnd) {
+      const d = Math.round((p.tlEnd-p.tlStart)/864e5);
+      return d < 7 ? `${d}י׳` : `${Math.round(d/7)}ש׳`;
+    }
+    return '—';
+  };
+
+  // ── Table rows ──
+  const tableRows = filtered.slice(0,100).map(p => {
+    const pk   = priKey(p.devPriority);
+    const priHtml = pk
+      ? `<span class="tk-pri ${pk}">${p.devPriority}</span>`
+      : '<span class="muted">—</span>';
+    const days = p.deadline ? Math.round((p.deadline.getTime()-new Date().setHours(0,0,0,0))/864e5) : null;
+    const dlColor = days!==null && days<0 ? 'color:var(--red-fg);font-weight:600'
+                  : days!==null && days<=7 ? 'color:var(--yellow-fg)' : '';
+    const dlRel  = days!==null && days<0  ? `<span class="dl-rel" style="color:var(--red-fg)">(${Math.abs(days)}י׳)</span>`
+                 : days!==null && days===0 ? `<span class="dl-rel" style="color:var(--orange-fg)">(היום)</span>` : '';
+    const lateAttr = p.health==='red' ? 'data-late' : p.health==='yellow' ? 'data-risk' : '';
+    const frStyle  = p.avgFR>2?'color:var(--red-fg);font-weight:700':p.avgFR>1?'color:var(--yellow-fg)':'opacity:.4';
+    return `<tr ${lateAttr}>
+      <td class="dn" title="${(p.name||'').replace(/"/g,'')}">${stripE(p.name)||p.name}</td>
+      <td>${typeChipHtml(p.type)}</td>
+      <td style="font-size:12px;color:rgba(26,29,35,.65)">${p.department||'<span class="muted">—</span>'}</td>
+      <td style="font-size:12px;color:rgba(26,29,35,.65)">${p.owner||'<span class="muted">—</span>'}</td>
+      <td>${priHtml}</td>
+      <td>${statusHtml(p.mainStatus)}</td>
+      <td><span class="mono ltr" style="${dlColor}">${fmtDate(p.deadline)}</span>${dlRel}</td>
+      <td class="mono muted">${fmtDur(p)}</td>
+      <td>${healthHtml(p.health)}</td>
+      <td class="mono" style="${frStyle}">${p.avgFR||'—'}</td>
+    </tr>`;
+  }).join('');
+
+  document.getElementById('content').innerHTML = `
+  <div class="page">
+    <div class="page-head">
+      <div>
+        <h1 class="page-title">פיתוחים טכנולוגיים</h1>
+        <div class="page-sub">${ps.length} פרויקטים · ${totalTasks.toLocaleString('he-IL')} משימות · Website Dev · מנויים · A/B Tests</div>
+      </div>
+    </div>
+
+    <!-- KPI 4-strip -->
+    <div class="kpi-strip">
+      <div class="kpi">
+        <div class="kpi-label">פרויקטים פעילים</div>
+        <div class="kpi-value">${inWork.length}</div>
+        <div class="kpi-sub">מתוך ${ps.length} סה״כ</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">⚡ High Priority</div>
+        <div class="kpi-value warning">${highPri.length}</div>
+        <div class="kpi-sub">דורשים טיפול מהיר</div>
+      </div>
+      <div class="kpi" data-dashed>
+        <div class="kpi-label">⚠ באיחור</div>
+        <div class="kpi-value danger">${late.length}</div>
+        <div class="kpi-sub">${atRisk.length} בסיכון · ${noDeadl.length} ללא ד"ל</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">A/B Tests</div>
+        <div class="kpi-value">${abTests.length}</div>
+        <div class="kpi-sub">ניסויים פעילים</div>
+      </div>
+    </div>
+
+    <!-- Analysis row -->
+    <div class="tk-analysis">
+      <div class="ms-card">
+        <div class="ms-card-head">
+          <div>
+            <div class="ms-card-title">לפי סוג פיתוח</div>
+            <div class="ms-card-sub">לחץ שורה לסינון · אדום = באיחור</div>
+          </div>
+          ${techF.typeActive ? `<button class="card-action" onclick="setTechType(null)">נקה ×</button>` : ''}
+        </div>
+        <div class="ms-card-body" style="padding:10px 16px">
+          ${Object.entries(typeMap).sort((a,b)=>b[1].all.length-a[1].all.length)
+            .map(([t,d]) => barRow(t, d, maxType, techF.typeActive===t, 'setTechType', t)).join('')}
+        </div>
+      </div>
+      <div class="ms-card">
+        <div class="ms-card-head">
+          <div>
+            <div class="ms-card-title">מי מבקש פיתוחים</div>
+            <div class="ms-card-sub">מחלקה מבקשת · לחץ לסינון</div>
+          </div>
+          ${techF.deptActive ? `<button class="card-action" onclick="setTechDept(null)">נקה ×</button>` : ''}
+        </div>
+        <div class="ms-card-body" style="padding:10px 16px">
+          ${Object.keys(deptMap).length
+            ? Object.entries(deptMap).sort((a,b)=>b[1].all.length-a[1].all.length)
+                .map(([d,data]) => barRow(d, data, maxDept, techF.deptActive===d, 'setTechDept', d)).join('')
+            : '<div class="empty" style="min-height:80px"><div class="empty-icon" style="font-size:20px">—</div><div style="font-size:12px">אין נתוני מחלקות</div></div>'
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- Priority chips + count -->
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
+      <div class="filter-chips">
+        <span class="filter-chips-label">פילטר:</span>
+        ${[['all','כל הפרויקטים'],['high','High Priority'],['medium','Medium'],['low','Low']].map(([v,l]) =>
+          `<button class="filter-chip ${techF.priority===v?'active':''}"
+            onclick="techF.priority='${v}';renderTechPage(window.__techPs)">${l}</button>`
+        ).join('')}
+      </div>
+      <span style="font-size:12px;color:rgba(26,29,35,.45)">${filtered.length} מתוך ${ps.length} פרויקטים</span>
+    </div>
+
+    <!-- Main table -->
+    <div class="ms-card">
+      <div class="ms-card-head">
+        <div>
+          <div class="ms-card-title">פרויקטים — פיתוח טכנולוגי</div>
+          <div class="ms-card-sub">ממוין: בריאות ← כמות משימות · פס אדום = באיחור · צהוב = בסיכון</div>
+        </div>
+      </div>
+      ${filtered.length === 0
+        ? `<div class="ms-card-body"><div class="empty"><div class="empty-icon">🔍</div><div>לא נמצאו פרויקטים</div></div></div>`
+        : `<div class="dtw-wrap">
+            <table class="dtw">
+              <thead><tr>
+                <th>שם הפרויקט</th><th>סוג פיתוח</th><th>מחלקה מבקשת</th><th>אחראי</th>
+                <th>פריוריטי</th><th>סטטוס</th><th>דד-ליין</th><th>משך</th><th>בריאות</th><th>Fix Rounds</th>
+              </tr></thead>
+              <tbody>${tableRows}</tbody>
+            </table>
+            <div class="tfoot">
+              ${filtered.length > 100 ? `מציג 100 ראשונים מתוך ${filtered.length}` : `${filtered.length} פרויקטים · ${totalTasks.toLocaleString('he-IL')} משימות סה״כ`}
+            </div>
+          </div>`
+      }
+    </div>
+  </div>`;
 }
 
 // ══════════════════════════════════════════════════
@@ -1083,33 +1384,34 @@ function renderWorldPage(ps) {
 // ══════════════════════════════════════════════════
 
 // Pipeline filter state (persists across re-renders)
-const pipeF = { groupBy: 'stage', sort: 'stage', hideDone: true };
+const pipeF = { groupBy: 'stage', sort: 'stage', hideDone: true, dept: 'all' };
 
 function stageColor(s) {
   const m = {
-    'In Development':    'var(--accent)',
-    'QA & Testing':      'var(--purple-fg)',
-    'Launch Prep':       'var(--yellow-fg)',
-    'UI/UX Design':      '#c026d3',
-    'Technical Specs':   'var(--blue-fg)',
-    'Discovery & Planning':'var(--blue-fg)',
-    'Deployed':          'var(--green-fg)',
-    'Go Live':           'var(--green-fg)',
-    'Red Flag 🚩':       'var(--red-fg)',
-    'Backlog':           'rgba(26,29,35,.45)',
-    'On Hold':           '#607d8b',
-    'Cancelled':         'rgba(26,29,35,.3)',
-    'NTH':               'rgba(26,29,35,.3)',
+    'Backlog':               '#94a3b8',
+    'Discovery & Planning':  '#3b82f6',
+    'Technical Specs':       '#6366f1',
+    'UI/UX Design':          '#a855f7',
+    'In Development':        '#D05A72',
+    'QA & Testing':          '#7c3aed',
+    'Launch Prep':           '#d97706',
+    'Deployed':              '#15803d',
+    'Go Live':               '#059669',
+    'On Hold':               '#64748b',
+    'Red Flag 🚩':           '#b91c1c',
+    'Cancelled':             '#9ca3af',
+    'NTH':                   '#9ca3af',
   };
-  return m[s] || 'rgba(26,29,35,.55)';
+  return m[s] || '#64748b';
 }
 
 function renderPipeline(ps) {
-  // ── Battery bar for a pipeline project ──
+
+  // ── Battery bar ──
   function batteryHtml(p) {
     const hub = p.hub;
     if (!hub || hub.total === 0) {
-      return `<div class="no-hub-msg">אין נתוני משימות מהאב</div>`;
+      return `<div class="no-hub-msg">אין נתוני משימות מקושרות מהאב</div>`;
     }
     const arr   = hub.statusArr || [];
     const total = hub.total;
@@ -1120,100 +1422,99 @@ function renderPipeline(ps) {
     const nActive  = cnt('בעבודה') + cnt('מאושר');
     const nWait    = cnt('ממתין');
     const nBacklog = cnt('בנק משימות');
-    const pct = (n) => Math.round(n / total * 100);
-    const completed = nDone + nCancel;
+    const pct  = (n) => total ? Math.round(n / total * 100) : 0;
+    const done = nDone + nCancel;
 
-    // Actual timeline span
     const tlStr = hub.tlStart && hub.tlEnd
-      ? `<span class="pcard-dl-item"><span>טיימליין:</span> <span class="pcard-dl-val ltr">${fmtDate(hub.tlStart)} → ${fmtDate(hub.tlEnd)}</span></span>`
+      ? `<div class="pcard-row"><span class="pcard-row-icon">📅</span><span class="pcard-row-label">טיימליין:</span><span class="pcard-row-val ltr">${fmtDate(hub.tlStart)} → ${fmtDate(hub.tlEnd)}</span></div>`
       : '';
-
-    // Hub effort
     const effortStr = hub.effortA
-      ? `<span class="pcard-dl-item"><span>שעות בפועל:</span> <span class="pcard-dl-val">${fmtN(hub.effortA)}ש׳</span>${hub.effortP ? `<span style="color:rgba(26,29,35,.45);font-size:10.5px">/ ${fmtN(hub.effortP)} מתוכנן</span>` : ''}</span>`
+      ? `<div class="pcard-row"><span class="pcard-row-icon">⏱</span><span class="pcard-row-label">שעות בפועל:</span><span class="pcard-row-val">${fmtN(hub.effortA)}</span>${hub.effortP ? `<span style="font-size:11px;color:rgba(26,29,35,.42)">/ ${fmtN(hub.effortP)} מתוכנן</span>` : ''}</div>`
       : '';
 
-    return `
-      <div class="battery-wrap">
-        <div class="battery-label">
-          <span class="battery-label-left">${completed}/${total} משימות הושלמו</span>
-          <span class="battery-label-right">${pct(completed)}%</span>
+    return `<div class="battery-wrap">
+        <div class="battery-header">
+          <span class="battery-title">📋 התקדמות משימות</span>
+          <span class="battery-pct">${done}/${total} · ${pct(done)}%</span>
         </div>
         <div class="battery-bar">
-          ${nDone    ? `<div class="battery-seg" style="width:${pct(nDone)}%;background:#15803D" title="הסתיימו: ${nDone}"></div>` : ''}
-          ${nActive  ? `<div class="battery-seg" style="width:${pct(nActive)}%;background:var(--accent)" title="בעבודה: ${nActive}"></div>` : ''}
-          ${nWait    ? `<div class="battery-seg" style="width:${pct(nWait)}%;background:#B45309" title="ממתין: ${nWait}"></div>` : ''}
-          ${nBlocked ? `<div class="battery-seg" style="width:${pct(nBlocked)}%;background:#B91C1C" title="חסום: ${nBlocked}"></div>` : ''}
-          ${nCancel  ? `<div class="battery-seg" style="width:${pct(nCancel)}%;background:rgba(26,29,35,.2)" title="בוטל: ${nCancel}"></div>` : ''}
-          ${nBacklog ? `<div class="battery-seg" style="width:${pct(nBacklog)}%;background:rgba(26,29,35,.08)" title="בק לוג: ${nBacklog}"></div>` : ''}
+          ${nDone    ? `<div class="battery-seg" style="width:${pct(nDone)}%;background:#16a34a" title="הסתיימו ${nDone}"></div>` : ''}
+          ${nActive  ? `<div class="battery-seg" style="width:${pct(nActive)}%;background:#D05A72" title="בעבודה ${nActive}"></div>` : ''}
+          ${nWait    ? `<div class="battery-seg" style="width:${pct(nWait)}%;background:#d97706" title="ממתין ${nWait}"></div>` : ''}
+          ${nBlocked ? `<div class="battery-seg" style="width:${pct(nBlocked)}%;background:#b91c1c" title="חסום ${nBlocked}"></div>` : ''}
+          ${nCancel  ? `<div class="battery-seg" style="width:${pct(nCancel)}%;background:#cbd5e1" title="בוטל ${nCancel}"></div>` : ''}
+          ${nBacklog ? `<div class="battery-seg" style="width:${pct(nBacklog)}%;background:#e2e8f0" title="בק לוג ${nBacklog}"></div>` : ''}
         </div>
         <div class="battery-legend">
-          ${nDone    ? `<div class="bat-leg"><div class="bat-dot" style="background:#15803D"></div>${nDone} הסתיימו</div>` : ''}
-          ${nActive  ? `<div class="bat-leg"><div class="bat-dot" style="background:var(--accent)"></div>${nActive} בעבודה</div>` : ''}
-          ${nWait    ? `<div class="bat-leg"><div class="bat-dot" style="background:#B45309"></div>${nWait} ממתין</div>` : ''}
-          ${nBlocked ? `<div class="bat-leg"><div class="bat-dot" style="background:#B91C1C"></div>${nBlocked} חסום</div>` : ''}
-          ${nCancel  ? `<div class="bat-leg"><div class="bat-dot" style="background:rgba(26,29,35,.25)"></div>${nCancel} בוטל</div>` : ''}
+          ${nDone    ? `<div class="bat-leg"><div class="bat-dot" style="background:#16a34a"></div>${nDone} הסתיימו</div>` : ''}
+          ${nActive  ? `<div class="bat-leg"><div class="bat-dot" style="background:#D05A72"></div>${nActive} בעבודה</div>` : ''}
+          ${nWait    ? `<div class="bat-leg"><div class="bat-dot" style="background:#d97706"></div>${nWait} ממתין</div>` : ''}
+          ${nBlocked ? `<div class="bat-leg"><div class="bat-dot" style="background:#b91c1c"></div>${nBlocked} חסום</div>` : ''}
+          ${nCancel  ? `<div class="bat-leg"><div class="bat-dot" style="background:#cbd5e1"></div>${nCancel} בוטל</div>` : ''}
         </div>
       </div>
-      ${tlStr || effortStr ? `<div class="pcard-dl-row" style="margin-top:2px">${tlStr}${effortStr}</div>` : ''}`;
+      ${tlStr}${effortStr}`;
   }
 
   // ── Single card ──
   function cardHtml(p) {
-    const isDone   = PIPELINE_DONE_STAGES.has(p.devStage);
-    const isCancel = PIPELINE_CANCEL_STAGES.has(p.devStage);
-    const doneAttr   = isDone   ? 'data-done' : '';
-    const cancelAttr = isCancel ? 'data-cancel' : '';
-    const sColor = stageColor(p.devStage);
+    const sc = stageColor(p.devStage);
+    const h  = p.health;
 
-    const deadlineStr = p.deadline ? (() => {
-      const diffMs  = p.deadline.getTime() - new Date().setHours(0,0,0,0);
-      const diffDays= Math.round(diffMs / 864e5);
-      const rel     = diffDays < 0  ? `<span style="color:var(--red-fg);font-weight:600">(${Math.abs(diffDays)} י׳ איחור)</span>`
-                    : diffDays === 0 ? `<span style="color:var(--orange-fg);font-weight:600">(היום!)</span>`
-                    : diffDays <= 7  ? `<span style="color:var(--yellow-fg)">(${diffDays} ימים)</span>`
-                    :                  `<span style="color:rgba(26,29,35,.45)">(${diffDays} ימים)</span>`;
-      return `<span class="pcard-dl-val ltr">${fmtDate(p.deadline)}</span> ${rel}`;
-    })() : '<span style="color:rgba(26,29,35,.4)">ללא דד-ליין</span>';
+    // Deadline display
+    const deadlineHtml = p.deadline ? (() => {
+      const diffDays = Math.round((p.deadline.getTime() - new Date().setHours(0,0,0,0)) / 864e5);
+      const relColor = diffDays < 0  ? 'var(--red-fg)'
+                     : diffDays <= 7 ? 'var(--yellow-fg)'
+                     :                 'rgba(26,29,35,.45)';
+      const relTxt   = diffDays < 0  ? `${Math.abs(diffDays)} ימי איחור`
+                     : diffDays === 0 ? 'היום!'
+                     :                 `${diffDays} ימים`;
+      return `<span class="pcard-row-val ltr">${fmtDate(p.deadline)}</span>
+              <span class="pcard-row-rel" style="color:${relColor}">(${relTxt})</span>`;
+    })() : `<span style="color:rgba(26,29,35,.38)">ללא דד-ליין</span>`;
 
-    const impactColor = p.bizImpact === 'גבוה' ? 'var(--red-fg)' : p.bizImpact === 'בינוני' ? 'var(--yellow-fg)' : 'rgba(26,29,35,.5)';
+    const impactColor = p.bizImpact === 'גבוה' ? '#b91c1c' : p.bizImpact === 'בינוני' ? '#d97706' : '#94a3b8';
+    const impactHtml  = p.bizImpact
+      ? `<span style="font-size:10.5px;font-weight:700;color:${impactColor};display:flex;align-items:center;gap:3px"><span style="font-size:9px">⬤</span>${p.bizImpact}</span>`
+      : '';
 
-    const spStr = (p.spAct || p.spPlan)
-      ? `<span class="pcard-sp">SP: <span class="pcard-sp-val">${p.spAct||0}</span><span style="opacity:.45">/ ${p.spPlan||0} מתוכנן</span></span>`
+    const spHtml = (p.spAct || p.spPlan)
+      ? `<span style="font-size:11.5px;color:rgba(26,29,35,.55)">SP: <strong style="color:var(--ink);font-family:'JetBrains Mono',monospace">${p.spAct||0}</strong><span style="opacity:.5">/${p.spPlan||0}</span></span>`
       : '';
 
     const briefHtml = p.briefUrl
-      ? `<a href="${p.briefUrl}" target="_blank" style="font-size:11px;color:var(--blue-fg);text-decoration:none;display:flex;align-items:center;gap:3px;white-space:nowrap">📎 ${p.briefText||'BRIEF'}</a>`
+      ? `<a href="${p.briefUrl}" target="_blank" style="font-size:11.5px;color:var(--blue-fg);text-decoration:none;font-weight:600;display:flex;align-items:center;gap:3px">📎 בריף</a>`
       : '';
 
-    const impactHtml = p.bizImpact
-      ? `<span style="font-size:10.5px;font-weight:600;color:${impactColor}">⬤ ${p.bizImpact}</span>`
-      : '';
-
-    return `<div class="pcard" ${doneAttr} ${cancelAttr}>
+    return `<div class="pcard" data-hlth="${h}">
+      <div class="pcard-stripe" data-hlth="${h}"></div>
       <div class="pcard-head">
         <div class="pcard-stage-row">
-          <span class="pcard-stage" style="color:${sColor}">${p.devStage||'—'}</span>
-          ${healthHtml(p.health)}
+          <span class="pcard-stage" style="background:${sc}">${p.devStage||'—'}</span>
+          ${healthHtml(h)}
         </div>
         <div class="pcard-name">${stripE(p.name)||p.name||'—'}</div>
         <div class="pcard-people">
-          ${p.owner ? `<div class="pcard-person"><span class="pcard-person-role">OWNER</span> ${p.owner}</div>` : ''}
-          ${p.pm    ? `<div class="pcard-person"><span class="pcard-person-role">PM</span> ${p.pm}</div>` : ''}
-          ${p.quarter ? `<div class="pcard-person"><span class="pcard-person-role">Q</span> ${p.quarter}</div>` : ''}
+          ${p.owner    ? `<div class="pcard-person"><span class="pcard-person-role">Owner</span> ${p.owner}</div>` : ''}
+          ${p.pm       ? `<div class="pcard-person"><span class="pcard-person-role">PM</span> ${p.pm}</div>` : ''}
+          ${p.department ? `<div class="pcard-person"><span class="pcard-person-role">מחלקה</span> ${p.department}</div>` : ''}
+          ${p.quarter  ? `<div class="pcard-person"><span class="pcard-person-role">רבעון</span> ${p.quarter}</div>` : ''}
         </div>
       </div>
 
       <div class="pcard-body">
         ${batteryHtml(p)}
-        <div class="pcard-dl-row">
-          <span class="pcard-dl-item"><span>דד-ליין:</span> ${deadlineStr}</span>
+        <div class="pcard-row">
+          <span class="pcard-row-icon">🎯</span>
+          <span class="pcard-row-label">דד-ליין:</span>
+          ${deadlineHtml}
         </div>
       </div>
 
       <div class="pcard-foot">
-        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
-          ${spStr}
+        <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+          ${spHtml}
           ${impactHtml}
         </div>
         ${briefHtml}
@@ -1221,63 +1522,66 @@ function renderPipeline(ps) {
     </div>`;
   }
 
-  // ── KPI numbers ──
+  // ── KPI ──
   const active      = ps.filter(p => !PIPELINE_DONE_STAGES.has(p.devStage) && !PIPELINE_CANCEL_STAGES.has(p.devStage) && p.devStage !== 'On Hold' && p.devStage !== 'NTH' && p.devStage !== 'Backlog');
   const inDev       = ps.filter(p => p.devStage === 'In Development').length;
   const inQA        = ps.filter(p => p.devStage === 'QA & Testing').length;
   const done        = ps.filter(p => PIPELINE_DONE_STAGES.has(p.devStage)).length;
   const late        = ps.filter(p => p.health === 'red').length;
-  const noDeadline  = ps.filter(p => p.health === 'no-deadline').length;
+  const noDeadline  = ps.filter(p => p.health === 'no-deadline' && !PIPELINE_DONE_STAGES.has(p.devStage) && !PIPELINE_CANCEL_STAGES.has(p.devStage)).length;
   const spPlanTotal = ps.reduce((s,p) => s + p.spPlan, 0);
-  const spActTotal  = ps.reduce((s,p) => s + p.spAct,  0);
+  const spActTotal  = ps.reduce((s,p) => s + p.spAct, 0);
 
-  // ── Apply filters ──
+  // ── Department options ──
+  const depts = ['all', ...new Set(ps.map(p=>p.department).filter(Boolean)).values()].sort((a,b)=> a==='all'?-1:a.localeCompare(b));
+
+  // ── Filter ──
   let filtered = ps;
   if (pipeF.hideDone) filtered = filtered.filter(p => !PIPELINE_DONE_STAGES.has(p.devStage) && !PIPELINE_CANCEL_STAGES.has(p.devStage));
+  if (pipeF.dept !== 'all') filtered = filtered.filter(p => p.department === pipeF.dept);
   if (filterSearch) filtered = filtered.filter(p => (p.name||'').toLowerCase().includes(filterSearch));
 
-  // Sort
-  const healthOrder = { red:0, yellow:1, 'no-deadline':2, green:3, done:4, cancel:5 };
+  // ── Sort ──
+  const healthOrder = { red:0, 'no-deadline':1, yellow:2, green:3, done:4, cancel:5 };
   const SORT_FNS = {
     stage:    (a,b) => PIPELINE_STAGE_ORDER.indexOf(a.devStage) - PIPELINE_STAGE_ORDER.indexOf(b.devStage),
-    deadline: (a,b) => {
-      if (!a.deadline && !b.deadline) return 0;
-      if (!a.deadline) return 1;
-      if (!b.deadline) return -1;
-      return a.deadline - b.deadline;
-    },
+    deadline: (a,b) => (!a.deadline&&!b.deadline)?0:(!a.deadline?1:(!b.deadline?-1:a.deadline-b.deadline)),
     health:   (a,b) => (healthOrder[a.health]??9) - (healthOrder[b.health]??9),
   };
   filtered = filtered.slice().sort(SORT_FNS[pipeF.sort] || SORT_FNS.stage);
 
-  // Group
+  // ── Group ──
   function groupCards(arr) {
-    if (pipeF.groupBy === 'none') {
-      return `<div class="pc-grid">${arr.map(cardHtml).join('')}</div>`;
-    }
+    if (pipeF.groupBy === 'none') return `<div class="pc-grid">${arr.map(cardHtml).join('')}</div>`;
     if (pipeF.groupBy === 'quarter') {
       const groups = {};
-      arr.forEach(p => { const q = p.quarter||'ללא רבעון'; (groups[q]=groups[q]||[]).push(p); });
-      return Object.entries(groups).sort(([a],[b])=>a.localeCompare(b)).map(([q,items]) => `
-        <div class="pgroup">
+      arr.forEach(p => { const q=p.quarter||'ללא רבעון'; (groups[q]=groups[q]||[]).push(p); });
+      return Object.entries(groups).sort(([a],[b])=>a.localeCompare(b)).map(([q,items]) => {
+        const lateN = items.filter(p=>p.health==='red').length;
+        return `<div class="pgroup">
           <div class="pgroup-head">
-            <span class="pgroup-head-label">📅 ${q}</span>
+            <span class="pgroup-label">📅 ${q}</span>
             <span class="pgroup-count">${items.length} אפיקים</span>
+            ${lateN ? `<span class="pgroup-late">⚠ ${lateN} באיחור</span>` : ''}
           </div>
           <div class="pc-grid">${items.map(cardHtml).join('')}</div>
-        </div>`).join('');
+        </div>`;
+      }).join('');
     }
-    // stage grouping (default)
+    // Default: stage grouping in logical dev order
     const stageGroups = {};
-    arr.forEach(p => { const s = p.devStage||'—'; (stageGroups[s]=stageGroups[s]||[]).push(p); });
-    return PIPELINE_STAGE_ORDER.filter(s => stageGroups[s]).concat(
-      Object.keys(stageGroups).filter(s => !PIPELINE_STAGE_ORDER.includes(s))
-    ).map(s => {
-      const items = stageGroups[s] || [];
+    arr.forEach(p => { const s=p.devStage||'—'; (stageGroups[s]=stageGroups[s]||[]).push(p); });
+    const orderedKeys = PIPELINE_STAGE_ORDER.filter(s=>stageGroups[s])
+      .concat(Object.keys(stageGroups).filter(s=>!PIPELINE_STAGE_ORDER.includes(s)));
+    return orderedKeys.map(s => {
+      const items = stageGroups[s]||[];
+      const sc    = stageColor(s);
+      const lateN = items.filter(p=>p.health==='red').length;
       return `<div class="pgroup">
         <div class="pgroup-head">
-          <span class="pgroup-head-stage" style="color:${stageColor(s)}">${s}</span>
+          <span class="pgroup-stage-pill" style="background:${sc}">${s}</span>
           <span class="pgroup-count">${items.length} אפיקים</span>
+          ${lateN ? `<span class="pgroup-late">⚠ ${lateN} באיחור</span>` : ''}
         </div>
         <div class="pc-grid">${items.map(cardHtml).join('')}</div>
       </div>`;
@@ -1289,10 +1593,11 @@ function renderPipeline(ps) {
     <div class="page-head">
       <div>
         <h1 class="page-title">⚙️ פורטפוליו טכנולוגיה</h1>
-        <div class="page-sub">Dev Project Pipeline · ${ps.length} אפיקים סה״כ · ${active.length} פעילים</div>
+        <div class="page-sub">Dev Project Pipeline · ${ps.length} אפיקים סה״כ · ${active.length} פעילים · ${late} באיחור</div>
       </div>
     </div>
 
+    <!-- KPI -->
     <div class="kpi-strip kpi-strip-6">
       <div class="kpi">
         <div class="kpi-label">סה״כ אפיקים</div>
@@ -1301,12 +1606,12 @@ function renderPipeline(ps) {
       </div>
       <div class="kpi">
         <div class="kpi-label">In Development</div>
-        <div class="kpi-value" style="color:var(--accent)">${inDev}</div>
+        <div class="kpi-value" style="color:#D05A72">${inDev}</div>
         <div class="kpi-sub">בפיתוח פעיל</div>
       </div>
       <div class="kpi">
         <div class="kpi-label">QA & Testing</div>
-        <div class="kpi-value" style="color:var(--purple-fg)">${inQA}</div>
+        <div class="kpi-value" style="color:#7c3aed">${inQA}</div>
         <div class="kpi-sub">בבדיקות</div>
       </div>
       <div class="kpi">
@@ -1321,32 +1626,37 @@ function renderPipeline(ps) {
       </div>
       <div class="kpi">
         <div class="kpi-label">Story Points</div>
-        <div class="kpi-value" style="font-size:${spActTotal>999?'22px':'28px'}">${spActTotal||0}</div>
+        <div class="kpi-value" style="font-size:${spActTotal>999?'20px':'30px'}">${spActTotal||0}</div>
         <div class="kpi-sub">מתוכנן: ${spPlanTotal} SP</div>
       </div>
     </div>
 
     <!-- Filter bar -->
     <div class="pf-bar">
-      <span class="pf-label">קיבוץ לפי:</span>
-      <select class="pf-select" id="pfGroupBy" onchange="pipeF.groupBy=this.value;renderPipeline(pipelineProjects)">
+      <span class="pf-label">קיבוץ:</span>
+      <select class="pf-select" onchange="pipeF.groupBy=this.value;renderPipeline(pipelineProjects)">
         <option value="stage"   ${pipeF.groupBy==='stage'  ?'selected':''}>שלב פיתוח</option>
         <option value="quarter" ${pipeF.groupBy==='quarter'?'selected':''}>רבעון</option>
         <option value="none"    ${pipeF.groupBy==='none'   ?'selected':''}>ללא קיבוץ</option>
       </select>
       <div class="pf-div"></div>
       <span class="pf-label">מיון:</span>
-      <select class="pf-select" id="pfSort" onchange="pipeF.sort=this.value;renderPipeline(pipelineProjects)">
+      <select class="pf-select" onchange="pipeF.sort=this.value;renderPipeline(pipelineProjects)">
         <option value="stage"    ${pipeF.sort==='stage'   ?'selected':''}>שלב פיתוח</option>
         <option value="deadline" ${pipeF.sort==='deadline'?'selected':''}>דד-ליין</option>
         <option value="health"   ${pipeF.sort==='health'  ?'selected':''}>בריאות</option>
       </select>
       <div class="pf-div"></div>
-      <button class="pf-toggle ${pipeF.hideDone?'on':''}" id="pfHideDone"
+      <span class="pf-label">מחלקה:</span>
+      <select class="pf-select" onchange="pipeF.dept=this.value;renderPipeline(pipelineProjects)">
+        ${depts.map(d=>`<option value="${d}" ${pipeF.dept===d?'selected':''}>${d==='all'?'כולן':d}</option>`).join('')}
+      </select>
+      <div class="pf-div"></div>
+      <button class="pf-toggle ${pipeF.hideDone?'on':''}"
         onclick="pipeF.hideDone=!pipeF.hideDone;renderPipeline(pipelineProjects)">
-        ${pipeF.hideDone ? '👁 הצג הושלמו' : '🙈 הסתר הושלמו'}
+        ${pipeF.hideDone ? '👁 הצג הושלמו/בוטלו' : '🙈 הסתר הושלמו/בוטלו'}
       </button>
-      <span style="margin-right:auto;font-size:11px;color:rgba(26,29,35,.45)">${filtered.length} / ${ps.length} מוצגים</span>
+      <span style="margin-right:auto;font-size:11px;color:rgba(26,29,35,.42)">${filtered.length} / ${ps.length} מוצגים</span>
     </div>
 
     <!-- Cards -->
