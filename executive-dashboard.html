@@ -527,6 +527,8 @@ body::before{content:"";position:fixed;inset:0;background-image:url("data:image/
 .ppf-group-link{display:inline-flex;align-items:center;font-size:11px;font-weight:600;padding:2px 9px;border-radius:6px;border:1.5px solid var(--ink);color:var(--ink);text-decoration:none;background:var(--paper);box-shadow:2px 2px 0 var(--ink);transition:box-shadow .1s}
 .ppf-group-link:hover{box-shadow:none;transform:translate(2px,2px)}
 .ppf-group-link-brief{background:var(--paper-shade)}
+.ppf-type-cell{white-space:nowrap;width:72px}
+.ppf-type-label{font-size:12px;font-weight:700;color:var(--ink)}
 .ppf-wd{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:var(--ink)}
 .ppf-wd-label{font-family:'Heebo',sans-serif;font-size:10px;font-weight:500;color:rgba(26,29,35,.5);margin-right:2px}
 .ppf-gap{font-size:11px;font-weight:700;padding:2px 7px;border-radius:10px;white-space:nowrap}
@@ -578,8 +580,8 @@ body::before{content:"";position:fixed;inset:0;background-image:url("data:image/
 .prm-show-btn{display:inline-flex;align-items:center;gap:7px;padding:5px 12px;border:1.3px solid var(--ink);border-radius:16px;background:var(--paper);font-size:12px;color:var(--ink);cursor:pointer;font-weight:600}
 .prm-show-btn.active{background:var(--ink);color:var(--paper)}
 .prm-show-btn .ms-icon{font-size:13px}
-.prm-canvas-wrap{position:relative;background:var(--paper);border:1.5px solid var(--ink);border-radius:10px;box-shadow:3px 3px 0 var(--ink);overflow:auto;max-height:calc(100vh - 240px)}
-.prm-canvas{position:relative;min-height:520px}
+.prm-canvas-wrap{position:relative;background:var(--paper);border:1.5px solid var(--ink);border-radius:10px;box-shadow:3px 3px 0 var(--ink);overflow:auto;max-height:calc(100vh - 240px);direction:ltr}
+.prm-canvas{position:relative;min-height:520px;direction:ltr}
 .prm-axis{position:sticky;top:0;z-index:6;display:flex;background:var(--paper-deep);border-bottom:1.5px solid var(--ink)}
 .prm-axis-cell{flex-shrink:0;padding:8px 10px;border-inline-end:1px solid var(--ink-softer);font-family:'Heebo',sans-serif}
 .prm-axis-year{font-size:10px;color:rgba(26,29,35,.45);font-family:'JetBrains Mono',monospace}
@@ -601,9 +603,11 @@ body::before{content:"";position:fixed;inset:0;background-image:url("data:image/
 .prm-launch[data-h="red"] .prm-launch-top{color:var(--red-fg)}
 .prm-launch[data-h="yellow"] .prm-launch-top{color:var(--yellow-fg)}
 .prm-launch-icon{font-size:13px}
-.prm-launch-name{font-family:'Suez One',serif;font-size:13.5px;color:var(--ink);line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:160px}
-.prm-launch-date{font-family:'JetBrains Mono',monospace;font-size:10.5px;color:rgba(26,29,35,.5);margin-top:1px}
-.prm-launch-pl{font-size:10.5px;color:rgba(26,29,35,.55);margin-top:1px}
+.prm-launch-name{font-family:'Suez One',serif;font-size:13.5px;color:var(--ink);line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:160px;direction:rtl}
+.prm-launch-top{direction:rtl}
+.prm-launch-date{font-family:'JetBrains Mono',monospace;font-size:10.5px;color:rgba(26,29,35,.5);margin-top:1px;direction:rtl}
+.prm-launch-pl{font-size:10.5px;color:rgba(26,29,35,.55);margin-top:1px;direction:rtl}
+.prm-milestone-name,.prm-milestone-date{direction:rtl}
 .prm-milestone{position:absolute;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:default;z-index:2;width:100px;transform:translateX(50%)}
 .prm-milestone-bubble{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:1.4px solid var(--ink);background:var(--paper);font-size:14px;box-shadow:1.5px 1.5px 0 var(--ink)}
 .prm-milestone[data-t="launch"] .prm-milestone-bubble{background:var(--accent-soft);border-color:var(--accent)}
@@ -2468,56 +2472,71 @@ function renderProductLaunches(items) {
     </div>`;
   }
 
-  function rowHtml(p) {
-    const rowCls = p.health === 'red' ? 'pl-row-red' : p.health === 'yellow' ? 'pl-row-yellow' : p.health === 'done' ? 'pl-row-done' : p.health === 'hold' ? 'pl-row-hold' : '';
-    const statusCls = p.health === 'done' ? 'done' : p.health === 'hold' ? 'hold' : p.health === 'red' ? 'red' : '';
-    return `<tr class="pl-row ${rowCls}">
-      <td class="pl-td pl-td-name">${healthDot(p)}<span class="pl-item-name">${p.name}</span></td>
-      <td class="pl-td">${p.type ? `<span class="pl-type-tag">${p.type}</span>` : '—'}</td>
-      <td class="pl-td">${stagePill(p.stage)}</td>
-      <td class="pl-td">${stockCell(p)}</td>
-      <td class="pl-td">${spanWdCell(p)}</td>
-      <td class="pl-td">${stockVsLaunchCell(p)}</td>
-      <td class="pl-td">${taskBattery(p)}</td>
-      <td class="pl-td"><span class="pl-status-text ${statusCls}">${p.derivedStatus || '—'}</span></td>
-    </tr>`;
-  }
-
   function groupHtml(groupLabel, groupItems) {
-    const redFlagsInGroup = groupItems.filter(p => p.health === 'red').length;
-    const allDone         = groupItems.every(p => p.health === 'done');
-    const launchItem      = groupItems.find(p => p.launchDate);
-    // Board link + brief link: use first item in group that has them
-    const boardLinkItem   = groupItems.find(p => p.boardLink?.url);
-    const briefLinkItem   = groupItems.find(p => p.briefLink?.url);
+    // Show only the 3 meaningful milestones per product line
+    const sampleItem  = groupItems.find(p => p.type === '📦 Sample');
+    const prboxItem   = groupItems.find(p => p.type === '🎁 PR Box');
+    // Main product = anything that's not Sample and not PR Box
+    const productItem = groupItems.find(p => p.type !== '📦 Sample' && p.type !== '🎁 PR Box');
+
+    const rows = [
+      sampleItem  ? { item: sampleItem,  label: 'סמפל',  icon: '🧪' } : null,
+      productItem ? { item: productItem, label: 'מוצר',  icon: '📦' } : null,
+      prboxItem   ? { item: prboxItem,   label: 'PR Box', icon: '🎁' } : null,
+    ].filter(Boolean);
+
+    const allDone = rows.every(r => r.item.health === 'done');
+    const hasRed  = rows.some(r => r.item.health === 'red');
+    const launchItem    = groupItems.find(p => p.launchDate);
+    const boardLinkItem = groupItems.find(p => p.boardLink?.url);
+    const briefLinkItem = groupItems.find(p => p.briefLink?.url);
 
     const linkButtons = [
       boardLinkItem ? `<a href="${boardLinkItem.boardLink.url}" target="_blank" class="ppf-group-link">📋 בורד</a>` : '',
       briefLinkItem ? `<a href="${briefLinkItem.briefLink.url}" target="_blank" class="ppf-group-link ppf-group-link-brief">📄 בריף</a>` : '',
     ].filter(Boolean).join('');
 
+    function itemRowHtml({ item: p, label, icon }) {
+      const diff = p.stockDate ? Math.round((p.stockDate.getTime() - todayMs) / 864e5) : null;
+      let chip = '';
+      if (!p.stockDate) chip = '<span style="color:rgba(26,29,35,.3)">—</span>';
+      else if (p.health === 'done') chip = `<span class="pl-days done">✓ הסתיימה</span>`;
+      else if (p.health === 'hold') chip = `<span class="pl-days hold">⏸ בהמתנה</span>`;
+      else if (diff < 0) chip = `<span class="pl-days red">באיחור של ${Math.abs(diff)} ימים</span>`;
+      else if (diff === 0) chip = `<span class="pl-days yellow">היום!</span>`;
+      else if (diff === 1) chip = `<span class="pl-days ${p.health}">מחר</span>`;
+      else chip = `<span class="pl-days ${p.health}">${diff} ימים נשארו</span>`;
+
+      const sc = STAGE_COLORS[p.stage] || { bg:'#f1f5f9', fg:'#475569' };
+      const rowCls = p.health === 'red' ? 'pl-row-red' : p.health === 'yellow' ? 'pl-row-yellow' : p.health === 'done' ? 'pl-row-done' : p.health === 'hold' ? 'pl-row-hold' : '';
+
+      return `<tr class="pl-row ${rowCls}">
+        <td class="pl-td ppf-type-cell"><span class="ppf-type-label">${icon} ${label}</span></td>
+        <td class="pl-td"><span class="pl-stage-pill" style="background:${sc.bg};color:${sc.fg}">${p.stage || '—'}</span></td>
+        <td class="pl-td pl-td-date"><span class="ltr" style="font-family:'JetBrains Mono',monospace;font-size:12px">${fmtDate(p.stockDate)}</span></td>
+        <td class="pl-td">${chip}</td>
+        <td class="pl-td">${taskBattery(p)}</td>
+      </tr>`;
+    }
+
     return `<div class="pl-group ${allDone ? 'pl-group-done' : ''}">
       <div class="pl-group-head">
         <div class="pl-group-title">
-          ${redFlagsInGroup ? '<span class="pl-group-flag">🚩</span>' : allDone ? '<span style="color:var(--green-fg)">✓</span>' : ''}
+          ${hasRed ? '<span class="pl-group-flag">🚩</span>' : allDone ? '<span style="color:var(--green-fg)">✓</span>' : ''}
           <span>${groupLabel}</span>
-          <span class="pl-group-count">${groupItems.length} פריטים</span>
           ${linkButtons}
         </div>
         ${launchItem ? `<div class="ppf-launch-badge">🏁 השקה: <strong class="ltr">${fmtDate(launchItem.launchDate)}</strong></div>` : ''}
       </div>
       <table class="pl-table">
         <thead><tr>
-          <th class="pl-th">פריט</th>
-          <th class="pl-th">סוג</th>
+          <th class="pl-th" style="width:80px">סוג</th>
           <th class="pl-th">שלב</th>
-          <th class="pl-th">תאריך מחסן</th>
-          <th class="pl-th" title="ספן ימי עבודה לפי ציר משימות">ימי עבודה</th>
-          <th class="pl-th" title="ימי עבודה בין מחסן להשקה">מחסן → השקה</th>
+          <th class="pl-th">זמן מחסן</th>
+          <th class="pl-th">נותר</th>
           <th class="pl-th">משימות</th>
-          <th class="pl-th">סטטוס</th>
         </tr></thead>
-        <tbody>${groupItems.map(rowHtml).join('')}</tbody>
+        <tbody>${rows.map(itemRowHtml).join('')}</tbody>
       </table>
     </div>`;
   }
@@ -2705,12 +2724,11 @@ const PRM_STATUSES = [
 ];
 
 function prmClassifyHubTask(task) {
-  const type = task.column_values?.find(cv => cv.column_id === C.PROJECT_TYPE)?.text_value || '';
   const name = (task.name || '').toLowerCase();
-  if (type.includes('🚀') || name.includes('השקה') || name.includes('launch') || name.includes('go live')) return 'launch';
-  if (type.includes('🎁') || name.includes('pr box') || name.includes('פר בוקס')) return 'prBox';
+  if (name.includes('השקה') || name.includes('launch') || name.includes('go live')) return 'launch';
+  if (name.includes('pr box') || name.includes('פר בוקס') || name.includes('פר-בוקס')) return 'prBox';
   if (name.includes('סמפל') || name.includes('sample') || name.includes('דגימה')) return 'sample';
-  if (type.includes('📦') || name.includes('מלאי') || name.includes('stock') || name.includes('מחסן') || name.includes('ייצור') || name.includes('manuf')) return 'stock';
+  if (name.includes('מלאי') || name.includes('מחסן') || name.includes('stock') || name.includes('warehouse') || name.includes('inventory')) return 'stock';
   return null;
 }
 
@@ -2720,6 +2738,26 @@ function prmTaskEndDate(task) {
   if (tl.to) return tl.to;
   const dl = task.column_values?.find(cv => cv.column_id === C.DEADLINE)?.text_value;
   return parseDate(dl);
+}
+
+function prmExtractCategory(name) {
+  const n = (name || '').replace(/^✨\s*/, '').trim();
+  const lower = n.toLowerCase();
+  if (lower.startsWith('gummies'))     return 'Gummies';
+  if (lower.startsWith('edible'))      return 'Edibles';
+  if (lower.startsWith('pr box') || lower.startsWith('pr  box') || lower.startsWith('pr-box')) return 'PR Box';
+  if (lower.startsWith('sample'))      return 'Samples';
+  if (lower.startsWith('accessories')) return 'Accessories';
+  return 'אחר';
+}
+
+function prmTypeToMtype(plType) {
+  if (!plType) return null;
+  if (plType.includes('Sample')) return 'sample';
+  if (plType.includes('PR Box')) return 'prBox';
+  if (plType.includes('Accessories')) return 'stock';
+  if (plType.includes('New Product')) return 'stock';
+  return null;
 }
 
 function renderProductRoadmap() {
@@ -2738,6 +2776,20 @@ function renderProductRoadmap() {
     if (!boardName) return;
     if (!hubByBoardName.has(boardName)) hubByBoardName.set(boardName, []);
     hubByBoardName.get(boardName).push(task);
+  });
+
+  const subItemsByLine = new Map();
+  items.forEach(item => {
+    const line = plCv(item, PL.PRODUCT_NAME).t || '';
+    const launch = parseDate(plCv(item, PL.LAUNCH_DATE).t);
+    if (launch) return;
+    const stock = parseDate(plCv(item, PL.STOCK_DATE).t);
+    if (!stock || !line) return;
+    const type = plCv(item, PL.PROJECT_TYPE).t || '';
+    const mtype = prmTypeToMtype(type);
+    if (!mtype) return;
+    if (!subItemsByLine.has(line)) subItemsByLine.set(line, []);
+    subItemsByLine.get(line).push({ name: item.name, date: stock, mtype, type });
   });
 
   const ACTIVE_STAGES = new Set(['Planning & Initiation','Product Design','Product Development','Cross-Team Alignment','Product Manufacturing']);
@@ -2764,6 +2816,13 @@ function renderProductRoadmap() {
     const hubTasks = hubByBoardName.get(item.name) || [];
     let maxEnd = null;
     const milestones = [];
+    const seenMs = new Set();
+    function pushMs(ms) {
+      const key = ms.mtype + '|' + ms.date.getTime();
+      if (seenMs.has(key)) return;
+      seenMs.add(key);
+      milestones.push(ms);
+    }
     hubTasks.forEach(task => {
       const calcFlag = task.column_values?.find(cv => cv.column_id === C.CALC_DEADLINE)?.text_value;
       const status   = task.column_values?.find(cv => cv.column_id === C.STATUS)?.text_value || '';
@@ -2772,15 +2831,25 @@ function renderProductRoadmap() {
         if (!maxEnd || endDate > maxEnd) maxEnd = endDate;
       }
       const mtype = prmClassifyHubTask(task);
-      if (!mtype) return;
-      if (!endDate) return;
-      milestones.push({
-        name: task.name,
-        date: endDate,
-        mtype,
-        status,
-        isDone: status === 'הסתיימה',
-        isCancel: status === 'מבוטלת',
+      if (!mtype || !endDate) return;
+      pushMs({
+        name: task.name, date: endDate, mtype, status,
+        isDone: status === 'הסתיימה', isCancel: status === 'מבוטלת',
+      });
+    });
+
+    if (stockDate) {
+      pushMs({
+        name: 'מחסן · ' + item.name, date: stockDate, mtype: 'stock', status: '',
+        isDone: stockDate.getTime() < todayMs, isCancel: false,
+      });
+    }
+
+    const subItems = subItemsByLine.get(productLine) || [];
+    subItems.forEach(sub => {
+      pushMs({
+        name: sub.name, date: sub.date, mtype: sub.mtype, status: '',
+        isDone: sub.date.getTime() < todayMs, isCancel: false,
       });
     });
 
@@ -2799,8 +2868,9 @@ function renderProductRoadmap() {
       if (allMsDone) health = 'done';
     }
 
+    const category = prmExtractCategory(item.name);
     return {
-      ...item, launchDate, stockDate, stage, productLine, type, owner,
+      ...item, launchDate, stockDate, stage, productLine, type, owner, category,
       derivedStatus, milestones, maxEnd, timelineOverrun, isDone, isHold, isRedFlag, health,
     };
   }
@@ -2810,7 +2880,7 @@ function renderProductRoadmap() {
   let parsed = allParsed.filter(p => p.launchDate);
   const search = prmF.search.trim().toLowerCase();
   if (search)            parsed = parsed.filter(p => p.name.toLowerCase().includes(search) || (p.productLine||'').toLowerCase().includes(search));
-  if (prmF.category !== 'all') parsed = parsed.filter(p => p.type === prmF.category);
+  if (prmF.category !== 'all') parsed = parsed.filter(p => p.category === prmF.category);
   if (prmF.status   !== 'all') {
     const def = PRM_STATUSES.find(s => s.key === prmF.status);
     if (def) parsed = parsed.filter(def.test);
@@ -2819,7 +2889,7 @@ function renderProductRoadmap() {
   const statusCounts = {};
   PRM_STATUSES.forEach(s => statusCounts[s.key] = allParsed.filter(p => p.launchDate && s.test(p)).length);
 
-  const allCategories = [...new Set(allParsed.map(p => p.type).filter(Boolean))].sort();
+  const allCategories = [...new Set(allParsed.filter(p => p.launchDate).map(p => p.category).filter(Boolean))].sort();
 
   parsed.sort((a,b) => a.launchDate.getTime() - b.launchDate.getTime());
 
