@@ -485,6 +485,8 @@ body::before{content:"";position:fixed;inset:0;background-image:url("data:image/
 .pl-row-red:hover .pl-td{background:rgba(254,226,226,.5)}
 .pl-row-yellow .pl-td{background:rgba(254,243,199,.2)}
 .pl-row-done .pl-td{opacity:.65}
+.pl-row-hold .pl-td{background:rgba(148,163,184,.08)}
+.pl-row-hold:hover .pl-td{background:rgba(148,163,184,.18)}
 .pl-td-name{display:flex;align-items:center;gap:8px;min-width:200px;white-space:nowrap}
 .pl-item-name{font-weight:500;font-size:13px}
 .pl-rf-badge{font-size:10px;padding:2px 6px;background:var(--red-bg);color:var(--red-fg);border-radius:4px;font-weight:700}
@@ -494,6 +496,7 @@ body::before{content:"";position:fixed;inset:0;background-image:url("data:image/
 .pl-type-tag{display:inline-block;font-size:11px;padding:2px 7px;border-radius:4px;background:var(--paper-shade);color:var(--ink);font-weight:500;border:1px solid var(--ink-soft);white-space:nowrap}
 .pl-dot{font-size:13px;flex-shrink:0}
 .pl-dot.done{color:var(--green-fg)}
+.pl-dot.hold{color:#64748b}
 .pl-dot.cancel{color:rgba(26,29,35,.35)}
 .pl-dot.green{color:var(--green-fg)}
 .pl-days{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;white-space:nowrap;font-family:'JetBrains Mono',monospace}
@@ -501,10 +504,14 @@ body::before{content:"";position:fixed;inset:0;background-image:url("data:image/
 .pl-days.yellow{background:var(--yellow-bg);color:var(--yellow-fg)}
 .pl-days.green{background:var(--green-bg);color:var(--green-fg)}
 .pl-days.done{background:var(--green-bg);color:var(--green-fg)}
+.pl-days.hold{background:#f1f5f9;color:#64748b}
 .pl-days.none{color:rgba(26,29,35,.35)}
 .pl-status-text{font-size:12px;color:rgba(26,29,35,.7)}
 .pl-status-text.done{color:var(--green-fg);font-weight:600}
+.pl-status-text.hold{color:#64748b}
+.pl-status-text.red{color:var(--red-fg);font-weight:700}
 .pl-status-text.cancel{color:rgba(26,29,35,.4)}
+.pl-overrun-badge{display:inline-flex;align-items:center;font-size:10px;font-weight:700;padding:1px 6px;border-radius:4px;background:var(--yellow-bg);color:var(--yellow-fg);border:1px solid var(--yellow-fg);margin-right:4px;white-space:nowrap}
 .pl-notice{display:flex;align-items:flex-start;gap:14px;padding:16px 20px;background:var(--yellow-bg);border:1.5px solid var(--yellow-fg);border-radius:8px;margin-bottom:4px}
 .pl-notice-icon{font-size:24px;flex-shrink:0}
 .pl-notice-title{font-weight:700;font-size:14px;color:var(--yellow-fg)}
@@ -619,6 +626,7 @@ const C = {
   PLANNED:      'numeric_mm0p7e5k',
   FIX_ROUNDS:   'numeric_mm0ppf5f',
   QUARTER:      'color_mm2jkkq1',
+  CALC_DEADLINE:'color_mm3g35k2',   // לחשב לדד ליין פרויקט (כן/לא)
 };
 
 // ── Pipeline board column IDs ──
@@ -2105,29 +2113,77 @@ function renderProductLaunches(items) {
     return r ? { t: r.text_value, r: r.value } : { t: null, r: null };
   }
 
+  // Build Hub task index by Board Name (text_mm1rz19m) — O(1) lookup
+  const hubByBoardName = new Map();
+  (window.__rawItems || []).forEach(task => {
+    const boardName = task.column_values?.find(cv => cv.column_id === C.BOARD_NAME)?.text_value;
+    if (!boardName) return;
+    if (!hubByBoardName.has(boardName)) hubByBoardName.set(boardName, []);
+    hubByBoardName.get(boardName).push(task);
+  });
+
+  // Derive status from stage (not from Monday's status column — unreliable)
+  const ACTIVE_STAGES = new Set(['Planning & Initiation','Product Design','Product Development','Cross-Team Alignment','Product Manufacturing']);
+  function deriveStatus(stage) {
+    if (ACTIVE_STAGES.has(stage))  return 'בעבודה';
+    if (stage === 'Stock Date')    return 'הסתיימה';
+    if (stage === 'RED FLAG')      return 'דגל אדום';
+    if (stage === 'On Hold')       return 'למעקב';
+    return '';
+  }
+
+  // Find latest timeline-end among relevant Hub tasks for a product item
+  function calcHubTimeline(itemName) {
+    const tasks = hubByBoardName.get(itemName) || [];
+    let maxEnd = null;
+    let totalTasks = 0, relevantTasks = 0;
+    tasks.forEach(task => {
+      totalTasks++;
+      const calcFlag = task.column_values?.find(cv => cv.column_id === C.CALC_DEADLINE)?.text_value;
+      if (calcFlag === 'לא') return; // post-launch tasks — exclude
+      relevantTasks++;
+      const tlRaw = task.column_values?.find(cv => cv.column_id === C.TIMELINE)?.value;
+      const tl = parseTL(tlRaw);
+      if (tl.to && (!maxEnd || tl.to > maxEnd)) maxEnd = tl.to;
+    });
+    return { maxEnd, totalTasks, relevantTasks };
+  }
+
   function parsePLItem(item) {
     const launchDate  = parseDate(plCv(item, PL.LAUNCH_DATE).t);
     const stockDate   = parseDate(plCv(item, PL.STOCK_DATE).t);
     const stage       = plCv(item, PL.STAGE).t || '';
-    const status      = plCv(item, PL.STATUS).t || '';
     const productLine = plCv(item, PL.PRODUCT_NAME).t || '—';
     const type        = plCv(item, PL.PROJECT_TYPE).t || '';
     const quarter     = plCv(item, PL.QUARTER).t || '';
     const bizImpact   = plCv(item, PL.BIZ_IMPACT).t || '';
     const owner       = plCv(item, PL.OWNER).t || '';
 
-    const isDone     = status === 'הסתיימה' || item.group_title === 'DONE';
-    const isCanceled = status === 'מבוטלת';
-    const isRedFlag  = stage === 'RED FLAG' || status === 'דגל אדום';
-    const isLate     = !isDone && launchDate && launchDate.getTime() < todayMs;
-    const isAtRisk   = !isDone && !isLate && launchDate && launchDate.getTime() <= todayMs + 30*864e5;
+    // Status from stage — source of truth
+    const derivedStatus = deriveStatus(stage);
 
-    let health = 'green';
-    if (isDone || isCanceled) health = isDone ? 'done' : 'cancel';
-    else if (isRedFlag || isLate) health = 'red';
-    else if (isAtRisk) health = 'yellow';
+    // Hub timeline analysis
+    const { maxEnd, totalTasks, relevantTasks } = calcHubTimeline(item.name);
+    const timelineOverrun = maxEnd && stockDate && maxEnd.getTime() > stockDate.getTime();
+    const daysOverrun     = timelineOverrun ? Math.round((maxEnd.getTime() - stockDate.getTime()) / 864e5) : 0;
 
-    return { ...item, launchDate, stockDate, stage, status, productLine, type, quarter, bizImpact, owner, isDone, isCanceled, isRedFlag, isLate, isAtRisk, health };
+    // Health
+    const isDone   = derivedStatus === 'הסתיימה';
+    const isHold   = derivedStatus === 'למעקב';
+    const isRedFlag = stage === 'RED FLAG';
+
+    let health;
+    if (isDone)    health = 'done';
+    else if (isHold) health = 'hold';
+    else if (isRedFlag || timelineOverrun) health = 'red';
+    else if (stockDate && stockDate.getTime() <= todayMs + 30*864e5) health = 'yellow';
+    else health = 'green';
+
+    return {
+      ...item, launchDate, stockDate, stage, productLine, type, quarter, bizImpact, owner,
+      derivedStatus, maxEnd, totalTasks, relevantTasks, timelineOverrun, daysOverrun,
+      isDone, isHold, isRedFlag, health,
+    };
   }
 
   let parsed = items.map(parsePLItem);
@@ -2195,48 +2251,64 @@ function renderProductLaunches(items) {
 
   function healthDot(p) {
     if (p.health === 'done') return '<span class="pl-dot done" title="הושלם">✓</span>';
-    if (p.health === 'cancel') return '<span class="pl-dot cancel" title="מבוטל">✕</span>';
-    if (p.health === 'red') return '<span class="pl-dot red" title="דגל אדום / באיחור">🚩</span>';
+    if (p.health === 'hold') return '<span class="pl-dot hold" title="למעקב">⏸</span>';
+    if (p.health === 'red')  return '<span class="pl-dot red"  title="חריגה / דגל אדום">🚩</span>';
     if (p.health === 'yellow') return '<span class="pl-dot yellow" title="בסיכון">⚠</span>';
     return '<span class="pl-dot green">●</span>';
   }
 
-  function daysChip(p) {
-    if (p.health === 'done') return `<span class="pl-days done">✓ הושלם</span>`;
-    if (!p.launchDate) return `<span class="pl-days none">—</span>`;
-    const diff = Math.round((p.launchDate.getTime() - todayMs) / 864e5);
-    if (diff < 0) return `<span class="pl-days red">${Math.abs(diff)} ימי איחור</span>`;
+  // Countdown to stock date (more meaningful than launch date for health)
+  function stockChip(p) {
+    if (p.health === 'done') return `<span class="pl-days done">✓ הסתיימה</span>`;
+    if (p.health === 'hold') return `<span class="pl-days hold">⏸ למעקב</span>`;
+    if (!p.stockDate) return `<span class="pl-days none">—</span>`;
+    const diff = Math.round((p.stockDate.getTime() - todayMs) / 864e5);
+    if (diff < 0) return `<span class="pl-days red">${Math.abs(diff)}י׳ איחור מחסן</span>`;
     if (diff === 0) return `<span class="pl-days yellow">היום!</span>`;
-    return `<span class="pl-days ${p.health}">${diff} ימים</span>`;
+    return `<span class="pl-days ${p.health}">${diff}י׳ למחסן</span>`;
+  }
+
+  // Timeline overrun badge
+  function overrunBadge(p) {
+    if (!p.timelineOverrun) return '';
+    return `<span class="pl-overrun-badge" title="ציר זמן משימות חורג מתאריך המחסן ב-${p.daysOverrun} ימים">
+      ⚠ חריגת ${p.daysOverrun}י׳
+    </span>`;
+  }
+
+  function statusBadge(p) {
+    const cls = p.health === 'done' ? 'done' : p.health === 'hold' ? 'hold' : p.health === 'red' ? 'red' : '';
+    return `<span class="pl-status-text ${cls}">${p.derivedStatus || '—'}</span>`;
   }
 
   function rowHtml(p) {
-    const isHighlighted = p.health === 'red' || p.isRedFlag;
-    return `<tr class="pl-row ${isHighlighted ? 'pl-row-red' : p.health === 'yellow' ? 'pl-row-yellow' : p.health === 'done' ? 'pl-row-done' : ''}">
+    const rowCls = p.health === 'red' ? 'pl-row-red' : p.health === 'yellow' ? 'pl-row-yellow' : p.health === 'done' ? 'pl-row-done' : p.health === 'hold' ? 'pl-row-hold' : '';
+    return `<tr class="pl-row ${rowCls}">
       <td class="pl-td pl-td-name">
         ${healthDot(p)}
         <span class="pl-item-name">${p.name}</span>
-        ${p.isRedFlag && p.stage !== 'RED FLAG' ? '<span class="pl-rf-badge">🚩 RED FLAG</span>' : ''}
+        ${overrunBadge(p)}
       </td>
       <td class="pl-td">${typeTag(p.type)}</td>
       <td class="pl-td">${stagePill(p.stage)}</td>
       <td class="pl-td pl-td-owner">${p.owner || '—'}</td>
       <td class="pl-td pl-td-date">
         <span class="ltr">${fmtDate(p.stockDate)}</span>
+        ${p.maxEnd ? `<div style="font-size:10px;color:rgba(26,29,35,.45)">ציר משימות: <span class="ltr">${fmtDate(p.maxEnd)}</span></div>` : ''}
       </td>
       <td class="pl-td pl-td-date">
-        <strong class="ltr" style="${p.isLate ? 'color:var(--red-fg)' : ''}">${fmtDate(p.launchDate)}</strong>
+        <strong class="ltr">${fmtDate(p.launchDate)}</strong>
       </td>
-      <td class="pl-td">${daysChip(p)}</td>
-      <td class="pl-td"><span class="pl-status-text ${p.isDone?'done':p.isCanceled?'cancel':''}">${p.status || '—'}</span></td>
+      <td class="pl-td">${stockChip(p)}</td>
+      <td class="pl-td">${statusBadge(p)}</td>
     </tr>`;
   }
 
   function groupHtml(productLine, groupItems) {
     const redFlagsInGroup = groupItems.filter(p => p.health === 'red').length;
     const doneInGroup     = groupItems.filter(p => p.health === 'done').length;
-    const nextLaunch      = groupItems.find(p => p.launchDate && p.launchDate.getTime() >= todayMs);
-    const allDone         = groupItems.every(p => p.health === 'done' || p.health === 'cancel');
+    const nextLaunch      = groupItems.find(p => p.stockDate && p.stockDate.getTime() >= todayMs);
+    const allDone         = groupItems.every(p => p.health === 'done');
 
     return `<div class="pl-group ${allDone ? 'pl-group-done' : ''}">
       <div class="pl-group-head">
@@ -2246,7 +2318,7 @@ function renderProductLaunches(items) {
           <span class="pl-group-count">${groupItems.length} פריטים</span>
           ${doneInGroup ? `<span class="pl-group-done-badge">${doneInGroup} הושלמו</span>` : ''}
         </div>
-        ${nextLaunch ? `<div class="pl-group-next">השקה הבאה: <strong class="ltr">${fmtDate(nextLaunch.launchDate)}</strong></div>` : ''}
+        ${nextLaunch ? `<div class="pl-group-next">מחסן: <strong class="ltr">${fmtDate(nextLaunch.stockDate)}</strong></div>` : ''}
       </div>
       <table class="pl-table">
         <thead>
@@ -2255,7 +2327,7 @@ function renderProductLaunches(items) {
             <th class="pl-th">סוג</th>
             <th class="pl-th">שלב</th>
             <th class="pl-th">אחראי</th>
-            <th class="pl-th">מחסן</th>
+            <th class="pl-th">תאריך מחסן</th>
             <th class="pl-th">השקה</th>
             <th class="pl-th">נותר</th>
             <th class="pl-th">סטטוס</th>
