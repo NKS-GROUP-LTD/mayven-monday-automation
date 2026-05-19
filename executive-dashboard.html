@@ -467,18 +467,18 @@ body::before{content:"";position:fixed;inset:0;background-image:url("data:image/
 .dept-no-people{padding:14px 20px;font-size:12px;color:rgba(26,29,35,.45);text-align:center}
 
 /* ── Product Launches Page ── */
-.pl-groups{display:flex;flex-direction:column;gap:18px}
+.pl-groups{display:flex;flex-direction:column;gap:14px}
 .pl-group{background:var(--paper);border:1.5px solid var(--ink);border-radius:8px;overflow:hidden;box-shadow:3px 3px 0 var(--ink)}
 .pl-group-done{opacity:.7;border-color:rgba(26,29,35,.3);box-shadow:2px 2px 0 rgba(26,29,35,.15)}
-.pl-group-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 18px;border-bottom:1.5px dashed var(--ink-soft);background:var(--paper-deep)}
-.pl-group-title{display:flex;align-items:center;gap:8px;font-family:'Suez One',serif;font-size:16px;font-weight:700;color:var(--ink)}
-.pl-group-flag{font-size:16px}
+.pl-group-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 14px;border-bottom:1.5px solid var(--ink-soft);background:var(--paper-deep)}
+.pl-group-title{display:flex;align-items:center;gap:8px;font-family:'Suez One',serif;font-size:15px;font-weight:700;color:var(--ink)}
+.pl-group-flag{font-size:14px}
 .pl-group-count{font-size:12px;font-weight:500;color:rgba(26,29,35,.55);font-family:'Heebo',sans-serif}
 .pl-group-done-badge{font-size:11px;padding:2px 7px;border-radius:10px;background:var(--green-bg);color:var(--green-fg);font-weight:600}
 .pl-group-next{font-size:12px;color:rgba(26,29,35,.6)}
 .pl-table{width:100%;border-collapse:collapse}
-.pl-th{padding:8px 14px;text-align:right;font-size:11.5px;font-weight:600;color:rgba(26,29,35,.55);border-bottom:1px solid var(--ink-soft);white-space:nowrap;background:var(--paper-deep)}
-.pl-td{padding:9px 14px;border-bottom:1px solid var(--ink-softer);vertical-align:middle;font-size:13px}
+.pl-th{padding:5px 12px;text-align:right;font-size:11px;font-weight:600;color:rgba(26,29,35,.45);border-bottom:1px solid var(--ink-softer);white-space:nowrap;background:var(--paper-deep)}
+.pl-td{padding:6px 12px;border-bottom:1px solid var(--ink-softer);vertical-align:middle;font-size:13px}
 .pl-row:last-child .pl-td{border-bottom:none}
 .pl-row:hover .pl-td{background:var(--paper-deep)}
 .pl-row-red .pl-td{background:rgba(254,226,226,.25)}
@@ -523,7 +523,9 @@ body::before{content:"";position:fixed;inset:0;background-image:url("data:image/
 .ppf-team-role{font-weight:600;color:var(--ink)}
 .ppf-team-name{color:rgba(26,29,35,.65)}
 .ppf-team-sep{color:rgba(26,29,35,.3);margin:0 4px}
-.ppf-launch-badge{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;padding:3px 10px;border-radius:12px;background:var(--green-bg);color:var(--green-fg);border:1.5px solid var(--green-fg)}
+.ppf-launch-badge{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;padding:5px 18px;border-radius:5px;background:var(--green-bg);color:var(--green-fg);border:1.5px solid var(--green-fg);white-space:nowrap;min-width:160px;justify-content:center;letter-spacing:.01em}
+.ppf-date-row{display:flex;align-items:center;gap:0}
+.ppf-dot-line{flex:1;border-bottom:1.5px dashed rgba(26,29,35,.2);margin:0 8px;min-width:16px}
 .ppf-group-link{display:inline-flex;align-items:center;font-size:11px;font-weight:600;padding:2px 9px;border-radius:6px;border:1.5px solid var(--ink);color:var(--ink);text-decoration:none;background:var(--paper);box-shadow:2px 2px 0 var(--ink);transition:box-shadow .1s}
 .ppf-group-link:hover{box-shadow:none;transform:translate(2px,2px)}
 .ppf-group-link-brief{background:var(--paper-shade)}
@@ -2513,8 +2515,13 @@ function renderProductLaunches(items) {
       return `<tr class="pl-row ${rowCls}">
         <td class="pl-td ppf-type-cell"><span class="ppf-type-label">${icon} ${label}</span></td>
         <td class="pl-td"><span class="pl-stage-pill" style="background:${sc.bg};color:${sc.fg}">${p.stage || '—'}</span></td>
-        <td class="pl-td pl-td-date"><span class="ltr" style="font-family:'JetBrains Mono',monospace;font-size:12px">${fmtDate(p.stockDate)}</span></td>
-        <td class="pl-td">${chip}</td>
+        <td class="pl-td" style="width:100%">
+          <div class="ppf-date-row">
+            <span class="ltr" style="font-family:'JetBrains Mono',monospace;font-size:12px;flex-shrink:0">${fmtDate(p.stockDate)}</span>
+            <span class="ppf-dot-line"></span>
+            ${chip}
+          </div>
+        </td>
         <td class="pl-td">${taskBattery(p)}</td>
       </tr>`;
     }
@@ -2526,16 +2533,9 @@ function renderProductLaunches(items) {
           <span>${groupLabel}</span>
           ${linkButtons}
         </div>
-        ${launchItem ? `<div class="ppf-launch-badge">🏁 השקה: <strong class="ltr">${fmtDate(launchItem.launchDate)}</strong></div>` : ''}
+        ${launchItem ? `<div class="ppf-launch-badge">🏁 &nbsp;השקה &nbsp;<strong class="ltr">${fmtDate(launchItem.launchDate)}</strong></div>` : ''}
       </div>
       <table class="pl-table">
-        <thead><tr>
-          <th class="pl-th" style="width:80px">סוג</th>
-          <th class="pl-th">שלב</th>
-          <th class="pl-th">זמן מחסן</th>
-          <th class="pl-th">נותר</th>
-          <th class="pl-th">משימות</th>
-        </tr></thead>
         <tbody>${rows.map(itemRowHtml).join('')}</tbody>
       </table>
     </div>`;
