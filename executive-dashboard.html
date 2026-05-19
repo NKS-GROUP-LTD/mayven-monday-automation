@@ -552,6 +552,83 @@ body::before{content:"";position:fixed;inset:0;background-image:url("data:image/
 .ppf-popup-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
 .ppf-popup-status{flex:1;color:var(--ink)}
 .ppf-popup-cnt{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:rgba(26,29,35,.65)}
+
+/* ── Product Roadmap (prm-) ── */
+.prm-page{display:flex;flex-direction:column;gap:14px}
+.prm-head{display:flex;align-items:flex-start;justify-content:space-between;gap:24px;flex-wrap:wrap}
+.prm-title{font-family:'Suez One',serif;font-size:26px;color:var(--ink);line-height:1.1}
+.prm-sub{font-size:12px;color:rgba(26,29,35,.55);margin-top:5px;font-family:'JetBrains Mono',monospace}
+.prm-avatar{width:42px;height:42px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Suez One',serif;font-size:18px;border:1.5px solid var(--ink);box-shadow:2px 2px 0 var(--ink)}
+.prm-controls{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:10px 14px;background:var(--paper);border:1.5px solid var(--ink);border-radius:10px;box-shadow:3px 3px 0 var(--ink)}
+.prm-scale-group{display:flex;gap:0;border:1.3px solid var(--ink);border-radius:6px;overflow:hidden}
+.prm-scale-btn{background:var(--paper);border:none;padding:6px 14px;font-family:'Heebo',sans-serif;font-size:12px;font-weight:600;color:var(--ink);cursor:pointer;border-inline-end:1.3px solid var(--ink-soft)}
+.prm-scale-btn:last-child{border-inline-end:none}
+.prm-scale-btn.active{background:var(--ink);color:var(--paper)}
+.prm-search{flex:1;min-width:200px;max-width:340px;padding:7px 12px;border:1.3px solid var(--ink);border-radius:6px;background:var(--paper);font-family:'Heebo',sans-serif;font-size:12.5px;color:var(--ink)}
+.prm-search:focus{outline:none;box-shadow:2px 2px 0 var(--ink)}
+.prm-pill-group{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.prm-pill-label{font-size:11px;font-weight:600;color:rgba(26,29,35,.55);margin-inline-end:4px}
+.prm-pill{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border:1.3px solid var(--ink);border-radius:14px;background:var(--paper);font-size:12px;color:var(--ink);cursor:pointer;font-weight:500;transition:transform .1s}
+.prm-pill:hover{transform:translate(-1px,-1px);box-shadow:2px 2px 0 var(--ink)}
+.prm-pill.active{background:var(--ink);color:var(--paper);box-shadow:2px 2px 0 var(--ink)}
+.prm-pill-count{font-family:'JetBrains Mono',monospace;font-size:11px;opacity:.7}
+.prm-pill.active .prm-pill-count{opacity:.85}
+.prm-pill-dot{width:7px;height:7px;border-radius:50%}
+.prm-show-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.prm-show-btn{display:inline-flex;align-items:center;gap:7px;padding:5px 12px;border:1.3px solid var(--ink);border-radius:16px;background:var(--paper);font-size:12px;color:var(--ink);cursor:pointer;font-weight:600}
+.prm-show-btn.active{background:var(--ink);color:var(--paper)}
+.prm-show-btn .ms-icon{font-size:13px}
+.prm-canvas-wrap{position:relative;background:var(--paper);border:1.5px solid var(--ink);border-radius:10px;box-shadow:3px 3px 0 var(--ink);overflow:auto;max-height:calc(100vh - 240px)}
+.prm-canvas{position:relative;min-height:520px}
+.prm-axis{position:sticky;top:0;z-index:6;display:flex;background:var(--paper-deep);border-bottom:1.5px solid var(--ink)}
+.prm-axis-cell{flex-shrink:0;padding:8px 10px;border-inline-end:1px solid var(--ink-softer);font-family:'Heebo',sans-serif}
+.prm-axis-year{font-size:10px;color:rgba(26,29,35,.45);font-family:'JetBrains Mono',monospace}
+.prm-axis-label{font-size:13px;color:var(--ink);font-weight:600;margin-top:1px}
+.prm-track{position:relative}
+.prm-grid-line{position:absolute;top:0;bottom:0;width:1px;background:var(--ink-softer);pointer-events:none}
+.prm-today-line{position:absolute;top:0;bottom:0;width:0;border-inline-end:1.5px dashed var(--red-fg);z-index:5;pointer-events:none}
+.prm-today-label{position:absolute;top:6px;transform:translateX(50%);background:var(--red-fg);color:#fff;padding:2px 8px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:10.5px;white-space:nowrap;z-index:7}
+.prm-launches-band{position:relative;padding:18px 0 8px}
+.prm-milestones-band{position:relative;padding:8px 0 24px;border-top:1.5px dashed var(--ink-soft);margin-top:8px}
+.prm-launch{position:absolute;background:var(--accent-soft);border:1.5px solid var(--accent);border-radius:8px;box-shadow:2px 2px 0 var(--accent-deep);padding:8px 12px;display:flex;flex-direction:column;gap:2px;cursor:pointer;min-width:130px;transition:transform .12s,box-shadow .12s;z-index:3}
+.prm-launch:hover{transform:translate(-1px,-1px);box-shadow:3px 3px 0 var(--accent-deep);z-index:8}
+.prm-launch[data-h="done"]{background:var(--green-bg);border-color:var(--green-fg);box-shadow:2px 2px 0 var(--green-fg);opacity:.85}
+.prm-launch[data-h="red"]{background:var(--red-bg);border-color:var(--red-fg);box-shadow:2px 2px 0 var(--red-fg)}
+.prm-launch[data-h="yellow"]{background:var(--yellow-bg);border-color:var(--yellow-fg);box-shadow:2px 2px 0 var(--yellow-fg)}
+.prm-launch[data-h="hold"]{background:var(--paper-shade);border-color:rgba(26,29,35,.4);box-shadow:2px 2px 0 rgba(26,29,35,.4);opacity:.7}
+.prm-launch-top{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:var(--accent-deep)}
+.prm-launch[data-h="done"] .prm-launch-top{color:var(--green-fg)}
+.prm-launch[data-h="red"] .prm-launch-top{color:var(--red-fg)}
+.prm-launch[data-h="yellow"] .prm-launch-top{color:var(--yellow-fg)}
+.prm-launch-icon{font-size:13px}
+.prm-launch-name{font-family:'Suez One',serif;font-size:13.5px;color:var(--ink);line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:160px}
+.prm-launch-date{font-family:'JetBrains Mono',monospace;font-size:10.5px;color:rgba(26,29,35,.5);margin-top:1px}
+.prm-launch-pl{font-size:10.5px;color:rgba(26,29,35,.55);margin-top:1px}
+.prm-milestone{position:absolute;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:default;z-index:2;width:100px;transform:translateX(50%)}
+.prm-milestone-bubble{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:1.4px solid var(--ink);background:var(--paper);font-size:14px;box-shadow:1.5px 1.5px 0 var(--ink)}
+.prm-milestone[data-t="launch"] .prm-milestone-bubble{background:var(--accent-soft);border-color:var(--accent)}
+.prm-milestone[data-t="sample"] .prm-milestone-bubble{background:var(--yellow-bg);border-color:var(--yellow-fg)}
+.prm-milestone[data-t="stock"] .prm-milestone-bubble{background:var(--blue-bg);border-color:var(--blue-fg)}
+.prm-milestone[data-t="prBox"] .prm-milestone-bubble{background:var(--orange-bg);border-color:var(--orange-fg)}
+.prm-milestone-name{font-size:10.5px;color:var(--ink);line-height:1.15;text-align:center;max-width:96px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.prm-milestone-date{font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(26,29,35,.5)}
+.prm-connectors{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1}
+.prm-legend{display:flex;align-items:center;gap:18px;flex-wrap:wrap;padding:10px 14px;background:var(--paper);border:1.5px solid var(--ink);border-radius:10px;box-shadow:3px 3px 0 var(--ink);font-size:11.5px}
+.prm-legend-group{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.prm-legend-sep{width:1px;height:18px;background:var(--ink-soft)}
+.prm-legend-item{display:inline-flex;align-items:center;gap:6px;color:rgba(26,29,35,.7)}
+.prm-legend-bubble{width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:1.2px solid var(--ink);font-size:9.5px;background:var(--paper)}
+.prm-legend-line{display:inline-block;width:28px;height:0;border-top:1.8px dashed var(--green-fg)}
+.prm-legend-line.yellow{border-top-color:var(--yellow-fg)}
+.prm-legend-line.red{border-top-color:var(--red-fg)}
+.prm-next-card{background:var(--paper);border:1.5px solid var(--accent);border-radius:10px;box-shadow:3px 3px 0 var(--accent-deep);padding:14px 18px;display:flex;align-items:center;gap:16px;min-width:280px}
+.prm-next-icon{font-size:32px}
+.prm-next-info{display:flex;flex-direction:column;gap:3px}
+.prm-next-label{font-size:10.5px;color:rgba(26,29,35,.55);font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+.prm-next-name{font-family:'Suez One',serif;font-size:17px;color:var(--ink);line-height:1.1}
+.prm-next-meta{font-size:11.5px;color:rgba(26,29,35,.6);font-family:'JetBrains Mono',monospace}
+.prm-next-days{font-family:'Suez One',serif;font-size:30px;color:var(--accent);line-height:1;margin-inline-start:auto}
+.prm-empty{padding:48px 24px;text-align:center;color:rgba(26,29,35,.55)}
 </style>
 </head>
 <body>
@@ -1187,7 +1264,7 @@ function renderWorld(ps) {
   else if (activeWorld === 'tech')     renderTechPage(ps);
   else if (activeWorld === 'departments') renderDepartmentsPage();
   else if (activeWorld === 'product_portfolio') renderProductLaunches(productLaunchItems);
-  else if (activeWorld === 'product_launches') renderProductLaunchesPlaceholder();
+  else if (activeWorld === 'product_launches') renderProductRoadmap();
   else if (activeWorld === 'launches') renderRoadmap(allProjects.filter(p => p.launchDate || p.deadline));
   else renderWorldPage(ps);
 }
@@ -2204,6 +2281,19 @@ function renderProductLaunches(items) {
     return { minStart, maxEnd, spanWd, breakdown, total, relevant };
   }
 
+  // Pre-pass: canonical launch date per product line (all items in same line share the launch quarter)
+  const productLineLaunchMap = new Map();
+  items.forEach(item => {
+    const pl = plCv(item, PL.PRODUCT_NAME).t || '—';
+    const ld = parseDate(plCv(item, PL.LAUNCH_DATE).t);
+    if (ld && !productLineLaunchMap.has(pl)) productLineLaunchMap.set(pl, ld);
+  });
+
+  function toQuarter(d) {
+    if (!d) return '';
+    return `Q${Math.floor(d.getMonth()/3)+1} ${d.getFullYear()}`;
+  }
+
   function parsePLItem(item) {
     const launchDate  = parseDate(plCv(item, PL.LAUNCH_DATE).t);
     const stockDate   = parseDate(plCv(item, PL.STOCK_DATE).t);
@@ -2223,11 +2313,10 @@ function renderProductLaunches(items) {
     const timelineOverrun = hubData.maxEnd && stockDate && hubData.maxEnd.getTime() > stockDate.getTime();
     const stockVsLaunchWd = (stockDate && launchDate) ? workingDaysBetween(stockDate, launchDate) : null;
 
-    let launchQuarter = '';
-    if (launchDate) {
-      const m = launchDate.getMonth(), y = launchDate.getFullYear();
-      launchQuarter = `Q${Math.floor(m/3)+1} ${y}`;
-    }
+    // launchQuarter: product-line level — all items in same line share the line's launch date
+    const launchQuarter = toQuarter(productLineLaunchMap.get(productLine) || launchDate);
+    // stockQuarter: per-item, from its own stock date
+    const stockQuarter  = toQuarter(stockDate);
 
     let health;
     if (isDone)    health = 'done';
@@ -2236,7 +2325,6 @@ function renderProductLaunches(items) {
     else if (stockDate && stockDate.getTime() <= todayMs + 7*864e5) health = 'yellow';
     else health = 'green';
 
-    // Parse link columns
     function parseLink(raw) {
       try { const v = typeof raw === 'string' ? JSON.parse(raw) : raw; return v?.url ? v : null; }
       catch { return null; }
@@ -2245,7 +2333,7 @@ function renderProductLaunches(items) {
     const briefLink = parseLink(plCv(item, PL.BRIEF).r);
 
     return {
-      ...item, launchDate, stockDate, stage, productLine, type, launchQuarter,
+      ...item, launchDate, stockDate, stage, productLine, type, launchQuarter, stockQuarter,
       derivedStatus, hubData, timelineOverrun, stockVsLaunchWd,
       isDone, isHold, isRedFlag, health, boardLink, briefLink,
     };
@@ -2256,7 +2344,8 @@ function renderProductLaunches(items) {
   // Filter option lists (from full unfiltered set)
   const allStages   = [...new Set(items.map(i => plCv(i, PL.STAGE).t).filter(Boolean))].sort();
   const allTypes    = [...new Set(items.map(i => plCv(i, PL.PROJECT_TYPE).t).filter(Boolean))].sort();
-  const allQuarters = [...new Set(parsed.map(p => p.launchQuarter).filter(Boolean))].sort();
+  // allQuarters = product-line level launch quarters (deduplicated from the pre-computed map)
+  const allLaunchQuarters = [...new Set([...productLineLaunchMap.values()].map(d => toQuarter(d)))].sort();
 
   // Apply filters
   if (ppF.stage   !== 'all') parsed = parsed.filter(p => p.stage === ppF.stage);
@@ -2288,16 +2377,17 @@ function renderProductLaunches(items) {
   const grouped = new Map();
   parsed.forEach(p => {
     let key;
-    if (ppF.groupBy === 'quarter') key = p.launchQuarter || 'ללא רבעון';
+    if      (ppF.groupBy === 'launch_quarter') key = p.launchQuarter || 'ללא רבעון השקה';
+    else if (ppF.groupBy === 'stock_quarter')  key = p.stockQuarter  || 'ללא רבעון מחסן';
     else if (ppF.groupBy === 'stage') key = p.stage || 'ללא שלב';
     else if (ppF.groupBy === 'type')  key = p.type  || 'ללא סוג';
-    else key = p.productLine; // default: product line
+    else key = p.productLine;
     if (!grouped.has(key)) grouped.set(key, []);
     grouped.get(key).push(p);
   });
-  // Sort group keys
+  const isQuarterGroupBy = ppF.groupBy === 'launch_quarter' || ppF.groupBy === 'stock_quarter';
   const sortedGroups = [...grouped.entries()].sort((a, b) => {
-    if (ppF.groupBy === 'quarter') return (a[0] < b[0] ? -1 : 1);
+    if (isQuarterGroupBy) return a[0] < b[0] ? -1 : 1;
     const aDate = a[1].find(p=>p.launchDate)?.launchDate?.getTime() ?? Infinity;
     const bDate = b[1].find(p=>p.launchDate)?.launchDate?.getTime() ?? Infinity;
     return aDate - bDate;
@@ -2506,10 +2596,10 @@ function renderProductLaunches(items) {
         <option value="all" ${ppF.type==='all'?'selected':''}>הכל</option>
         ${allTypes.map(t => `<option value="${t}" ${ppF.type===t?'selected':''}>${t}</option>`).join('')}
       </select>
-      <span class="pf-label">רבעון:</span>
+      <span class="pf-label">רבעון (השקה):</span>
       <select class="pf-select" onchange="setPpFilter('quarter', this.value)">
         <option value="all" ${ppF.quarter==='all'?'selected':''}>הכל</option>
-        ${allQuarters.map(q => `<option value="${q}" ${ppF.quarter===q?'selected':''}>${q}</option>`).join('')}
+        ${allLaunchQuarters.map(q => `<option value="${q}" ${ppF.quarter===q?'selected':''}>${q}</option>`).join('')}
       </select>
       <span class="pf-label">סטטוס:</span>
       <select class="pf-select" onchange="setPpFilter('status', this.value)">
@@ -2523,10 +2613,11 @@ function renderProductLaunches(items) {
       <div class="pf-div"></div>
       <span class="pf-label">קיבוץ לפי:</span>
       <select class="pf-select" onchange="setPpFilter('groupBy', this.value)">
-        <option value="product" ${ppF.groupBy==='product'?'selected':''}>קו מוצר</option>
-        <option value="quarter" ${ppF.groupBy==='quarter'?'selected':''}>רבעון</option>
-        <option value="stage"   ${ppF.groupBy==='stage'  ?'selected':''}>שלב</option>
-        <option value="type"    ${ppF.groupBy==='type'   ?'selected':''}>סוג מוצר</option>
+        <option value="product"        ${ppF.groupBy==='product'       ?'selected':''}>קו מוצר</option>
+        <option value="launch_quarter" ${ppF.groupBy==='launch_quarter'?'selected':''}>רבעון (השקה)</option>
+        <option value="stock_quarter"  ${ppF.groupBy==='stock_quarter' ?'selected':''}>רבעון (מחסן)</option>
+        <option value="stage"          ${ppF.groupBy==='stage'         ?'selected':''}>שלב</option>
+        <option value="type"           ${ppF.groupBy==='type'          ?'selected':''}>סוג מוצר</option>
       </select>
       <span style="margin-right:auto;font-size:11px;color:rgba(26,29,35,.42)">${parsed.length} פריטים</span>
     </div>
@@ -2582,26 +2673,453 @@ function showPpfPopup(itemName) {
 }
 
 // ══════════════════════════════════════════════════
-// PRODUCT LAUNCHES PLACEHOLDER
+// PRODUCT ROADMAP — Timeline of launches + milestones
 // ══════════════════════════════════════════════════
-function renderProductLaunchesPlaceholder() {
+const prmF = {
+  scale: 'months',
+  status: 'all',
+  category: 'all',
+  show: { launch:true, sample:true, stock:true, prBox:true },
+  search: '',
+};
+function setPrmScale(v)    { prmF.scale = v;    renderProductRoadmap(); }
+function setPrmStatus(v)   { prmF.status = v;   renderProductRoadmap(); }
+function setPrmCategory(v) { prmF.category = v; renderProductRoadmap(); }
+function setPrmShow(k)     { prmF.show[k] = !prmF.show[k]; renderProductRoadmap(); }
+function setPrmSearch(v)   { prmF.search = v;   renderProductRoadmap(); }
+
+const PRM_MTYPES = {
+  launch: { he:'השקה',  icon:'🚩', color:'var(--accent)'     },
+  sample: { he:'סמפל',  icon:'🧪', color:'var(--yellow-fg)'  },
+  stock:  { he:'מלאי',  icon:'📦', color:'var(--blue-fg)'    },
+  prBox:  { he:'PR Box',icon:'🎁', color:'var(--orange-fg)'  },
+};
+
+const PRM_STATUSES = [
+  { key:'all',    he:'הכל',     test:()=>true,                                  dot:'#1a1d23' },
+  { key:'green',  he:'בזמן',    test:p=>p.health==='green',                     dot:'#15803D' },
+  { key:'yellow', he:'בסיכון',  test:p=>p.health==='yellow',                    dot:'#B45309' },
+  { key:'red',    he:'באיחור',  test:p=>p.health==='red',                       dot:'#B91C1C' },
+  { key:'hold',   he:'מוקפא',   test:p=>p.health==='hold',                      dot:'#475569' },
+  { key:'done',   he:'הושק',    test:p=>p.health==='done',                      dot:'#1D4ED8' },
+];
+
+function prmClassifyHubTask(task) {
+  const type = task.column_values?.find(cv => cv.column_id === C.PROJECT_TYPE)?.text_value || '';
+  const name = (task.name || '').toLowerCase();
+  if (type.includes('🚀') || name.includes('השקה') || name.includes('launch') || name.includes('go live')) return 'launch';
+  if (type.includes('🎁') || name.includes('pr box') || name.includes('פר בוקס')) return 'prBox';
+  if (name.includes('סמפל') || name.includes('sample') || name.includes('דגימה')) return 'sample';
+  if (type.includes('📦') || name.includes('מלאי') || name.includes('stock') || name.includes('מחסן') || name.includes('ייצור') || name.includes('manuf')) return 'stock';
+  return null;
+}
+
+function prmTaskEndDate(task) {
+  const tlRaw = task.column_values?.find(cv => cv.column_id === C.TIMELINE)?.value;
+  const tl = parseTL(tlRaw);
+  if (tl.to) return tl.to;
+  const dl = task.column_values?.find(cv => cv.column_id === C.DEADLINE)?.text_value;
+  return parseDate(dl);
+}
+
+function renderProductRoadmap() {
+  const items = productLaunchItems || [];
+  const todayMs = new Date().setHours(0,0,0,0);
+  const today   = new Date(todayMs);
+
+  function plCv(item, colId) {
+    const r = item.column_values?.find(r => r.column_id === colId);
+    return r ? { t: r.text_value, r: r.value } : { t: null, r: null };
+  }
+
+  const hubByBoardName = new Map();
+  (window.__rawItems || []).forEach(task => {
+    const boardName = task.column_values?.find(cv => cv.column_id === C.BOARD_NAME)?.text_value;
+    if (!boardName) return;
+    if (!hubByBoardName.has(boardName)) hubByBoardName.set(boardName, []);
+    hubByBoardName.get(boardName).push(task);
+  });
+
+  const ACTIVE_STAGES = new Set(['Planning & Initiation','Product Design','Product Development','Cross-Team Alignment','Product Manufacturing']);
+  function deriveStatus(stage) {
+    if (ACTIVE_STAGES.has(stage))  return 'בעבודה';
+    if (stage === 'Stock Date')    return 'הסתיימה';
+    if (stage === 'RED FLAG')      return 'דגל אדום';
+    if (stage === 'On Hold')       return 'למעקב';
+    return '';
+  }
+
+  function parseProduct(item) {
+    const launchDate  = parseDate(plCv(item, PL.LAUNCH_DATE).t);
+    const stockDate   = parseDate(plCv(item, PL.STOCK_DATE).t);
+    const stage       = plCv(item, PL.STAGE).t || '';
+    const productLine = plCv(item, PL.PRODUCT_NAME).t || '—';
+    const type        = plCv(item, PL.PROJECT_TYPE).t || '';
+    const owner       = plCv(item, PL.OWNER).t || '';
+    const derivedStatus = deriveStatus(stage);
+    const isDone    = derivedStatus === 'הסתיימה';
+    const isHold    = derivedStatus === 'למעקב';
+    const isRedFlag = stage === 'RED FLAG';
+
+    const hubTasks = hubByBoardName.get(item.name) || [];
+    let maxEnd = null;
+    const milestones = [];
+    hubTasks.forEach(task => {
+      const calcFlag = task.column_values?.find(cv => cv.column_id === C.CALC_DEADLINE)?.text_value;
+      const status   = task.column_values?.find(cv => cv.column_id === C.STATUS)?.text_value || '';
+      const endDate  = prmTaskEndDate(task);
+      if (endDate && calcFlag !== 'לא' && !isDone && !isHold) {
+        if (!maxEnd || endDate > maxEnd) maxEnd = endDate;
+      }
+      const mtype = prmClassifyHubTask(task);
+      if (!mtype) return;
+      if (!endDate) return;
+      milestones.push({
+        name: task.name,
+        date: endDate,
+        mtype,
+        status,
+        isDone: status === 'הסתיימה',
+        isCancel: status === 'מבוטלת',
+      });
+    });
+
+    const timelineOverrun = maxEnd && stockDate && maxEnd.getTime() > stockDate.getTime();
+
+    let health;
+    if (isDone)                                                          health = 'done';
+    else if (isHold)                                                     health = 'hold';
+    else if (isRedFlag || timelineOverrun)                               health = 'red';
+    else if (stockDate && stockDate.getTime() <= todayMs + 30*864e5)     health = 'yellow';
+    else if (launchDate && launchDate.getTime() < todayMs)               health = 'done';
+    else                                                                 health = 'green';
+
+    if (launchDate && launchDate.getTime() < todayMs) {
+      const allMsDone = milestones.length > 0 && milestones.every(m => m.isDone || m.isCancel);
+      if (allMsDone) health = 'done';
+    }
+
+    return {
+      ...item, launchDate, stockDate, stage, productLine, type, owner,
+      derivedStatus, milestones, maxEnd, timelineOverrun, isDone, isHold, isRedFlag, health,
+    };
+  }
+
+  const allParsed = items.map(parseProduct);
+
+  let parsed = allParsed.filter(p => p.launchDate);
+  const search = prmF.search.trim().toLowerCase();
+  if (search)            parsed = parsed.filter(p => p.name.toLowerCase().includes(search) || (p.productLine||'').toLowerCase().includes(search));
+  if (prmF.category !== 'all') parsed = parsed.filter(p => p.type === prmF.category);
+  if (prmF.status   !== 'all') {
+    const def = PRM_STATUSES.find(s => s.key === prmF.status);
+    if (def) parsed = parsed.filter(def.test);
+  }
+
+  const statusCounts = {};
+  PRM_STATUSES.forEach(s => statusCounts[s.key] = allParsed.filter(p => p.launchDate && s.test(p)).length);
+
+  const allCategories = [...new Set(allParsed.map(p => p.type).filter(Boolean))].sort();
+
+  parsed.sort((a,b) => a.launchDate.getTime() - b.launchDate.getTime());
+
+  const allDates = [];
+  parsed.forEach(p => {
+    allDates.push(p.launchDate);
+    p.milestones.forEach(m => { if (prmF.show[m.mtype]) allDates.push(m.date); });
+  });
+  allDates.push(today);
+
+  if (parsed.length === 0) {
+    document.getElementById('content').innerHTML = `
+    <div class="page prm-page">
+      ${prmHeader(0, null, null)}
+      ${prmControls(allCategories, statusCounts)}
+      <div class="ms-card"><div class="ms-card-body"><div class="prm-empty">
+        <div style="font-size:42px;margin-bottom:10px">🚀</div>
+        <div style="font-family:'Suez One',serif;font-size:18px;color:var(--ink);margin-bottom:6px">לא נמצאו השקות</div>
+        <div>נסה לשנות פילטרים או להוסיף תאריך השקה לפריטים בבורד הפורטפוליו.</div>
+      </div></div></div>
+    </div>`;
+    return;
+  }
+
+  const spanMinRaw = new Date(Math.min(...allDates.map(d => d.getTime())));
+  const spanMaxRaw = new Date(Math.max(...allDates.map(d => d.getTime())));
+  const spanMin = new Date(spanMinRaw.getFullYear(), spanMinRaw.getMonth(), 1);
+  const spanMax = new Date(spanMaxRaw.getFullYear(), spanMaxRaw.getMonth() + 1, 0);
+
+  const SCALE_PX = { months: 220, weeks: 110, days: 44, quarters: 600 };
+  const unitPx = SCALE_PX[prmF.scale] || 220;
+
+  function buildAxis() {
+    const cells = [];
+    if (prmF.scale === 'months') {
+      let d = new Date(spanMin);
+      while (d <= spanMax) {
+        cells.push({ label: d.toLocaleDateString('he-IL', { month:'long' }), year: d.getFullYear(), start: new Date(d) });
+        d = new Date(d.getFullYear(), d.getMonth()+1, 1);
+      }
+    } else if (prmF.scale === 'quarters') {
+      let y = spanMin.getFullYear(), q = Math.floor(spanMin.getMonth()/3);
+      const endY = spanMax.getFullYear(), endQ = Math.floor(spanMax.getMonth()/3);
+      while (y < endY || (y === endY && q <= endQ)) {
+        cells.push({ label: `Q${q+1}`, year: y, start: new Date(y, q*3, 1) });
+        q++; if (q > 3) { q = 0; y++; }
+      }
+    } else if (prmF.scale === 'weeks') {
+      let d = new Date(spanMin);
+      d.setDate(d.getDate() - d.getDay());
+      while (d <= spanMax) {
+        cells.push({ label: `${d.getDate()}.${d.getMonth()+1}`, year: d.getFullYear(), start: new Date(d) });
+        d = new Date(d.getFullYear(), d.getMonth(), d.getDate()+7);
+      }
+    } else {
+      let d = new Date(spanMin);
+      while (d <= spanMax) {
+        cells.push({ label: `${d.getDate()}`, year: d.getFullYear(), start: new Date(d), short: `${d.getDate()}.${d.getMonth()+1}` });
+        d = new Date(d.getFullYear(), d.getMonth(), d.getDate()+1);
+      }
+    }
+    return cells;
+  }
+  const axis = buildAxis();
+  const canvasWidth = axis.length * unitPx;
+
+  function xForDate(d) {
+    if (prmF.scale === 'months') {
+      const monthIdx = (d.getFullYear() - spanMin.getFullYear()) * 12 + (d.getMonth() - spanMin.getMonth());
+      const daysInMonth = new Date(d.getFullYear(), d.getMonth()+1, 0).getDate();
+      const dayFrac = (d.getDate() - 1) / daysInMonth;
+      return (monthIdx + dayFrac) * unitPx;
+    }
+    if (prmF.scale === 'quarters') {
+      const totalMonths = (d.getFullYear() - spanMin.getFullYear()) * 12 + (d.getMonth() - spanMin.getMonth());
+      const qIdx = Math.floor(totalMonths / 3);
+      const monthInQ = totalMonths % 3;
+      const daysInMonth = new Date(d.getFullYear(), d.getMonth()+1, 0).getDate();
+      return (qIdx + (monthInQ + (d.getDate()-1)/daysInMonth) / 3) * unitPx;
+    }
+    if (prmF.scale === 'weeks') {
+      const start = new Date(spanMin);
+      start.setDate(start.getDate() - start.getDay());
+      const diffDays = (d.getTime() - start.getTime()) / 864e5;
+      return (diffDays / 7) * unitPx;
+    }
+    const diffDays = (d.getTime() - spanMin.getTime()) / 864e5;
+    return diffDays * unitPx;
+  }
+
+  function assignRows(list, halfWidth, padX) {
+    const rowEnds = [];
+    list.forEach(item => {
+      const x = item._x;
+      const left = x - halfWidth;
+      const right = x + halfWidth + padX;
+      let placed = false;
+      for (let i = 0; i < rowEnds.length; i++) {
+        if (rowEnds[i] <= left) { rowEnds[i] = right; item._row = i; placed = true; break; }
+      }
+      if (!placed) { rowEnds.push(right); item._row = rowEnds.length - 1; }
+    });
+    return rowEnds.length;
+  }
+
+  parsed.forEach(p => { p._x = xForDate(p.launchDate); });
+  const launchRows = assignRows(parsed, 75, 10);
+  const launchRowH = 78;
+
+  const allMilestones = [];
+  parsed.forEach(p => {
+    p.milestones.forEach(m => {
+      if (!prmF.show[m.mtype]) return;
+      allMilestones.push({ ...m, product: p, _x: xForDate(m.date), launchX: p._x, launchRow: p._row });
+    });
+  });
+  allMilestones.sort((a,b) => a._x - b._x);
+  const msRows = assignRows(allMilestones, 50, 6);
+  const msRowH = 64;
+
+  const launchBandH = Math.max(launchRows, 1) * launchRowH + 12;
+  const msBandH     = Math.max(msRows, 1) * msRowH + 24;
+  const trackH      = launchBandH + msBandH;
+
+  const todayX = xForDate(today);
+
+  function lineColor(m) {
+    const launchDate = m.product.launchDate;
+    const diffDays = (launchDate.getTime() - m.date.getTime()) / 864e5;
+    if (diffDays < 0)  return { c:'var(--red-fg)',    s:'red'   };
+    if (diffDays < 7)  return { c:'var(--yellow-fg)', s:'yellow'};
+    return { c:'var(--green-fg)', s:'green' };
+  }
+
+  let connectors = '';
+  allMilestones.forEach(m => {
+    const lc = lineColor(m);
+    const x1 = m._x;
+    const y1 = launchBandH + m._row * msRowH + 18;
+    const x2 = m.launchX;
+    const y2 = m.launchRow * launchRowH + launchRowH - 12;
+    const midY = (y1 + y2) / 2;
+    connectors += `<path d="M ${x1} ${y1} C ${x1} ${midY}, ${x2} ${midY}, ${x2} ${y2}" stroke="${lc.c}" stroke-width="1.4" stroke-dasharray="4 3" fill="none" opacity="0.7"/>`;
+  });
+
+  const launchHtml = parsed.map(p => {
+    const fmt = `${p.launchDate.getDate()}.${p.launchDate.getMonth()+1}`;
+    const top = p._row * launchRowH + 4;
+    const left = p._x - 75;
+    const hClass = p.health === 'done' ? 'הושק' : p.health === 'red' ? 'איחור' : p.health === 'yellow' ? 'סיכון' : p.health === 'hold' ? 'מוקפא' : 'בזמן';
+    return `<div class="prm-launch" data-h="${p.health}" style="top:${top}px;left:${left}px;width:150px"
+              title="${p.name} · ${p.productLine} · ${fmt}">
+      <div class="prm-launch-top"><span class="prm-launch-icon">🚩</span><span>${p.name}</span></div>
+      <div class="prm-launch-date">השקה · ${fmt}</div>
+      <div class="prm-launch-pl">${p.productLine}${p.type ? ' · '+p.type : ''}</div>
+    </div>`;
+  }).join('');
+
+  const msHtml = allMilestones.map(m => {
+    const def = PRM_MTYPES[m.mtype];
+    const fmt = `${m.date.getDate()}.${m.date.getMonth()+1}`;
+    const top = m._row * msRowH + 4;
+    const left = m._x - 50;
+    return `<div class="prm-milestone" data-t="${m.mtype}" style="top:${top}px;left:${left}px"
+              title="${m.name} · ${def.he} · ${fmt}">
+      <div class="prm-milestone-bubble">${def.icon}</div>
+      <div class="prm-milestone-name">${m.product.name}</div>
+      <div class="prm-milestone-date">${fmt}</div>
+    </div>`;
+  }).join('');
+
+  const axisHtml = axis.map(c => `
+    <div class="prm-axis-cell" style="width:${unitPx}px">
+      <div class="prm-axis-year">${c.year}</div>
+      <div class="prm-axis-label">${c.label}</div>
+    </div>`).join('');
+
+  const gridLines = axis.map((_, i) =>
+    `<div class="prm-grid-line" style="left:${i*unitPx}px"></div>`
+  ).join('');
+
+  const future = parsed.filter(p => p.launchDate.getTime() >= todayMs && p.health !== 'hold');
+  const nextLaunch = future.length ? future.sort((a,b)=>a.launchDate-b.launchDate)[0] : null;
+
   document.getElementById('content').innerHTML = `
-  <div class="page">
-    <div class="page-head">
-      <div>
-        <h1 class="page-title">🚀 השקות מוצר</h1>
-        <div class="page-sub">קמפיינים של השקת מוצרים · בורדים: Break free PMS · Members Only · Mad Glow · Hey Mom…</div>
-      </div>
-    </div>
-    <div class="ms-card">
-      <div class="ms-card-body" style="padding:48px 32px;text-align:center">
-        <div style="font-size:48px;margin-bottom:16px">🚀</div>
-        <div style="font-family:'Suez One',serif;font-size:22px;color:var(--ink);margin-bottom:8px">בקרוב</div>
-        <div style="font-size:13px;color:rgba(26,29,35,.55);max-width:400px;margin:0 auto;line-height:1.7">
-          עמוד זה יציג את קמפיינים של השקות המוצרים לפי בורד.<br>
-          כל השקה = דד-ליין: תאריך ההשקה שנקבע בפורטפוליו.
+  <div class="page prm-page">
+    ${prmHeader(parsed.length, spanMinRaw, spanMaxRaw)}
+    ${nextLaunch ? prmNextCard(nextLaunch, today) : ''}
+    ${prmControls(allCategories, statusCounts)}
+    <div class="prm-canvas-wrap">
+      <div class="prm-canvas" style="width:${canvasWidth}px">
+        <div class="prm-axis">${axisHtml}</div>
+        <div class="prm-track" style="height:${trackH}px;position:relative">
+          ${gridLines}
+          <div class="prm-today-line" style="left:${todayX}px"></div>
+          <div class="prm-today-label" style="left:${todayX}px">היום · ${today.getDate()}/${today.getMonth()+1}/${today.getFullYear()}</div>
+          <div class="prm-launches-band" style="position:absolute;top:0;left:0;right:0;height:${launchBandH}px">
+            ${launchHtml}
+          </div>
+          <div class="prm-milestones-band" style="position:absolute;top:${launchBandH}px;left:0;right:0;height:${msBandH}px">
+            ${msHtml}
+          </div>
+          <svg class="prm-connectors" width="${canvasWidth}" height="${trackH}" viewBox="0 0 ${canvasWidth} ${trackH}">
+            ${connectors}
+          </svg>
         </div>
       </div>
+    </div>
+    ${prmLegend()}
+  </div>`;
+
+  const todayEl = document.querySelector('.prm-today-line');
+  if (todayEl && todayEl.parentElement) {
+    const wrap = document.querySelector('.prm-canvas-wrap');
+    if (wrap) wrap.scrollLeft = Math.max(0, todayX - wrap.clientWidth * 0.35);
+  }
+}
+
+function prmHeader(count, minD, maxD) {
+  const dateRange = (minD && maxD)
+    ? `${count} מוצרים פעילים · ${minD.toLocaleDateString('he-IL',{month:'short',year:'numeric'})} – ${maxD.toLocaleDateString('he-IL',{month:'short',year:'numeric'})}`
+    : `${count} מוצרים`;
+  return `
+  <div class="prm-head">
+    <div class="prm-avatar">M</div>
+    <div style="text-align:right">
+      <div class="prm-title">רוד מאף השקות מוצרים</div>
+      <div class="prm-sub">${dateRange}</div>
+    </div>
+  </div>`;
+}
+
+function prmNextCard(p, today) {
+  const days = Math.max(0, Math.round((p.launchDate.getTime() - today.getTime())/864e5));
+  const fmt = p.launchDate.toLocaleDateString('he-IL');
+  return `
+  <div class="prm-next-card">
+    <div class="prm-next-icon">🚀</div>
+    <div class="prm-next-info">
+      <div class="prm-next-label">ההשקה הבאה</div>
+      <div class="prm-next-name">${p.name}</div>
+      <div class="prm-next-meta">${p.productLine} · ${fmt}</div>
+    </div>
+    <div class="prm-next-days">${days}<span style="font-size:13px;color:rgba(26,29,35,.5);margin-inline-start:6px">ימים</span></div>
+  </div>`;
+}
+
+function prmControls(categories, counts) {
+  const scales = [
+    { k:'quarters', he:'רבעונים' },
+    { k:'months',   he:'חודשים'  },
+    { k:'weeks',    he:'שבועות'  },
+    { k:'days',     he:'ימים'    },
+  ];
+  const scaleBtns = scales.map(s =>
+    `<button class="prm-scale-btn ${prmF.scale===s.k?'active':''}" onclick="setPrmScale('${s.k}')">${s.he}</button>`
+  ).join('');
+  const statusPills = PRM_STATUSES.map(s =>
+    `<button class="prm-pill ${prmF.status===s.key?'active':''}" onclick="setPrmStatus('${s.key}')">
+       <span class="prm-pill-dot" style="background:${s.dot}"></span>
+       <span>${s.he}</span>
+       <span class="prm-pill-count">${counts[s.key]}</span>
+     </button>`
+  ).join('');
+  const catPills = ['all', ...categories].map(c => {
+    const label = c === 'all' ? 'הכל' : c;
+    const safe = c.replace(/'/g, "\\'");
+    return `<button class="prm-pill ${prmF.category===c?'active':''}" onclick="setPrmCategory('${safe}')">${label}</button>`;
+  }).join('');
+  const showBtns = Object.entries(PRM_MTYPES).map(([k,def]) =>
+    `<button class="prm-show-btn ${prmF.show[k]?'active':''}" onclick="setPrmShow('${k}')">
+       <span class="ms-icon">${def.icon}</span><span>${def.he}</span>
+     </button>`
+  ).join('');
+  return `
+  <div class="prm-controls">
+    <div class="prm-scale-group">${scaleBtns}</div>
+    <input class="prm-search" placeholder="חיפוש מוצר…" value="${(prmF.search||'').replace(/&quot;/g,'&quot;')}" oninput="setPrmSearch(this.value)">
+    <div class="prm-pill-group"><span class="prm-pill-label">סטטוס:</span>${statusPills}</div>
+    <div class="prm-pill-group"><span class="prm-pill-label">קטגוריה:</span>${catPills}</div>
+    <div class="prm-show-row"><span class="prm-pill-label">להציג:</span>${showBtns}</div>
+  </div>`;
+}
+
+function prmLegend() {
+  const bubbles = Object.entries(PRM_MTYPES).map(([k,def]) =>
+    `<div class="prm-legend-item">
+       <span class="prm-legend-bubble" style="background:${k==='launch'?'var(--accent-soft)':k==='sample'?'var(--yellow-bg)':k==='stock'?'var(--blue-bg)':'var(--orange-bg)'};border-color:${def.color}">${def.icon}</span>
+       <span>${def.he}</span>
+     </div>`
+  ).join('');
+  return `
+  <div class="prm-legend">
+    <div class="prm-legend-group"><span style="font-weight:600;color:rgba(26,29,35,.5)">סוגי שלבים</span>${bubbles}</div>
+    <span class="prm-legend-sep"></span>
+    <div class="prm-legend-group">
+      <span style="font-weight:600;color:rgba(26,29,35,.5)">משמעות הקווים</span>
+      <div class="prm-legend-item"><span class="prm-legend-line"></span><span>בזמן תקין · לפני ההשקה</span></div>
+      <div class="prm-legend-item"><span class="prm-legend-line yellow"></span><span>בסיכון · פחות מ-7 ימים</span></div>
+      <div class="prm-legend-item"><span class="prm-legend-line red"></span><span>אחרי ההשקה ⚠</span></div>
     </div>
   </div>`;
 }
