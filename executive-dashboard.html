@@ -957,6 +957,7 @@ function buildSidebar() {
   counts.overview = allProjects.filter(p => p.mainStatus !== 'הסתיימה' && p.mainStatus !== 'מבוטלת').length;
 
   counts.pipeline = pipelineProjects.filter(p => !PIPELINE_DONE_STAGES.has(p.devStage) && !PIPELINE_CANCEL_STAGES.has(p.devStage)).length;
+  counts.launches = allProjects.filter(p => (p.launchDate || p.deadline) && p.health !== 'done' && p.health !== 'cancel').length;
 
   document.getElementById('sbNav').innerHTML = WORLDS.map(w => {
     const active = w.key === activeWorld ? 'active' : '';
