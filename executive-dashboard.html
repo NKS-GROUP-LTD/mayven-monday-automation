@@ -524,6 +524,9 @@ body::before{content:"";position:fixed;inset:0;background-image:url("data:image/
 .ppf-team-name{color:rgba(26,29,35,.65)}
 .ppf-team-sep{color:rgba(26,29,35,.3);margin:0 4px}
 .ppf-launch-badge{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;padding:3px 10px;border-radius:12px;background:var(--green-bg);color:var(--green-fg);border:1.5px solid var(--green-fg)}
+.ppf-group-link{display:inline-flex;align-items:center;font-size:11px;font-weight:600;padding:2px 9px;border-radius:6px;border:1.5px solid var(--ink);color:var(--ink);text-decoration:none;background:var(--paper);box-shadow:2px 2px 0 var(--ink);transition:box-shadow .1s}
+.ppf-group-link:hover{box-shadow:none;transform:translate(2px,2px)}
+.ppf-group-link-brief{background:var(--paper-shade)}
 .ppf-wd{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:var(--ink)}
 .ppf-wd-label{font-family:'Heebo',sans-serif;font-size:10px;font-weight:500;color:rgba(26,29,35,.5);margin-right:2px}
 .ppf-gap{font-size:11px;font-weight:700;padding:2px 7px;border-radius:10px;white-space:nowrap}
@@ -686,18 +689,20 @@ const P = {
 
 // ── Product Portfolio Roadmap board column IDs (18406262354) ──
 const PL = {
-  PROJECT_TYPE:  'color_mm1qbd4z',   // סוג הפרויקט
-  STAGE:         'color_mm1yj6h2',   // שלב במוצר
+  PROJECT_TYPE:  'color_mm1qbd4z',
+  STAGE:         'color_mm1yj6h2',
   OWNER:         'multiple_person_mm1pr59g',
   PM:            'multiple_person_mm1qy0em',
-  LAUNCH_DATE:   'date_mm1pygtt',    // תאריך השקה
-  PRODUCT_NAME:  'color_mm1ynags',   // שם מוצר (product line)
-  STOCK_DATE:    'date_mm1p19h1',    // זמן מחסן
-  STATUS:        'color_mm1qz36p',   // סטטוס
+  LAUNCH_DATE:   'date_mm1pygtt',
+  PRODUCT_NAME:  'color_mm1ynags',
+  STOCK_DATE:    'date_mm1p19h1',
+  STATUS:        'color_mm1qz36p',
   QUARTER:       'dropdown_mm1pr8wc',
-  BIZ_IMPACT:    'color_mm1qd4hs',   // השפעה עסקית
+  BIZ_IMPACT:    'color_mm1qd4hs',
   TIMELINE:      'timerange_mm1q7amw',
   DESCRIPTION:   'text_mm1qtk4m',
+  BOARD_LINK:    'link_mm2sn4aj',    // Link to board
+  BRIEF:         'link_mm1q4mfb',    // task brief
 };
 
 const PIPELINE_STAGE_ORDER = [
@@ -2133,7 +2138,7 @@ function renderOverview(ps) {
 // PRODUCT LAUNCHES PAGE
 // ══════════════════════════════════════════════════
 
-const ppF = { stage:'all', type:'all', quarter:'all', hideDone:false, hideHold:false };
+const ppF = { stage:'all', type:'all', quarter:'all', status:'all', groupBy:'product' };
 function setPpFilter(key, val) { ppF[key] = val; renderProductLaunches(productLaunchItems); }
 
 function workingDaysBetween(d1, d2) {
@@ -2216,7 +2221,6 @@ function renderProductLaunches(items) {
       : calcHubData(item.name);
 
     const timelineOverrun = hubData.maxEnd && stockDate && hubData.maxEnd.getTime() > stockDate.getTime();
-    // stock vs launch: positive = stock arrives before launch (good), negative = after (bad)
     const stockVsLaunchWd = (stockDate && launchDate) ? workingDaysBetween(stockDate, launchDate) : null;
 
     let launchQuarter = '';
@@ -2232,10 +2236,18 @@ function renderProductLaunches(items) {
     else if (stockDate && stockDate.getTime() <= todayMs + 7*864e5) health = 'yellow';
     else health = 'green';
 
+    // Parse link columns
+    function parseLink(raw) {
+      try { const v = typeof raw === 'string' ? JSON.parse(raw) : raw; return v?.url ? v : null; }
+      catch { return null; }
+    }
+    const boardLink = parseLink(plCv(item, PL.BOARD_LINK).r);
+    const briefLink = parseLink(plCv(item, PL.BRIEF).r);
+
     return {
       ...item, launchDate, stockDate, stage, productLine, type, launchQuarter,
       derivedStatus, hubData, timelineOverrun, stockVsLaunchWd,
-      isDone, isHold, isRedFlag, health,
+      isDone, isHold, isRedFlag, health, boardLink, briefLink,
     };
   }
 
@@ -2247,11 +2259,16 @@ function renderProductLaunches(items) {
   const allQuarters = [...new Set(parsed.map(p => p.launchQuarter).filter(Boolean))].sort();
 
   // Apply filters
-  if (ppF.hideDone) parsed = parsed.filter(p => p.health !== 'done');
-  if (ppF.hideHold) parsed = parsed.filter(p => p.health !== 'hold');
   if (ppF.stage   !== 'all') parsed = parsed.filter(p => p.stage === ppF.stage);
   if (ppF.type    !== 'all') parsed = parsed.filter(p => p.type  === ppF.type);
   if (ppF.quarter !== 'all') parsed = parsed.filter(p => p.launchQuarter === ppF.quarter);
+  if (ppF.status  !== 'all') {
+    if (ppF.status === 'done')   parsed = parsed.filter(p => p.health === 'done');
+    else if (ppF.status === 'active') parsed = parsed.filter(p => p.health === 'green' || p.health === 'yellow');
+    else if (ppF.status === 'red')    parsed = parsed.filter(p => p.health === 'red');
+    else if (ppF.status === 'yellow') parsed = parsed.filter(p => p.health === 'yellow');
+    else if (ppF.status === 'hold')   parsed = parsed.filter(p => p.health === 'hold');
+  }
 
   parsed.sort((a, b) => {
     const da = a.launchDate?.getTime() ?? Infinity;
@@ -2270,8 +2287,20 @@ function renderProductLaunches(items) {
 
   const grouped = new Map();
   parsed.forEach(p => {
-    if (!grouped.has(p.productLine)) grouped.set(p.productLine, []);
-    grouped.get(p.productLine).push(p);
+    let key;
+    if (ppF.groupBy === 'quarter') key = p.launchQuarter || 'ללא רבעון';
+    else if (ppF.groupBy === 'stage') key = p.stage || 'ללא שלב';
+    else if (ppF.groupBy === 'type')  key = p.type  || 'ללא סוג';
+    else key = p.productLine; // default: product line
+    if (!grouped.has(key)) grouped.set(key, []);
+    grouped.get(key).push(p);
+  });
+  // Sort group keys
+  const sortedGroups = [...grouped.entries()].sort((a, b) => {
+    if (ppF.groupBy === 'quarter') return (a[0] < b[0] ? -1 : 1);
+    const aDate = a[1].find(p=>p.launchDate)?.launchDate?.getTime() ?? Infinity;
+    const bDate = b[1].find(p=>p.launchDate)?.launchDate?.getTime() ?? Infinity;
+    return aDate - bDate;
   });
 
   const STAGE_COLORS = {
@@ -2309,11 +2338,12 @@ function renderProductLaunches(items) {
     if (!p.stockDate) return '<span style="color:rgba(26,29,35,.3)">—</span>';
     const diff = Math.round((p.stockDate.getTime() - todayMs) / 864e5);
     let chip = '';
-    if (p.health === 'done') chip = `<span class="pl-days done">✓</span>`;
-    else if (p.health === 'hold') chip = `<span class="pl-days hold">⏸</span>`;
-    else if (diff < 0) chip = `<span class="pl-days red">${Math.abs(diff)}י׳ איחור</span>`;
+    if (p.health === 'done') chip = `<span class="pl-days done">✓ הסתיימה</span>`;
+    else if (p.health === 'hold') chip = `<span class="pl-days hold">⏸ בהמתנה</span>`;
+    else if (diff < 0) chip = `<span class="pl-days red">באיחור של ${Math.abs(diff)} ימים</span>`;
     else if (diff === 0) chip = `<span class="pl-days yellow">היום!</span>`;
-    else chip = `<span class="pl-days ${p.health}">${diff}י׳</span>`;
+    else if (diff === 1) chip = `<span class="pl-days ${p.health}">מחר</span>`;
+    else chip = `<span class="pl-days ${p.health}">${diff} ימים נשארו</span>`;
     return `<div style="display:flex;flex-direction:column;gap:3px"><span class="ltr" style="font-family:'JetBrains Mono',monospace;font-size:12px">${fmtDate(p.stockDate)}</span>${chip}</div>`;
   }
 
@@ -2363,17 +2393,26 @@ function renderProductLaunches(items) {
     </tr>`;
   }
 
-  function groupHtml(productLine, groupItems) {
+  function groupHtml(groupLabel, groupItems) {
     const redFlagsInGroup = groupItems.filter(p => p.health === 'red').length;
     const allDone         = groupItems.every(p => p.health === 'done');
     const launchItem      = groupItems.find(p => p.launchDate);
+    // Board link + brief link: use first item in group that has them
+    const boardLinkItem   = groupItems.find(p => p.boardLink?.url);
+    const briefLinkItem   = groupItems.find(p => p.briefLink?.url);
+
+    const linkButtons = [
+      boardLinkItem ? `<a href="${boardLinkItem.boardLink.url}" target="_blank" class="ppf-group-link">📋 בורד</a>` : '',
+      briefLinkItem ? `<a href="${briefLinkItem.briefLink.url}" target="_blank" class="ppf-group-link ppf-group-link-brief">📄 בריף</a>` : '',
+    ].filter(Boolean).join('');
 
     return `<div class="pl-group ${allDone ? 'pl-group-done' : ''}">
       <div class="pl-group-head">
         <div class="pl-group-title">
           ${redFlagsInGroup ? '<span class="pl-group-flag">🚩</span>' : allDone ? '<span style="color:var(--green-fg)">✓</span>' : ''}
-          <span>${productLine}</span>
+          <span>${groupLabel}</span>
           <span class="pl-group-count">${groupItems.length} פריטים</span>
+          ${linkButtons}
         </div>
         ${launchItem ? `<div class="ppf-launch-badge">🏁 השקה: <strong class="ltr">${fmtDate(launchItem.launchDate)}</strong></div>` : ''}
       </div>
@@ -2432,7 +2471,7 @@ function renderProductLaunches(items) {
       <div class="kpi">
         <div class="kpi-label">סה״כ פריטים</div>
         <div class="kpi-value">${total}</div>
-        <div class="kpi-sub">${grouped.size} קווי מוצר</div>
+        <div class="kpi-sub">${sortedGroups.length} קבוצות</div>
       </div>
       <div class="kpi" style="${redFlags?'border-color:var(--red-fg)':''}">
         <div class="kpi-label">🚩 דגלים אדומים</div>
@@ -2459,33 +2498,43 @@ function renderProductLaunches(items) {
     <div class="pf-bar">
       <span class="pf-label">שלב:</span>
       <select class="pf-select" onchange="setPpFilter('stage', this.value)">
-        <option value="all" ${ppF.stage==='all'?'selected':''}>כולם</option>
+        <option value="all" ${ppF.stage==='all'?'selected':''}>הכל</option>
         ${allStages.map(s => `<option value="${s}" ${ppF.stage===s?'selected':''}>${s}</option>`).join('')}
       </select>
       <span class="pf-label">סוג:</span>
       <select class="pf-select" onchange="setPpFilter('type', this.value)">
-        <option value="all" ${ppF.type==='all'?'selected':''}>כולם</option>
+        <option value="all" ${ppF.type==='all'?'selected':''}>הכל</option>
         ${allTypes.map(t => `<option value="${t}" ${ppF.type===t?'selected':''}>${t}</option>`).join('')}
       </select>
       <span class="pf-label">רבעון:</span>
       <select class="pf-select" onchange="setPpFilter('quarter', this.value)">
-        <option value="all" ${ppF.quarter==='all'?'selected':''}>כולם</option>
+        <option value="all" ${ppF.quarter==='all'?'selected':''}>הכל</option>
         ${allQuarters.map(q => `<option value="${q}" ${ppF.quarter===q?'selected':''}>${q}</option>`).join('')}
       </select>
+      <span class="pf-label">סטטוס:</span>
+      <select class="pf-select" onchange="setPpFilter('status', this.value)">
+        <option value="all"    ${ppF.status==='all'   ?'selected':''}>הכל</option>
+        <option value="active" ${ppF.status==='active'?'selected':''}>בעבודה</option>
+        <option value="red"    ${ppF.status==='red'   ?'selected':''}>🚩 דגל אדום</option>
+        <option value="yellow" ${ppF.status==='yellow'?'selected':''}>⚠ בסיכון</option>
+        <option value="hold"   ${ppF.status==='hold'  ?'selected':''}>⏸ On Hold</option>
+        <option value="done"   ${ppF.status==='done'  ?'selected':''}>✅ הושלמו</option>
+      </select>
       <div class="pf-div"></div>
-      <button class="pf-toggle ${ppF.hideDone?'on':''}" onclick="setPpFilter('hideDone', !ppF.hideDone)">
-        ${ppF.hideDone ? '👁 הצג הושלמו' : '🙈 הסתר הושלמו'}
-      </button>
-      <button class="pf-toggle ${ppF.hideHold?'on':''}" onclick="setPpFilter('hideHold', !ppF.hideHold)">
-        ${ppF.hideHold ? '👁 הצג On Hold' : '⏸ הסתר On Hold'}
-      </button>
+      <span class="pf-label">קיבוץ לפי:</span>
+      <select class="pf-select" onchange="setPpFilter('groupBy', this.value)">
+        <option value="product" ${ppF.groupBy==='product'?'selected':''}>קו מוצר</option>
+        <option value="quarter" ${ppF.groupBy==='quarter'?'selected':''}>רבעון</option>
+        <option value="stage"   ${ppF.groupBy==='stage'  ?'selected':''}>שלב</option>
+        <option value="type"    ${ppF.groupBy==='type'   ?'selected':''}>סוג מוצר</option>
+      </select>
       <span style="margin-right:auto;font-size:11px;color:rgba(26,29,35,.42)">${parsed.length} פריטים</span>
     </div>
 
     <div class="pl-groups">
-      ${grouped.size === 0
+      ${sortedGroups.length === 0
         ? `<div class="ms-card"><div class="ms-card-body"><div class="empty"><div class="empty-icon">📦</div><div>לא נמצאו פריטים</div></div></div></div>`
-        : [...grouped.entries()].map(([line, grpItems]) => groupHtml(line, grpItems)).join('')
+        : sortedGroups.map(([label, grpItems]) => groupHtml(label, grpItems)).join('')
       }
     </div>
   </div>`;
