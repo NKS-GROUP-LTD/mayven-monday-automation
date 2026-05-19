@@ -691,12 +691,12 @@ const PIPELINE_CANCEL_STAGES = new Set(['Cancelled']);
 const WORLDS = [
   { key:'overview',    he:'סקירה כללית',       en:'Overview',    icon:'📊' },
   { key:'pipeline',    he:'פורטפוליו טכנולוגיה', en:'Tech Pipeline', icon:'⚙️' },
-  { key:'tech',        he:'פיתוח טכנולוגי',    en:'Tech & Dev',  icon:'👩‍💻' },
-  { key:'product',     he:'מוצר חדש',           en:'New Product', icon:'📦' },
-  { key:'campaigns',        he:'קמפיינים',           en:'Campaigns',        icon:'🎀' },
-  { key:'product_launches', he:'השקות מוצר',         en:'Product Launches',  icon:'🚀' },
-  { key:'launches',         he:'עלייה לאוויר',       en:'Tech Go-Live',      icon:'📅' },
-  { key:'departments',      he:'מחלקות',             en:'Departments',       icon:'✨' },
+  { key:'tech',             he:'פיתוח טכנולוגי',    en:'Tech & Dev',        icon:'👩‍💻' },
+  { key:'product_portfolio',he:'פורטפוליו מוצר',    en:'Product Portfolio',  icon:'📦' },
+  { key:'product_launches', he:'השקות מוצר',         en:'Product Launches',   icon:'🚀' },
+  { key:'campaigns',        he:'קמפיינים',           en:'Campaigns',          icon:'🎀' },
+  { key:'launches',         he:'עלייה לאוויר',       en:'Tech Go-Live',       icon:'📅' },
+  { key:'departments',      he:'מחלקות',             en:'Departments',        icon:'✨' },
 ];
 
 // ── Type → World mapping (with Monday emoji) ──
@@ -1058,10 +1058,11 @@ function buildSidebar() {
 
   counts.pipeline = pipelineProjects.filter(p => !PIPELINE_DONE_STAGES.has(p.devStage) && !PIPELINE_CANCEL_STAGES.has(p.devStage)).length;
   counts.launches = allProjects.filter(p => (p.launchDate || p.deadline) && p.health !== 'done' && p.health !== 'cancel').length;
-  counts.product_launches = productLaunchItems.filter(item => {
-    const statusText = item.column_values?.find(cv => cv.column_id === PL.STATUS)?.text_value || '';
-    return statusText !== 'הסתיימה' && statusText !== 'מבוטלת' && statusText !== 'בנק משימות';
+  counts.product_portfolio = productLaunchItems.filter(item => {
+    const stage = item.column_values?.find(cv => cv.column_id === PL.STAGE)?.text_value || '';
+    return stage !== 'Stock Date';
   }).length;
+  counts.product_launches = 0; // placeholder — boards TBD
 
   document.getElementById('sbNav').innerHTML = WORLDS.map(w => {
     const active = w.key === activeWorld ? 'active' : '';
@@ -1148,9 +1149,9 @@ function renderWorld(ps) {
   if (activeWorld === 'overview')      renderOverview(ps);
   else if (activeWorld === 'pipeline') renderPipeline(pipelineProjects);
   else if (activeWorld === 'tech')     renderTechPage(ps);
-  else if (activeWorld === 'product')  renderProductPage(ps);
   else if (activeWorld === 'departments') renderDepartmentsPage();
-  else if (activeWorld === 'product_launches') renderProductLaunches(productLaunchItems);
+  else if (activeWorld === 'product_portfolio') renderProductLaunches(productLaunchItems);
+  else if (activeWorld === 'product_launches') renderProductLaunchesPlaceholder();
   else if (activeWorld === 'launches') renderRoadmap(allProjects.filter(p => p.launchDate || p.deadline));
   else renderWorldPage(ps);
 }
@@ -2162,15 +2163,17 @@ function renderProductLaunches(items) {
     // Status from stage — source of truth
     const derivedStatus = deriveStatus(stage);
 
-    // Hub timeline analysis
-    const { maxEnd, totalTasks, relevantTasks } = calcHubTimeline(item.name);
+    // Health flags
+    const isDone    = derivedStatus === 'הסתיימה';
+    const isHold    = derivedStatus === 'למעקב';
+    const isRedFlag = stage === 'RED FLAG';
+
+    // Hub timeline analysis — skip for done/hold items
+    const { maxEnd, totalTasks, relevantTasks } = (isDone || isHold)
+      ? { maxEnd: null, totalTasks: 0, relevantTasks: 0 }
+      : calcHubTimeline(item.name);
     const timelineOverrun = maxEnd && stockDate && maxEnd.getTime() > stockDate.getTime();
     const daysOverrun     = timelineOverrun ? Math.round((maxEnd.getTime() - stockDate.getTime()) / 864e5) : 0;
-
-    // Health
-    const isDone   = derivedStatus === 'הסתיימה';
-    const isHold   = derivedStatus === 'למעקב';
-    const isRedFlag = stage === 'RED FLAG';
 
     let health;
     if (isDone)    health = 'done';
@@ -2353,8 +2356,8 @@ function renderProductLaunches(items) {
   <div class="page">
     <div class="page-head">
       <div>
-        <h1 class="page-title">🚀 השקות מוצר</h1>
-        <div class="page-sub">רוד-מאפ מוצרים לפי קו מוצר · 🚩 דגל אדום = מוצר בפיגור או ב-RED FLAG</div>
+        <h1 class="page-title">📦 פורטפוליו מוצר</h1>
+        <div class="page-sub">סטטוס פיתוח מוצרים · דד-ליין = תאריך מחסן · 🚩 חריגה = ציר משימות חורג מתאריך המחסן</div>
       </div>
     </div>
 
@@ -2415,6 +2418,31 @@ function renderProductLaunches(items) {
         ? `<div class="ms-card"><div class="ms-card-body"><div class="empty"><div class="empty-icon">📦</div><div>לא נמצאו פריטים</div></div></div></div>`
         : [...grouped.entries()].map(([line, grpItems]) => groupHtml(line, grpItems)).join('')
       }
+    </div>
+  </div>`;
+}
+
+// ══════════════════════════════════════════════════
+// PRODUCT LAUNCHES PLACEHOLDER
+// ══════════════════════════════════════════════════
+function renderProductLaunchesPlaceholder() {
+  document.getElementById('content').innerHTML = `
+  <div class="page">
+    <div class="page-head">
+      <div>
+        <h1 class="page-title">🚀 השקות מוצר</h1>
+        <div class="page-sub">קמפיינים של השקת מוצרים · בורדים: Break free PMS · Members Only · Mad Glow · Hey Mom…</div>
+      </div>
+    </div>
+    <div class="ms-card">
+      <div class="ms-card-body" style="padding:48px 32px;text-align:center">
+        <div style="font-size:48px;margin-bottom:16px">🚀</div>
+        <div style="font-family:'Suez One',serif;font-size:22px;color:var(--ink);margin-bottom:8px">בקרוב</div>
+        <div style="font-size:13px;color:rgba(26,29,35,.55);max-width:400px;margin:0 auto;line-height:1.7">
+          עמוד זה יציג את קמפיינים של השקות המוצרים לפי בורד.<br>
+          כל השקה = דד-ליין: תאריך ההשקה שנקבע בפורטפוליו.
+        </div>
+      </div>
     </div>
   </div>`;
 }
