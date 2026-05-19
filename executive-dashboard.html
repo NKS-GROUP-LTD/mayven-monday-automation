@@ -462,6 +462,52 @@ body::before{content:"";position:fixed;inset:0;background-image:url("data:image/
 .dpc.nodl{background:rgba(253,246,178,.5);color:rgba(120,53,15,.8)}
 .dpc.ok{background:var(--green-bg);color:var(--green-fg)}
 .dept-no-people{padding:14px 20px;font-size:12px;color:rgba(26,29,35,.45);text-align:center}
+
+/* ── Product Launches Page ── */
+.pl-groups{display:flex;flex-direction:column;gap:18px}
+.pl-group{background:var(--paper);border:1.5px solid var(--ink);border-radius:8px;overflow:hidden;box-shadow:3px 3px 0 var(--ink)}
+.pl-group-done{opacity:.7;border-color:rgba(26,29,35,.3);box-shadow:2px 2px 0 rgba(26,29,35,.15)}
+.pl-group-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 18px;border-bottom:1.5px dashed var(--ink-soft);background:var(--paper-deep)}
+.pl-group-title{display:flex;align-items:center;gap:8px;font-family:'Suez One',serif;font-size:16px;font-weight:700;color:var(--ink)}
+.pl-group-flag{font-size:16px}
+.pl-group-count{font-size:12px;font-weight:500;color:rgba(26,29,35,.55);font-family:'Heebo',sans-serif}
+.pl-group-done-badge{font-size:11px;padding:2px 7px;border-radius:10px;background:var(--green-bg);color:var(--green-fg);font-weight:600}
+.pl-group-next{font-size:12px;color:rgba(26,29,35,.6)}
+.pl-table{width:100%;border-collapse:collapse}
+.pl-th{padding:8px 14px;text-align:right;font-size:11.5px;font-weight:600;color:rgba(26,29,35,.55);border-bottom:1px solid var(--ink-soft);white-space:nowrap;background:var(--paper-deep)}
+.pl-td{padding:9px 14px;border-bottom:1px solid var(--ink-softer);vertical-align:middle;font-size:13px}
+.pl-row:last-child .pl-td{border-bottom:none}
+.pl-row:hover .pl-td{background:var(--paper-deep)}
+.pl-row-red .pl-td{background:rgba(254,226,226,.25)}
+.pl-row-red:hover .pl-td{background:rgba(254,226,226,.5)}
+.pl-row-yellow .pl-td{background:rgba(254,243,199,.2)}
+.pl-row-done .pl-td{opacity:.65}
+.pl-td-name{display:flex;align-items:center;gap:8px;min-width:200px;white-space:nowrap}
+.pl-item-name{font-weight:500;font-size:13px}
+.pl-rf-badge{font-size:10px;padding:2px 6px;background:var(--red-bg);color:var(--red-fg);border-radius:4px;font-weight:700}
+.pl-td-owner{font-size:12px;color:rgba(26,29,35,.65);white-space:nowrap}
+.pl-td-date{white-space:nowrap;font-family:'JetBrains Mono',monospace;font-size:12px}
+.pl-stage-pill{display:inline-block;font-size:11px;font-weight:600;padding:2px 8px;border-radius:12px;white-space:nowrap}
+.pl-type-tag{display:inline-block;font-size:11px;padding:2px 7px;border-radius:4px;background:var(--paper-shade);color:var(--ink);font-weight:500;border:1px solid var(--ink-soft);white-space:nowrap}
+.pl-dot{font-size:13px;flex-shrink:0}
+.pl-dot.done{color:var(--green-fg)}
+.pl-dot.cancel{color:rgba(26,29,35,.35)}
+.pl-dot.green{color:var(--green-fg)}
+.pl-days{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;white-space:nowrap;font-family:'JetBrains Mono',monospace}
+.pl-days.red{background:var(--red-bg);color:var(--red-fg)}
+.pl-days.yellow{background:var(--yellow-bg);color:var(--yellow-fg)}
+.pl-days.green{background:var(--green-bg);color:var(--green-fg)}
+.pl-days.done{background:var(--green-bg);color:var(--green-fg)}
+.pl-days.none{color:rgba(26,29,35,.35)}
+.pl-status-text{font-size:12px;color:rgba(26,29,35,.7)}
+.pl-status-text.done{color:var(--green-fg);font-weight:600}
+.pl-status-text.cancel{color:rgba(26,29,35,.4)}
+.pl-notice{display:flex;align-items:flex-start;gap:14px;padding:16px 20px;background:var(--yellow-bg);border:1.5px solid var(--yellow-fg);border-radius:8px;margin-bottom:4px}
+.pl-notice-icon{font-size:24px;flex-shrink:0}
+.pl-notice-title{font-weight:700;font-size:14px;color:var(--yellow-fg)}
+.pl-notice-sub{font-size:12px;color:rgba(26,29,35,.7);margin-top:4px}
+.pl-notice code{font-family:'JetBrains Mono',monospace;font-size:11px;background:rgba(0,0,0,.07);padding:2px 6px;border-radius:3px}
+.pf-search{display:flex;align-items:center;height:30px;padding:0 10px;border:1.5px solid var(--ink);border-radius:6px;background:var(--paper)}
 </style>
 </head>
 <body>
@@ -536,7 +582,8 @@ const BOARD_ID          = 18400570216;
 const PIPELINE_BOARD_ID  = 18404945843;
 const PIPELINE_FETCH_URL = 'https://syrhxhytlkcnakicnyde.supabase.co/functions/v1/pipeline-fetch';
 const PIPELINE_ANON_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN5cmh4aHl0bGtjbmFraWNueWRlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5NTg2MTgsImV4cCI6MjA4NzUzNDYxOH0.ocmq1FmdSva_K8yusrCCf__woxknFThdJH3mRtdgt4U';
-const HUB_SYNC_URL       = 'https://hrdniczngcoymqjpmvqn.supabase.co/functions/v1/hub-sync';
+const HUB_SYNC_URL                = 'https://hrdniczngcoymqjpmvqn.supabase.co/functions/v1/hub-sync';
+const PRODUCT_LAUNCHES_FETCH_URL  = 'https://syrhxhytlkcnakicnyde.supabase.co/functions/v1/product-launches-fetch';
 const PAGE_SIZE = 1000;
 
 const C = {
@@ -595,6 +642,22 @@ const P = {
   ENV:          'dropdown_mm1prr28',
 };
 
+// ── Product Portfolio Roadmap board column IDs (18406262354) ──
+const PL = {
+  PROJECT_TYPE:  'color_mm1qbd4z',   // סוג הפרויקט
+  STAGE:         'color_mm1yj6h2',   // שלב במוצר
+  OWNER:         'multiple_person_mm1pr59g',
+  PM:            'multiple_person_mm1qy0em',
+  LAUNCH_DATE:   'date_mm1pygtt',    // תאריך השקה
+  PRODUCT_NAME:  'color_mm1ynags',   // שם מוצר (product line)
+  STOCK_DATE:    'date_mm1p19h1',    // זמן מחסן
+  STATUS:        'color_mm1qz36p',   // סטטוס
+  QUARTER:       'dropdown_mm1pr8wc',
+  BIZ_IMPACT:    'color_mm1qd4hs',   // השפעה עסקית
+  TIMELINE:      'timerange_mm1q7amw',
+  DESCRIPTION:   'text_mm1qtk4m',
+};
+
 const PIPELINE_STAGE_ORDER = [
   'Backlog',
   'Discovery & Planning',
@@ -619,9 +682,10 @@ const WORLDS = [
   { key:'pipeline',    he:'פורטפוליו טכנולוגיה', en:'Tech Pipeline', icon:'⚙️' },
   { key:'tech',        he:'פיתוח טכנולוגי',    en:'Tech & Dev',  icon:'👩‍💻' },
   { key:'product',     he:'מוצר חדש',           en:'New Product', icon:'📦' },
-  { key:'campaigns',   he:'קמפיינים',           en:'Campaigns',   icon:'🎀' },
-  { key:'launches',    he:'השקות',              en:'Launches',    icon:'🚀' },
-  { key:'departments', he:'מחלקות',             en:'Departments', icon:'✨' },
+  { key:'campaigns',        he:'קמפיינים',           en:'Campaigns',        icon:'🎀' },
+  { key:'product_launches', he:'השקות מוצר',         en:'Product Launches',  icon:'🚀' },
+  { key:'launches',         he:'עלייה לאוויר',       en:'Tech Go-Live',      icon:'📅' },
+  { key:'departments',      he:'מחלקות',             en:'Departments',       icon:'✨' },
 ];
 
 // ── Type → World mapping (with Monday emoji) ──
@@ -666,8 +730,9 @@ const PIPELINE_ORDER = ['בנק משימות','ממתין','מאושר','בעב�
 // STATE
 // ══════════════════════════════════════════════════
 const db = window.supabase.createClient(SUPABASE_URL, ANON_KEY);
-let allProjects      = [];
-let pipelineProjects = [];
+let allProjects          = [];
+let pipelineProjects     = [];
+let productLaunchItems   = [];
 let activeWorld  = 'overview';
 let filterTeam   = 'all';
 let filterSearch = '';
@@ -704,7 +769,6 @@ async function fetchPipeline() {
   if (!res.ok) throw new Error(`pipeline-fetch HTTP ${res.status}`);
   const json = await res.json();
   if (!json.ok) throw new Error(json.error || 'pipeline-fetch error');
-  // Normalize to match the processPipeline cv() helper format
   return (json.items || []).map(item => ({
     id: item.id,
     name: item.name,
@@ -714,6 +778,31 @@ async function fetchPipeline() {
       value: cv.value,
     })),
   }));
+}
+
+async function fetchProductLaunches() {
+  setLP('שולף רוד-מאפ מוצר…');
+  try {
+    const res = await fetch(PRODUCT_LAUNCHES_FETCH_URL, {
+      headers: { 'Authorization': `Bearer ${PIPELINE_ANON_KEY}` }
+    });
+    if (!res.ok) throw new Error(`product-launches-fetch HTTP ${res.status}`);
+    const json = await res.json();
+    if (!json.ok) throw new Error(json.error || 'product-launches-fetch error');
+    return (json.items || []).map(item => ({
+      id: item.id,
+      name: item.name,
+      group_title: item.group_title,
+      column_values: (item.column_values || []).map(cv => ({
+        column_id: cv.id,
+        text_value: cv.text,
+        value: cv.value,
+      })),
+    }));
+  } catch(e) {
+    console.warn('product-launches-fetch failed (edge function not yet deployed?):', e.message);
+    return [];
+  }
 }
 
 // ══════════════════════════════════════════════════
@@ -958,6 +1047,10 @@ function buildSidebar() {
 
   counts.pipeline = pipelineProjects.filter(p => !PIPELINE_DONE_STAGES.has(p.devStage) && !PIPELINE_CANCEL_STAGES.has(p.devStage)).length;
   counts.launches = allProjects.filter(p => (p.launchDate || p.deadline) && p.health !== 'done' && p.health !== 'cancel').length;
+  counts.product_launches = productLaunchItems.filter(item => {
+    const statusText = item.column_values?.find(cv => cv.column_id === PL.STATUS)?.text_value || '';
+    return statusText !== 'הסתיימה' && statusText !== 'מבוטלת' && statusText !== 'בנק משימות';
+  }).length;
 
   document.getElementById('sbNav').innerHTML = WORLDS.map(w => {
     const active = w.key === activeWorld ? 'active' : '';
@@ -1046,6 +1139,7 @@ function renderWorld(ps) {
   else if (activeWorld === 'tech')     renderTechPage(ps);
   else if (activeWorld === 'product')  renderProductPage(ps);
   else if (activeWorld === 'departments') renderDepartmentsPage();
+  else if (activeWorld === 'product_launches') renderProductLaunches(productLaunchItems);
   else if (activeWorld === 'launches') renderRoadmap(allProjects.filter(p => p.launchDate || p.deadline));
   else renderWorldPage(ps);
 }
@@ -1993,6 +2087,264 @@ function renderOverview(ps) {
 // ══════════════════════════════════════════════════
 // ROADMAP PAGE — launch timeline with red flags
 // ══════════════════════════════════════════════════
+// PRODUCT LAUNCHES PAGE
+// ══════════════════════════════════════════════════
+
+const plF = { hideCompleted: false, quarter: 'all', search: '' };
+
+function setPlFilter(key, val) { plF[key] = val; renderProductLaunches(productLaunchItems); }
+
+function renderProductLaunches(items) {
+  const todayMs = new Date().setHours(0,0,0,0);
+
+  function plCv(item, colId) {
+    const r = item.column_values?.find(r => r.column_id === colId);
+    return r ? { t: r.text_value, r: r.value } : { t: null, r: null };
+  }
+
+  function parsePLItem(item) {
+    const launchDate  = parseDate(plCv(item, PL.LAUNCH_DATE).t);
+    const stockDate   = parseDate(plCv(item, PL.STOCK_DATE).t);
+    const stage       = plCv(item, PL.STAGE).t || '';
+    const status      = plCv(item, PL.STATUS).t || '';
+    const productLine = plCv(item, PL.PRODUCT_NAME).t || '—';
+    const type        = plCv(item, PL.PROJECT_TYPE).t || '';
+    const quarter     = plCv(item, PL.QUARTER).t || '';
+    const bizImpact   = plCv(item, PL.BIZ_IMPACT).t || '';
+    const owner       = plCv(item, PL.OWNER).t || '';
+
+    const isDone     = status === 'הסתיימה' || item.group_title === 'DONE';
+    const isCanceled = status === 'מבוטלת';
+    const isRedFlag  = stage === 'RED FLAG' || status === 'דגל אדום';
+    const isLate     = !isDone && launchDate && launchDate.getTime() < todayMs;
+    const isAtRisk   = !isDone && !isLate && launchDate && launchDate.getTime() <= todayMs + 30*864e5;
+
+    let health = 'green';
+    if (isDone || isCanceled) health = isDone ? 'done' : 'cancel';
+    else if (isRedFlag || isLate) health = 'red';
+    else if (isAtRisk) health = 'yellow';
+
+    return { ...item, launchDate, stockDate, stage, status, productLine, type, quarter, bizImpact, owner, isDone, isCanceled, isRedFlag, isLate, isAtRisk, health };
+  }
+
+  let parsed = items.map(parsePLItem);
+
+  // Filters
+  const search = plF.search.trim().toLowerCase();
+  if (plF.hideCompleted) parsed = parsed.filter(p => p.health !== 'done' && p.health !== 'cancel');
+  if (plF.quarter !== 'all') parsed = parsed.filter(p => p.quarter === plF.quarter);
+  if (search) parsed = parsed.filter(p =>
+    p.name.toLowerCase().includes(search) ||
+    p.productLine.toLowerCase().includes(search) ||
+    p.stage.toLowerCase().includes(search)
+  );
+
+  // Sort by launch date, then stock date, then name
+  parsed.sort((a, b) => {
+    const da = a.launchDate?.getTime() ?? Infinity;
+    const db = b.launchDate?.getTime() ?? Infinity;
+    if (da !== db) return da - db;
+    const sa = a.stockDate?.getTime() ?? Infinity;
+    const sb = b.stockDate?.getTime() ?? Infinity;
+    return sa - sb;
+  });
+
+  // KPIs
+  const total       = parsed.length;
+  const redFlags    = parsed.filter(p => p.health === 'red').length;
+  const atRisk      = parsed.filter(p => p.health === 'yellow').length;
+  const doneCount   = parsed.filter(p => p.health === 'done').length;
+  const hasLaunchDt = parsed.filter(p => p.launchDate).length;
+
+  // Quarter filter options
+  const quarters = [...new Set(items.map(i => plCv(i, PL.QUARTER).t).filter(Boolean))].sort();
+
+  // Group by product line
+  const grouped = new Map();
+  parsed.forEach(p => {
+    const key = p.productLine;
+    if (!grouped.has(key)) grouped.set(key, []);
+    grouped.get(key).push(p);
+  });
+
+  // Stage colors
+  const STAGE_COLORS = {
+    'Planning & Initiation':  { bg:'#dbeafe', fg:'#1d4ed8' },
+    'Product Design':         { bg:'#fce7f3', fg:'#be185d' },
+    'Product Development':    { bg:'#dcfce7', fg:'#15803d' },
+    'Cross-Team Alignment':   { bg:'#fef3c7', fg:'#b45309' },
+    'Product Manufacturing':  { bg:'#ede9fe', fg:'#6d28d9' },
+    'Stock Date':             { bg:'#ffedd5', fg:'#c2410c' },
+    'RED FLAG':               { bg:'#fee2e2', fg:'#b91c1c' },
+    'On Hold':                { bg:'#f1f5f9', fg:'#64748b' },
+  };
+
+  function stagePill(stage) {
+    if (!stage) return '';
+    const c = STAGE_COLORS[stage] || { bg:'#f1f5f9', fg:'#475569' };
+    return `<span class="pl-stage-pill" style="background:${c.bg};color:${c.fg}">${stage}</span>`;
+  }
+
+  function typeTag(type) {
+    if (!type) return '';
+    return `<span class="pl-type-tag">${type}</span>`;
+  }
+
+  function healthDot(p) {
+    if (p.health === 'done') return '<span class="pl-dot done" title="הושלם">✓</span>';
+    if (p.health === 'cancel') return '<span class="pl-dot cancel" title="מבוטל">✕</span>';
+    if (p.health === 'red') return '<span class="pl-dot red" title="דגל אדום / באיחור">🚩</span>';
+    if (p.health === 'yellow') return '<span class="pl-dot yellow" title="בסיכון">⚠</span>';
+    return '<span class="pl-dot green">●</span>';
+  }
+
+  function daysChip(p) {
+    if (p.health === 'done') return `<span class="pl-days done">✓ הושלם</span>`;
+    if (!p.launchDate) return `<span class="pl-days none">—</span>`;
+    const diff = Math.round((p.launchDate.getTime() - todayMs) / 864e5);
+    if (diff < 0) return `<span class="pl-days red">${Math.abs(diff)} ימי איחור</span>`;
+    if (diff === 0) return `<span class="pl-days yellow">היום!</span>`;
+    return `<span class="pl-days ${p.health}">${diff} ימים</span>`;
+  }
+
+  function rowHtml(p) {
+    const isHighlighted = p.health === 'red' || p.isRedFlag;
+    return `<tr class="pl-row ${isHighlighted ? 'pl-row-red' : p.health === 'yellow' ? 'pl-row-yellow' : p.health === 'done' ? 'pl-row-done' : ''}">
+      <td class="pl-td pl-td-name">
+        ${healthDot(p)}
+        <span class="pl-item-name">${p.name}</span>
+        ${p.isRedFlag && p.stage !== 'RED FLAG' ? '<span class="pl-rf-badge">🚩 RED FLAG</span>' : ''}
+      </td>
+      <td class="pl-td">${typeTag(p.type)}</td>
+      <td class="pl-td">${stagePill(p.stage)}</td>
+      <td class="pl-td pl-td-owner">${p.owner || '—'}</td>
+      <td class="pl-td pl-td-date">
+        <span class="ltr">${fmtDate(p.stockDate)}</span>
+      </td>
+      <td class="pl-td pl-td-date">
+        <strong class="ltr" style="${p.isLate ? 'color:var(--red-fg)' : ''}">${fmtDate(p.launchDate)}</strong>
+      </td>
+      <td class="pl-td">${daysChip(p)}</td>
+      <td class="pl-td"><span class="pl-status-text ${p.isDone?'done':p.isCanceled?'cancel':''}">${p.status || '—'}</span></td>
+    </tr>`;
+  }
+
+  function groupHtml(productLine, groupItems) {
+    const redFlagsInGroup = groupItems.filter(p => p.health === 'red').length;
+    const doneInGroup     = groupItems.filter(p => p.health === 'done').length;
+    const nextLaunch      = groupItems.find(p => p.launchDate && p.launchDate.getTime() >= todayMs);
+    const allDone         = groupItems.every(p => p.health === 'done' || p.health === 'cancel');
+
+    return `<div class="pl-group ${allDone ? 'pl-group-done' : ''}">
+      <div class="pl-group-head">
+        <div class="pl-group-title">
+          ${redFlagsInGroup ? '<span class="pl-group-flag">🚩</span>' : allDone ? '<span style="color:var(--green-fg)">✓</span>' : ''}
+          <span>${productLine}</span>
+          <span class="pl-group-count">${groupItems.length} פריטים</span>
+          ${doneInGroup ? `<span class="pl-group-done-badge">${doneInGroup} הושלמו</span>` : ''}
+        </div>
+        ${nextLaunch ? `<div class="pl-group-next">השקה הבאה: <strong class="ltr">${fmtDate(nextLaunch.launchDate)}</strong></div>` : ''}
+      </div>
+      <table class="pl-table">
+        <thead>
+          <tr>
+            <th class="pl-th">פריט</th>
+            <th class="pl-th">סוג</th>
+            <th class="pl-th">שלב</th>
+            <th class="pl-th">אחראי</th>
+            <th class="pl-th">מחסן</th>
+            <th class="pl-th">השקה</th>
+            <th class="pl-th">נותר</th>
+            <th class="pl-th">סטטוס</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${groupItems.map(rowHtml).join('')}
+        </tbody>
+      </table>
+    </div>`;
+  }
+
+  const notDeployedBanner = items.length === 0 ? `
+    <div class="pl-notice">
+      <div class="pl-notice-icon">⚙️</div>
+      <div>
+        <div class="pl-notice-title">עדיין לא מחובר לנתונים חיים</div>
+        <div class="pl-notice-sub">להפעיל: <code>npx supabase functions deploy product-launches-fetch --project-ref syrhxhytlkcnakicnyde</code></div>
+      </div>
+    </div>` : '';
+
+  document.getElementById('content').innerHTML = `
+  <div class="page">
+    <div class="page-head">
+      <div>
+        <h1 class="page-title">🚀 השקות מוצר</h1>
+        <div class="page-sub">רוד-מאפ מוצרים לפי קו מוצר · 🚩 דגל אדום = מוצר בפיגור או ב-RED FLAG</div>
+      </div>
+    </div>
+
+    ${notDeployedBanner}
+
+    <!-- KPIs -->
+    <div class="kpi-strip" style="grid-template-columns:repeat(5,1fr)">
+      <div class="kpi">
+        <div class="kpi-label">סה״כ פריטים</div>
+        <div class="kpi-value">${total}</div>
+        <div class="kpi-sub">${hasLaunchDt} עם תאריך השקה</div>
+      </div>
+      <div class="kpi" style="${redFlags?'border-color:var(--red-fg)':''}">
+        <div class="kpi-label">🚩 דגלים אדומים</div>
+        <div class="kpi-value ${redFlags?'danger':''}">${redFlags}</div>
+        <div class="kpi-sub">RED FLAG / איחור</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">⚠ בסיכון</div>
+        <div class="kpi-value ${atRisk?'warning':''}">${atRisk}</div>
+        <div class="kpi-sub">תוך 30 יום</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">קווי מוצר</div>
+        <div class="kpi-value">${grouped.size}</div>
+        <div class="kpi-sub">מוצרים פעילים</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">✅ הושלמו</div>
+        <div class="kpi-value success">${doneCount}</div>
+        <div class="kpi-sub">מתוך ${total}</div>
+      </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="pf-bar">
+      <span class="pf-label">רבעון:</span>
+      <select class="pf-select" onchange="setPlFilter('quarter', this.value)">
+        <option value="all" ${plF.quarter==='all'?'selected':''}>כולם</option>
+        ${quarters.map(q => `<option value="${q}" ${plF.quarter===q?'selected':''}>${q}</option>`).join('')}
+      </select>
+      <div class="pf-div"></div>
+      <div class="pf-search">
+        <input type="text" placeholder="חיפוש…" value="${plF.search}"
+          oninput="setPlFilter('search', this.value)"
+          style="border:none;background:transparent;outline:none;font-family:'Heebo',sans-serif;font-size:13px;color:var(--ink);width:140px">
+      </div>
+      <div class="pf-div"></div>
+      <button class="pf-toggle ${plF.hideCompleted?'on':''}" onclick="setPlFilter('hideCompleted', !plF.hideCompleted)">
+        ${plF.hideCompleted ? '👁 הצג הושלמו' : '🙈 הסתר הושלמו'}
+      </button>
+      <span style="margin-right:auto;font-size:11px;color:rgba(26,29,35,.42)">${parsed.length} פריטים</span>
+    </div>
+
+    <!-- Groups -->
+    <div class="pl-groups">
+      ${grouped.size === 0
+        ? `<div class="ms-card"><div class="ms-card-body"><div class="empty"><div class="empty-icon">📦</div><div>לא נמצאו פריטים</div></div></div></div>`
+        : [...grouped.entries()].map(([line, grpItems]) => groupHtml(line, grpItems)).join('')
+      }
+    </div>
+  </div>`;
+}
+
+// ══════════════════════════════════════════════════
 const rmF = { hideCompleted: false, env: 'all' };
 
 function setRmHideCompleted(v) { rmF.hideCompleted=v; renderRoadmap(window.__rmPs); }
@@ -2634,12 +2986,12 @@ async function refreshData() {
   btn.classList.add('spinning');
   btn.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="spinning"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg> טוען נתונים…';
   try {
-    // Kick off background sync with Monday (doesn't block dashboard load)
     syncHubBackground();
-    const [raw, pipeRaw] = await Promise.all([fetchRaw(), fetchPipeline()]);
+    const [raw, pipeRaw, plRaw] = await Promise.all([fetchRaw(), fetchPipeline(), fetchProductLaunches()]);
     window.__rawItems    = raw;
     allProjects          = processItems(raw);
     pipelineProjects     = processPipeline(pipeRaw);
+    productLaunchItems   = plRaw;
     updateMeta(raw.length);
     buildTeamFilter();
     buildSidebar();
@@ -2670,10 +3022,11 @@ function buildTeamFilter() {
 // ══════════════════════════════════════════════════
 async function init() {
   try {
-    const [raw, pipeRaw] = await Promise.all([fetchRaw(), fetchPipeline()]);
+    const [raw, pipeRaw, plRaw] = await Promise.all([fetchRaw(), fetchPipeline(), fetchProductLaunches()]);
     window.__rawItems    = raw;
     allProjects          = processItems(raw);
     pipelineProjects     = processPipeline(pipeRaw);
+    productLaunchItems   = plRaw;
     updateMeta(raw.length);
     buildTeamFilter();
     buildSidebar();
