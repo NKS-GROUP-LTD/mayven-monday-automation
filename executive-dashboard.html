@@ -518,6 +518,37 @@ body::before{content:"";position:fixed;inset:0;background-image:url("data:image/
 .pl-notice-sub{font-size:12px;color:rgba(26,29,35,.7);margin-top:4px}
 .pl-notice code{font-family:'JetBrains Mono',monospace;font-size:11px;background:rgba(0,0,0,.07);padding:2px 6px;border-radius:3px}
 .pf-search{display:flex;align-items:center;height:30px;padding:0 10px;border:1.5px solid var(--ink);border-radius:6px;background:var(--paper)}
+/* ppf — product portfolio extra styles */
+.ppf-team-header{display:flex;align-items:center;gap:8px;font-size:13px;color:rgba(26,29,35,.7);flex-shrink:0;margin-top:4px}
+.ppf-team-role{font-weight:600;color:var(--ink)}
+.ppf-team-name{color:rgba(26,29,35,.65)}
+.ppf-team-sep{color:rgba(26,29,35,.3);margin:0 4px}
+.ppf-launch-badge{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;padding:3px 10px;border-radius:12px;background:var(--green-bg);color:var(--green-fg);border:1.5px solid var(--green-fg)}
+.ppf-wd{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:var(--ink)}
+.ppf-wd-label{font-family:'Heebo',sans-serif;font-size:10px;font-weight:500;color:rgba(26,29,35,.5);margin-right:2px}
+.ppf-gap{font-size:11px;font-weight:700;padding:2px 7px;border-radius:10px;white-space:nowrap}
+.ppf-gap.positive{background:var(--green-bg);color:var(--green-fg)}
+.ppf-gap.negative{background:var(--red-bg);color:var(--red-fg)}
+.ppf-gap.zero{background:var(--yellow-bg);color:var(--yellow-fg)}
+.ppf-battery-wrap{display:flex;align-items:center;gap:6px;cursor:pointer;min-width:110px}
+.ppf-battery-wrap:hover .ppf-battery{box-shadow:0 0 0 2px var(--ink)}
+.ppf-battery{display:flex;height:12px;border-radius:6px;overflow:hidden;flex:1;border:1px solid rgba(26,29,35,.15);min-width:60px}
+.ppf-seg{height:100%;transition:opacity .15s}
+.ppf-battery-pct{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:var(--ink);flex-shrink:0}
+.ppf-battery-count{font-size:10px;color:rgba(26,29,35,.45);flex-shrink:0}
+.ppf-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:9999;align-items:center;justify-content:center}
+.ppf-modal{background:var(--paper);border:2px solid var(--ink);border-radius:12px;box-shadow:6px 6px 0 var(--ink);padding:0;min-width:340px;max-width:480px;width:90%}
+.ppf-modal-head{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1.5px solid var(--ink-soft);font-family:'Suez One',serif;font-size:15px;font-weight:700}
+.ppf-close{background:none;border:none;cursor:pointer;font-size:16px;color:rgba(26,29,35,.5);padding:2px 6px;border-radius:4px;line-height:1}
+.ppf-close:hover{color:var(--ink);background:var(--paper-shade)}
+.ppf-popup-meta{padding:14px 18px;border-bottom:1px solid var(--ink-softer);display:grid;grid-template-columns:1fr 1fr;gap:6px 16px;font-size:12px}
+.ppf-popup-label{font-weight:600;color:rgba(26,29,35,.55)}
+.ppf-popup-breakdown{padding:14px 18px}
+.ppf-popup-breakdown-title{font-size:11px;font-weight:700;color:rgba(26,29,35,.5);margin-bottom:10px;text-transform:uppercase;letter-spacing:.04em}
+.ppf-popup-row{display:flex;align-items:center;gap:8px;padding:4px 0;font-size:13px}
+.ppf-popup-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.ppf-popup-status{flex:1;color:var(--ink)}
+.ppf-popup-cnt{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:rgba(26,29,35,.65)}
 </style>
 </head>
 <body>
@@ -2102,9 +2133,24 @@ function renderOverview(ps) {
 // PRODUCT LAUNCHES PAGE
 // ══════════════════════════════════════════════════
 
-const plF = { hideCompleted: false, quarter: 'all', search: '' };
+const ppF = { stage:'all', type:'all', quarter:'all', hideDone:false, hideHold:false };
+function setPpFilter(key, val) { ppF[key] = val; renderProductLaunches(productLaunchItems); }
 
-function setPlFilter(key, val) { plF[key] = val; renderProductLaunches(productLaunchItems); }
+function workingDaysBetween(d1, d2) {
+  if (!d1 || !d2) return null;
+  const t1 = new Date(d1); t1.setHours(0,0,0,0);
+  const t2 = new Date(d2); t2.setHours(0,0,0,0);
+  const sign = t1 <= t2 ? 1 : -1;
+  const start = sign === 1 ? t1 : t2;
+  const end   = sign === 1 ? t2 : t1;
+  let days = 0, cur = new Date(start);
+  while (cur < end) {
+    const dow = cur.getDay(); // 0=Sun … 6=Sat; Israel: skip Fri(5)+Sat(6)
+    if (dow !== 5 && dow !== 6) days++;
+    cur.setDate(cur.getDate() + 1);
+  }
+  return sign * days;
+}
 
 function renderProductLaunches(items) {
   const todayMs = new Date().setHours(0,0,0,0);
@@ -2114,7 +2160,7 @@ function renderProductLaunches(items) {
     return r ? { t: r.text_value, r: r.value } : { t: null, r: null };
   }
 
-  // Build Hub task index by Board Name (text_mm1rz19m) — O(1) lookup
+  // Build Hub task index by Board Name (text_mm1rz19m)
   const hubByBoardName = new Map();
   (window.__rawItems || []).forEach(task => {
     const boardName = task.column_values?.find(cv => cv.column_id === C.BOARD_NAME)?.text_value;
@@ -2123,7 +2169,6 @@ function renderProductLaunches(items) {
     hubByBoardName.get(boardName).push(task);
   });
 
-  // Derive status from stage (not from Monday's status column — unreliable)
   const ACTIVE_STAGES = new Set(['Planning & Initiation','Product Design','Product Development','Cross-Team Alignment','Product Manufacturing']);
   function deriveStatus(stage) {
     if (ACTIVE_STAGES.has(stage))  return 'בעבודה';
@@ -2133,21 +2178,25 @@ function renderProductLaunches(items) {
     return '';
   }
 
-  // Find latest timeline-end among relevant Hub tasks for a product item
-  function calcHubTimeline(itemName) {
+  // Hub data: min/max timeline, working-day span, task status breakdown
+  function calcHubData(itemName) {
     const tasks = hubByBoardName.get(itemName) || [];
-    let maxEnd = null;
-    let totalTasks = 0, relevantTasks = 0;
+    let minStart = null, maxEnd = null, total = 0, relevant = 0;
+    const breakdown = {};
     tasks.forEach(task => {
-      totalTasks++;
+      total++;
+      const status = task.column_values?.find(cv => cv.column_id === C.STATUS)?.text_value || 'אחר';
+      breakdown[status] = (breakdown[status] || 0) + 1;
       const calcFlag = task.column_values?.find(cv => cv.column_id === C.CALC_DEADLINE)?.text_value;
-      if (calcFlag === 'לא') return; // post-launch tasks — exclude
-      relevantTasks++;
+      if (calcFlag === 'לא') return;
+      relevant++;
       const tlRaw = task.column_values?.find(cv => cv.column_id === C.TIMELINE)?.value;
       const tl = parseTL(tlRaw);
-      if (tl.to && (!maxEnd || tl.to > maxEnd)) maxEnd = tl.to;
+      if (tl.from && (!minStart || tl.from < minStart)) minStart = tl.from;
+      if (tl.to   && (!maxEnd  || tl.to   > maxEnd  )) maxEnd   = tl.to;
     });
-    return { maxEnd, totalTasks, relevantTasks };
+    const spanWd = workingDaysBetween(minStart, maxEnd);
+    return { minStart, maxEnd, spanWd, breakdown, total, relevant };
   }
 
   function parsePLItem(item) {
@@ -2156,52 +2205,54 @@ function renderProductLaunches(items) {
     const stage       = plCv(item, PL.STAGE).t || '';
     const productLine = plCv(item, PL.PRODUCT_NAME).t || '—';
     const type        = plCv(item, PL.PROJECT_TYPE).t || '';
-    const quarter     = plCv(item, PL.QUARTER).t || '';
-    const bizImpact   = plCv(item, PL.BIZ_IMPACT).t || '';
-    const owner       = plCv(item, PL.OWNER).t || '';
 
-    // Status from stage — source of truth
     const derivedStatus = deriveStatus(stage);
-
-    // Health flags
     const isDone    = derivedStatus === 'הסתיימה';
     const isHold    = derivedStatus === 'למעקב';
     const isRedFlag = stage === 'RED FLAG';
 
-    // Hub timeline analysis — skip for done/hold items
-    const { maxEnd, totalTasks, relevantTasks } = (isDone || isHold)
-      ? { maxEnd: null, totalTasks: 0, relevantTasks: 0 }
-      : calcHubTimeline(item.name);
-    const timelineOverrun = maxEnd && stockDate && maxEnd.getTime() > stockDate.getTime();
-    const daysOverrun     = timelineOverrun ? Math.round((maxEnd.getTime() - stockDate.getTime()) / 864e5) : 0;
+    const hubData = (isDone || isHold)
+      ? { minStart:null, maxEnd:null, spanWd:null, breakdown:{}, total:0, relevant:0 }
+      : calcHubData(item.name);
+
+    const timelineOverrun = hubData.maxEnd && stockDate && hubData.maxEnd.getTime() > stockDate.getTime();
+    // stock vs launch: positive = stock arrives before launch (good), negative = after (bad)
+    const stockVsLaunchWd = (stockDate && launchDate) ? workingDaysBetween(stockDate, launchDate) : null;
+
+    let launchQuarter = '';
+    if (launchDate) {
+      const m = launchDate.getMonth(), y = launchDate.getFullYear();
+      launchQuarter = `Q${Math.floor(m/3)+1} ${y}`;
+    }
 
     let health;
     if (isDone)    health = 'done';
     else if (isHold) health = 'hold';
     else if (isRedFlag || timelineOverrun) health = 'red';
-    else if (stockDate && stockDate.getTime() <= todayMs + 30*864e5) health = 'yellow';
+    else if (stockDate && stockDate.getTime() <= todayMs + 7*864e5) health = 'yellow';
     else health = 'green';
 
     return {
-      ...item, launchDate, stockDate, stage, productLine, type, quarter, bizImpact, owner,
-      derivedStatus, maxEnd, totalTasks, relevantTasks, timelineOverrun, daysOverrun,
+      ...item, launchDate, stockDate, stage, productLine, type, launchQuarter,
+      derivedStatus, hubData, timelineOverrun, stockVsLaunchWd,
       isDone, isHold, isRedFlag, health,
     };
   }
 
   let parsed = items.map(parsePLItem);
 
-  // Filters
-  const search = plF.search.trim().toLowerCase();
-  if (plF.hideCompleted) parsed = parsed.filter(p => p.health !== 'done' && p.health !== 'cancel');
-  if (plF.quarter !== 'all') parsed = parsed.filter(p => p.quarter === plF.quarter);
-  if (search) parsed = parsed.filter(p =>
-    p.name.toLowerCase().includes(search) ||
-    p.productLine.toLowerCase().includes(search) ||
-    p.stage.toLowerCase().includes(search)
-  );
+  // Filter option lists (from full unfiltered set)
+  const allStages   = [...new Set(items.map(i => plCv(i, PL.STAGE).t).filter(Boolean))].sort();
+  const allTypes    = [...new Set(items.map(i => plCv(i, PL.PROJECT_TYPE).t).filter(Boolean))].sort();
+  const allQuarters = [...new Set(parsed.map(p => p.launchQuarter).filter(Boolean))].sort();
 
-  // Sort by launch date, then stock date, then name
+  // Apply filters
+  if (ppF.hideDone) parsed = parsed.filter(p => p.health !== 'done');
+  if (ppF.hideHold) parsed = parsed.filter(p => p.health !== 'hold');
+  if (ppF.stage   !== 'all') parsed = parsed.filter(p => p.stage === ppF.stage);
+  if (ppF.type    !== 'all') parsed = parsed.filter(p => p.type  === ppF.type);
+  if (ppF.quarter !== 'all') parsed = parsed.filter(p => p.launchQuarter === ppF.quarter);
+
   parsed.sort((a, b) => {
     const da = a.launchDate?.getTime() ?? Infinity;
     const db = b.launchDate?.getTime() ?? Infinity;
@@ -2211,25 +2262,18 @@ function renderProductLaunches(items) {
     return sa - sb;
   });
 
-  // KPIs
-  const total       = parsed.length;
-  const redFlags    = parsed.filter(p => p.health === 'red').length;
-  const atRisk      = parsed.filter(p => p.health === 'yellow').length;
-  const doneCount   = parsed.filter(p => p.health === 'done').length;
-  const hasLaunchDt = parsed.filter(p => p.launchDate).length;
+  const total     = parsed.length;
+  const redFlags  = parsed.filter(p => p.health === 'red').length;
+  const atRisk    = parsed.filter(p => p.health === 'yellow').length;
+  const doneCount = parsed.filter(p => p.health === 'done').length;
+  const holdCount = parsed.filter(p => p.health === 'hold').length;
 
-  // Quarter filter options
-  const quarters = [...new Set(items.map(i => plCv(i, PL.QUARTER).t).filter(Boolean))].sort();
-
-  // Group by product line
   const grouped = new Map();
   parsed.forEach(p => {
-    const key = p.productLine;
-    if (!grouped.has(key)) grouped.set(key, []);
-    grouped.get(key).push(p);
+    if (!grouped.has(p.productLine)) grouped.set(p.productLine, []);
+    grouped.get(p.productLine).push(p);
   });
 
-  // Stage colors
   const STAGE_COLORS = {
     'Planning & Initiation':  { bg:'#dbeafe', fg:'#1d4ed8' },
     'Product Design':         { bg:'#fce7f3', fg:'#be185d' },
@@ -2241,77 +2285,88 @@ function renderProductLaunches(items) {
     'On Hold':                { bg:'#f1f5f9', fg:'#64748b' },
   };
 
+  const STATUS_COLORS = {
+    'הסתיימה':'#15803d','בעבודה':'#1d4ed8','מאושר':'#7c3aed',
+    'ממתין':'#b45309','דגל אדום':'#b91c1c','מבוטלת':'#64748b',
+    'בנק משימות':'#94a3b8','אחר':'#cbd5e1',
+  };
+
   function stagePill(stage) {
     if (!stage) return '';
     const c = STAGE_COLORS[stage] || { bg:'#f1f5f9', fg:'#475569' };
     return `<span class="pl-stage-pill" style="background:${c.bg};color:${c.fg}">${stage}</span>`;
   }
 
-  function typeTag(type) {
-    if (!type) return '';
-    return `<span class="pl-type-tag">${type}</span>`;
-  }
-
   function healthDot(p) {
-    if (p.health === 'done') return '<span class="pl-dot done" title="הושלם">✓</span>';
-    if (p.health === 'hold') return '<span class="pl-dot hold" title="למעקב">⏸</span>';
-    if (p.health === 'red')  return '<span class="pl-dot red"  title="חריגה / דגל אדום">🚩</span>';
-    if (p.health === 'yellow') return '<span class="pl-dot yellow" title="בסיכון">⚠</span>';
+    if (p.health === 'done')   return '<span class="pl-dot done">✓</span>';
+    if (p.health === 'hold')   return '<span class="pl-dot hold">⏸</span>';
+    if (p.health === 'red')    return '<span class="pl-dot red">🚩</span>';
+    if (p.health === 'yellow') return '<span class="pl-dot yellow">⚠</span>';
     return '<span class="pl-dot green">●</span>';
   }
 
-  // Countdown to stock date (more meaningful than launch date for health)
-  function stockChip(p) {
-    if (p.health === 'done') return `<span class="pl-days done">✓ הסתיימה</span>`;
-    if (p.health === 'hold') return `<span class="pl-days hold">⏸ למעקב</span>`;
-    if (!p.stockDate) return `<span class="pl-days none">—</span>`;
+  function stockCell(p) {
+    if (!p.stockDate) return '<span style="color:rgba(26,29,35,.3)">—</span>';
     const diff = Math.round((p.stockDate.getTime() - todayMs) / 864e5);
-    if (diff < 0) return `<span class="pl-days red">${Math.abs(diff)}י׳ איחור מחסן</span>`;
-    if (diff === 0) return `<span class="pl-days yellow">היום!</span>`;
-    return `<span class="pl-days ${p.health}">${diff}י׳ למחסן</span>`;
+    let chip = '';
+    if (p.health === 'done') chip = `<span class="pl-days done">✓</span>`;
+    else if (p.health === 'hold') chip = `<span class="pl-days hold">⏸</span>`;
+    else if (diff < 0) chip = `<span class="pl-days red">${Math.abs(diff)}י׳ איחור</span>`;
+    else if (diff === 0) chip = `<span class="pl-days yellow">היום!</span>`;
+    else chip = `<span class="pl-days ${p.health}">${diff}י׳</span>`;
+    return `<div style="display:flex;flex-direction:column;gap:3px"><span class="ltr" style="font-family:'JetBrains Mono',monospace;font-size:12px">${fmtDate(p.stockDate)}</span>${chip}</div>`;
   }
 
-  // Timeline overrun badge
-  function overrunBadge(p) {
-    if (!p.timelineOverrun) return '';
-    return `<span class="pl-overrun-badge" title="ציר זמן משימות חורג מתאריך המחסן ב-${p.daysOverrun} ימים">
-      ⚠ חריגת ${p.daysOverrun}י׳
-    </span>`;
+  function spanWdCell(p) {
+    if (p.hubData.spanWd === null) return '<span style="color:rgba(26,29,35,.3)">—</span>';
+    return `<span class="ppf-wd">${p.hubData.spanWd}<span class="ppf-wd-label"> י״ע</span></span>`;
   }
 
-  function statusBadge(p) {
-    const cls = p.health === 'done' ? 'done' : p.health === 'hold' ? 'hold' : p.health === 'red' ? 'red' : '';
-    return `<span class="pl-status-text ${cls}">${p.derivedStatus || '—'}</span>`;
+  function stockVsLaunchCell(p) {
+    if (p.stockVsLaunchWd === null) return '<span style="color:rgba(26,29,35,.3)">—</span>';
+    // positive = stock is N working days before launch (good)
+    if (p.stockVsLaunchWd > 0) return `<span class="ppf-gap positive">${p.stockVsLaunchWd} י״ע לפני</span>`;
+    if (p.stockVsLaunchWd < 0) return `<span class="ppf-gap negative">${Math.abs(p.stockVsLaunchWd)} י״ע אחרי</span>`;
+    return `<span class="ppf-gap zero">אותו יום</span>`;
+  }
+
+  function taskBattery(p) {
+    const bd = p.hubData.breakdown;
+    const tot = p.hubData.total;
+    if (tot === 0) return '<span style="color:rgba(26,29,35,.3)">—</span>';
+    const done = bd['הסתיימה'] || 0;
+    const pct = Math.round(done / tot * 100);
+    const segments = Object.entries(bd).sort((a,b)=>b[1]-a[1]).map(([st, cnt]) => {
+      const c = STATUS_COLORS[st] || '#cbd5e1';
+      return `<div class="ppf-seg" style="width:${(cnt/tot*100).toFixed(1)}%;background:${c}" title="${st}: ${cnt}"></div>`;
+    }).join('');
+    const safeName = p.name.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+    return `<div class="ppf-battery-wrap" onclick="showPpfPopup('${safeName}')">
+      <div class="ppf-battery">${segments}</div>
+      <span class="ppf-battery-pct">${pct}%</span>
+      <span class="ppf-battery-count">${tot}</span>
+    </div>`;
   }
 
   function rowHtml(p) {
     const rowCls = p.health === 'red' ? 'pl-row-red' : p.health === 'yellow' ? 'pl-row-yellow' : p.health === 'done' ? 'pl-row-done' : p.health === 'hold' ? 'pl-row-hold' : '';
+    const statusCls = p.health === 'done' ? 'done' : p.health === 'hold' ? 'hold' : p.health === 'red' ? 'red' : '';
     return `<tr class="pl-row ${rowCls}">
-      <td class="pl-td pl-td-name">
-        ${healthDot(p)}
-        <span class="pl-item-name">${p.name}</span>
-        ${overrunBadge(p)}
-      </td>
-      <td class="pl-td">${typeTag(p.type)}</td>
+      <td class="pl-td pl-td-name">${healthDot(p)}<span class="pl-item-name">${p.name}</span></td>
+      <td class="pl-td">${p.type ? `<span class="pl-type-tag">${p.type}</span>` : '—'}</td>
       <td class="pl-td">${stagePill(p.stage)}</td>
-      <td class="pl-td pl-td-owner">${p.owner || '—'}</td>
-      <td class="pl-td pl-td-date">
-        <span class="ltr">${fmtDate(p.stockDate)}</span>
-        ${p.maxEnd ? `<div style="font-size:10px;color:rgba(26,29,35,.45)">ציר משימות: <span class="ltr">${fmtDate(p.maxEnd)}</span></div>` : ''}
-      </td>
-      <td class="pl-td pl-td-date">
-        <strong class="ltr">${fmtDate(p.launchDate)}</strong>
-      </td>
-      <td class="pl-td">${stockChip(p)}</td>
-      <td class="pl-td">${statusBadge(p)}</td>
+      <td class="pl-td">${stockCell(p)}</td>
+      <td class="pl-td">${spanWdCell(p)}</td>
+      <td class="pl-td">${stockVsLaunchCell(p)}</td>
+      <td class="pl-td">${taskBattery(p)}</td>
+      <td class="pl-td"><span class="pl-status-text ${statusCls}">${p.derivedStatus || '—'}</span></td>
     </tr>`;
   }
 
   function groupHtml(productLine, groupItems) {
     const redFlagsInGroup = groupItems.filter(p => p.health === 'red').length;
-    const doneInGroup     = groupItems.filter(p => p.health === 'done').length;
-    const nextLaunch      = groupItems.find(p => p.stockDate && p.stockDate.getTime() >= todayMs);
     const allDone         = groupItems.every(p => p.health === 'done');
+    const launchItem      = groupItems.find(p => p.launchDate);
 
     return `<div class="pl-group ${allDone ? 'pl-group-done' : ''}">
       <div class="pl-group-head">
@@ -2319,26 +2374,21 @@ function renderProductLaunches(items) {
           ${redFlagsInGroup ? '<span class="pl-group-flag">🚩</span>' : allDone ? '<span style="color:var(--green-fg)">✓</span>' : ''}
           <span>${productLine}</span>
           <span class="pl-group-count">${groupItems.length} פריטים</span>
-          ${doneInGroup ? `<span class="pl-group-done-badge">${doneInGroup} הושלמו</span>` : ''}
         </div>
-        ${nextLaunch ? `<div class="pl-group-next">מחסן: <strong class="ltr">${fmtDate(nextLaunch.stockDate)}</strong></div>` : ''}
+        ${launchItem ? `<div class="ppf-launch-badge">🏁 השקה: <strong class="ltr">${fmtDate(launchItem.launchDate)}</strong></div>` : ''}
       </div>
       <table class="pl-table">
-        <thead>
-          <tr>
-            <th class="pl-th">פריט</th>
-            <th class="pl-th">סוג</th>
-            <th class="pl-th">שלב</th>
-            <th class="pl-th">אחראי</th>
-            <th class="pl-th">תאריך מחסן</th>
-            <th class="pl-th">השקה</th>
-            <th class="pl-th">נותר</th>
-            <th class="pl-th">סטטוס</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${groupItems.map(rowHtml).join('')}
-        </tbody>
+        <thead><tr>
+          <th class="pl-th">פריט</th>
+          <th class="pl-th">סוג</th>
+          <th class="pl-th">שלב</th>
+          <th class="pl-th">תאריך מחסן</th>
+          <th class="pl-th" title="ספן ימי עבודה לפי ציר משימות">ימי עבודה</th>
+          <th class="pl-th" title="ימי עבודה בין מחסן להשקה">מחסן → השקה</th>
+          <th class="pl-th">משימות</th>
+          <th class="pl-th">סטטוס</th>
+        </tr></thead>
+        <tbody>${groupItems.map(rowHtml).join('')}</tbody>
       </table>
     </div>`;
   }
@@ -2354,21 +2404,35 @@ function renderProductLaunches(items) {
 
   document.getElementById('content').innerHTML = `
   <div class="page">
+    <div id="ppf-overlay" class="ppf-overlay" onclick="if(event.target===this)this.style.display='none'">
+      <div class="ppf-modal">
+        <div class="ppf-modal-head">
+          <span id="ppf-modal-title"></span>
+          <button class="ppf-close" onclick="document.getElementById('ppf-overlay').style.display='none'">✕</button>
+        </div>
+        <div id="ppf-modal-body"></div>
+      </div>
+    </div>
+
     <div class="page-head">
       <div>
         <h1 class="page-title">📦 פורטפוליו מוצר</h1>
         <div class="page-sub">סטטוס פיתוח מוצרים · דד-ליין = תאריך מחסן · 🚩 חריגה = ציר משימות חורג מתאריך המחסן</div>
       </div>
+      <div class="ppf-team-header">
+        <span class="ppf-team-role">מנהלת מוצר:</span><span class="ppf-team-name">קים ריכטר</span>
+        <span class="ppf-team-sep">·</span>
+        <span class="ppf-team-role">סמנכ״ל מוצר:</span><span class="ppf-team-name">יונתן קרן</span>
+      </div>
     </div>
 
     ${notDeployedBanner}
 
-    <!-- KPIs -->
     <div class="kpi-strip" style="grid-template-columns:repeat(5,1fr)">
       <div class="kpi">
         <div class="kpi-label">סה״כ פריטים</div>
         <div class="kpi-value">${total}</div>
-        <div class="kpi-sub">${hasLaunchDt} עם תאריך השקה</div>
+        <div class="kpi-sub">${grouped.size} קווי מוצר</div>
       </div>
       <div class="kpi" style="${redFlags?'border-color:var(--red-fg)':''}">
         <div class="kpi-label">🚩 דגלים אדומים</div>
@@ -2378,41 +2442,46 @@ function renderProductLaunches(items) {
       <div class="kpi">
         <div class="kpi-label">⚠ בסיכון</div>
         <div class="kpi-value ${atRisk?'warning':''}">${atRisk}</div>
-        <div class="kpi-sub">תוך 30 יום</div>
+        <div class="kpi-sub">תוך 7 ימים</div>
       </div>
       <div class="kpi">
-        <div class="kpi-label">קווי מוצר</div>
-        <div class="kpi-value">${grouped.size}</div>
-        <div class="kpi-sub">מוצרים פעילים</div>
+        <div class="kpi-label">⏸ בהמתנה</div>
+        <div class="kpi-value">${holdCount}</div>
+        <div class="kpi-sub">On Hold</div>
       </div>
       <div class="kpi">
         <div class="kpi-label">✅ הושלמו</div>
         <div class="kpi-value success">${doneCount}</div>
-        <div class="kpi-sub">מתוך ${total}</div>
+        <div class="kpi-sub">מתוך ${items.length}</div>
       </div>
     </div>
 
-    <!-- Filters -->
     <div class="pf-bar">
+      <span class="pf-label">שלב:</span>
+      <select class="pf-select" onchange="setPpFilter('stage', this.value)">
+        <option value="all" ${ppF.stage==='all'?'selected':''}>כולם</option>
+        ${allStages.map(s => `<option value="${s}" ${ppF.stage===s?'selected':''}>${s}</option>`).join('')}
+      </select>
+      <span class="pf-label">סוג:</span>
+      <select class="pf-select" onchange="setPpFilter('type', this.value)">
+        <option value="all" ${ppF.type==='all'?'selected':''}>כולם</option>
+        ${allTypes.map(t => `<option value="${t}" ${ppF.type===t?'selected':''}>${t}</option>`).join('')}
+      </select>
       <span class="pf-label">רבעון:</span>
-      <select class="pf-select" onchange="setPlFilter('quarter', this.value)">
-        <option value="all" ${plF.quarter==='all'?'selected':''}>כולם</option>
-        ${quarters.map(q => `<option value="${q}" ${plF.quarter===q?'selected':''}>${q}</option>`).join('')}
+      <select class="pf-select" onchange="setPpFilter('quarter', this.value)">
+        <option value="all" ${ppF.quarter==='all'?'selected':''}>כולם</option>
+        ${allQuarters.map(q => `<option value="${q}" ${ppF.quarter===q?'selected':''}>${q}</option>`).join('')}
       </select>
       <div class="pf-div"></div>
-      <div class="pf-search">
-        <input type="text" placeholder="חיפוש…" value="${plF.search}"
-          oninput="setPlFilter('search', this.value)"
-          style="border:none;background:transparent;outline:none;font-family:'Heebo',sans-serif;font-size:13px;color:var(--ink);width:140px">
-      </div>
-      <div class="pf-div"></div>
-      <button class="pf-toggle ${plF.hideCompleted?'on':''}" onclick="setPlFilter('hideCompleted', !plF.hideCompleted)">
-        ${plF.hideCompleted ? '👁 הצג הושלמו' : '🙈 הסתר הושלמו'}
+      <button class="pf-toggle ${ppF.hideDone?'on':''}" onclick="setPpFilter('hideDone', !ppF.hideDone)">
+        ${ppF.hideDone ? '👁 הצג הושלמו' : '🙈 הסתר הושלמו'}
+      </button>
+      <button class="pf-toggle ${ppF.hideHold?'on':''}" onclick="setPpFilter('hideHold', !ppF.hideHold)">
+        ${ppF.hideHold ? '👁 הצג On Hold' : '⏸ הסתר On Hold'}
       </button>
       <span style="margin-right:auto;font-size:11px;color:rgba(26,29,35,.42)">${parsed.length} פריטים</span>
     </div>
 
-    <!-- Groups -->
     <div class="pl-groups">
       ${grouped.size === 0
         ? `<div class="ms-card"><div class="ms-card-body"><div class="empty"><div class="empty-icon">📦</div><div>לא נמצאו פריטים</div></div></div></div>`
@@ -2420,6 +2489,47 @@ function renderProductLaunches(items) {
       }
     </div>
   </div>`;
+
+  window.__ppfParsed = parsed;
+}
+
+function showPpfPopup(itemName) {
+  const p = (window.__ppfParsed || []).find(x => x.name === itemName);
+  const overlay = document.getElementById('ppf-overlay');
+  if (!overlay || !p) return;
+
+  const STATUS_COLORS_P = {
+    'הסתיימה':'#15803d','בעבודה':'#1d4ed8','מאושר':'#7c3aed',
+    'ממתין':'#b45309','דגל אדום':'#b91c1c','מבוטלת':'#64748b',
+    'בנק משימות':'#94a3b8','אחר':'#cbd5e1',
+  };
+
+  const bd = p.hubData.breakdown;
+  const bdRows = Object.entries(bd).sort((a,b)=>b[1]-a[1]).map(([st,cnt]) =>
+    `<div class="ppf-popup-row">
+      <span class="ppf-popup-dot" style="background:${STATUS_COLORS_P[st]||'#cbd5e1'}"></span>
+      <span class="ppf-popup-status">${st}</span>
+      <span class="ppf-popup-cnt">${cnt}</span>
+    </div>`
+  ).join('');
+
+  document.getElementById('ppf-modal-title').textContent = p.name;
+  document.getElementById('ppf-modal-body').innerHTML = `
+    <div class="ppf-popup-meta">
+      <div><span class="ppf-popup-label">שלב:</span> ${p.stage || '—'}</div>
+      <div><span class="ppf-popup-label">סטטוס:</span> ${p.derivedStatus || '—'}</div>
+      <div><span class="ppf-popup-label">תאריך מחסן:</span> <span class="ltr">${fmtDate(p.stockDate)}</span></div>
+      <div><span class="ppf-popup-label">תאריך השקה:</span> <span class="ltr">${fmtDate(p.launchDate)}</span></div>
+      ${p.hubData.minStart ? `<div><span class="ppf-popup-label">פתיחת ציר:</span> <span class="ltr">${fmtDate(p.hubData.minStart)}</span></div>` : ''}
+      ${p.hubData.maxEnd   ? `<div><span class="ppf-popup-label">סגירת ציר:</span> <span class="ltr">${fmtDate(p.hubData.maxEnd)}</span></div>` : ''}
+      ${p.hubData.spanWd !== null ? `<div><span class="ppf-popup-label">ספן ימי עבודה:</span> ${p.hubData.spanWd} י״ע</div>` : ''}
+      ${p.stockVsLaunchWd !== null ? `<div><span class="ppf-popup-label">מחסן → השקה:</span> ${p.stockVsLaunchWd > 0 ? p.stockVsLaunchWd+' י״ע לפני' : Math.abs(p.stockVsLaunchWd)+' י״ע אחרי'}</div>` : ''}
+    </div>
+    <div class="ppf-popup-breakdown">
+      <div class="ppf-popup-breakdown-title">פירוט סטטוסים (${p.hubData.total} משימות)</div>
+      ${bdRows || '<div style="color:rgba(26,29,35,.4);font-size:13px">אין משימות מקושרות</div>'}
+    </div>`;
+  overlay.style.display = 'flex';
 }
 
 // ══════════════════════════════════════════════════
