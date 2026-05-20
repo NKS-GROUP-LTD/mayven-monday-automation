@@ -635,6 +635,105 @@ body::before{content:"";position:fixed;inset:0;background-image:url("data:image/
 .prm-next-meta{font-size:11.5px;color:rgba(26,29,35,.6);font-family:'JetBrains Mono',monospace}
 .prm-next-days{font-family:'Suez One',serif;font-size:30px;color:var(--accent);line-height:1;margin-inline-start:auto}
 .prm-empty{padding:48px 24px;text-align:center;color:rgba(26,29,35,.55)}
+
+/* ── Tech Go-Live Roadmap (tgl-) ── */
+.tgl-page{display:flex;flex-direction:column;gap:18px}
+.tgl-head{display:flex;align-items:flex-start;justify-content:space-between;gap:24px;flex-wrap:wrap;padding:6px 0 4px}
+.tgl-asof{font-family:'JetBrains Mono',monospace;font-size:11.5px;color:rgba(26,29,35,.5);letter-spacing:.05em;text-transform:uppercase}
+.tgl-asof-date{font-family:'Suez One',serif;font-size:16px;color:var(--ink);margin-top:4px;letter-spacing:0}
+.tgl-title-block{text-align:right;flex:1;min-width:280px}
+.tgl-eyebrow{font-family:'JetBrains Mono',monospace;font-size:10.5px;color:rgba(26,29,35,.5);letter-spacing:.1em;text-transform:uppercase}
+.tgl-title{font-family:'Suez One',serif;font-size:28px;color:var(--ink);line-height:1.1;margin-top:4px}
+.tgl-filter-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end;margin-top:10px}
+.tgl-filter-label{font-family:'JetBrains Mono',monospace;font-size:10.5px;color:rgba(26,29,35,.45);letter-spacing:.08em;text-transform:uppercase;margin-inline-start:4px}
+.tgl-chip{padding:5px 12px;border:1.2px solid var(--ink-soft);border-radius:18px;background:transparent;font-size:11.5px;color:var(--ink);cursor:pointer;font-weight:500;transition:transform .1s}
+.tgl-chip:hover{border-color:var(--ink)}
+.tgl-chip.active{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.tgl-kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.tgl-kpi{background:var(--paper);border:1px solid var(--ink-soft);border-radius:10px;padding:14px 18px;display:flex;flex-direction:column;gap:6px;position:relative;overflow:hidden}
+.tgl-kpi-top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.tgl-kpi-label{font-size:11.5px;color:rgba(26,29,35,.55);font-weight:500;text-align:right}
+.tgl-kpi-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:5px}
+.tgl-kpi-num{font-family:'Suez One',serif;font-size:42px;color:var(--ink);line-height:1;text-align:right}
+.tgl-kpi-foot{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin-top:2px}
+.tgl-kpi-pct{font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(26,29,35,.4)}
+.tgl-kpi-sub{font-size:10.5px;color:rgba(26,29,35,.5);font-family:'JetBrains Mono',monospace;text-align:left}
+.tgl-grid{display:grid;grid-template-columns:380px 1fr;gap:16px;align-items:start}
+.tgl-side{display:flex;flex-direction:column;gap:14px}
+.tgl-card{background:var(--paper);border:1px solid var(--ink-soft);border-radius:10px;padding:16px 18px}
+.tgl-card-head{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:10px}
+.tgl-card-title{font-family:'Suez One',serif;font-size:15px;color:var(--ink);text-align:right;line-height:1.2}
+.tgl-card-sub{font-size:10.5px;color:rgba(26,29,35,.5);text-align:right;line-height:1.4;margin-top:3px}
+.tgl-card-total{font-family:'Suez One',serif;font-size:28px;color:var(--ink);line-height:1}
+.tgl-card-total-unit{font-family:'JetBrains Mono',monospace;font-size:10.5px;color:rgba(26,29,35,.4);letter-spacing:.05em;text-transform:uppercase;margin-top:2px}
+.tgl-dept-row{display:grid;grid-template-columns:42px 1fr 100px;gap:10px;align-items:center;padding:6px 0;border-top:1px dashed var(--ink-softer)}
+.tgl-dept-row:first-of-type{border-top:none}
+.tgl-dept-days{font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--ink);font-weight:600;text-align:left}
+.tgl-dept-days-unit{font-size:10px;color:rgba(26,29,35,.4);margin-inline-start:2px}
+.tgl-dept-bar{height:18px;border-radius:3px;background:var(--paper-shade);overflow:hidden;display:flex}
+.tgl-dept-seg{height:100%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:10px;font-family:'JetBrains Mono',monospace;font-weight:600}
+.tgl-dept-label{font-size:12px;color:var(--ink);font-weight:500;text-align:right}
+.tgl-dept-count{font-size:10.5px;color:rgba(26,29,35,.45);font-family:'JetBrains Mono',monospace}
+.tgl-stack-bar{height:28px;border-radius:4px;overflow:hidden;display:flex;background:var(--paper-shade);margin:10px 0 8px}
+.tgl-stack-seg{height:100%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:11.5px;font-family:'JetBrains Mono',monospace;font-weight:700}
+.tgl-stack-legend{display:grid;grid-template-columns:1fr 1fr;gap:6px 14px;margin-top:8px;font-size:11px}
+.tgl-stack-leg{display:flex;align-items:center;gap:6px;justify-content:flex-end}
+.tgl-stack-leg-dot{width:9px;height:9px;border-radius:2px;flex-shrink:0}
+.tgl-stack-leg-name{color:rgba(26,29,35,.7)}
+.tgl-stack-leg-val{font-family:'JetBrains Mono',monospace;color:rgba(26,29,35,.5);font-size:10.5px;margin-inline-start:auto}
+.tgl-team-row{display:grid;grid-template-columns:24px 1fr 90px;gap:10px;align-items:center;padding:5px 0}
+.tgl-team-num{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--ink);font-weight:700;text-align:left}
+.tgl-team-bar{height:12px;border-radius:2px;background:var(--paper-shade);overflow:hidden}
+.tgl-team-bar-fill{height:100%}
+.tgl-team-info{text-align:right}
+.tgl-team-name{font-size:11.5px;color:var(--ink);font-weight:600}
+.tgl-team-sub{font-size:10px;color:rgba(26,29,35,.45)}
+.tgl-quart-chart{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;align-items:end;margin-top:14px;height:140px}
+.tgl-quart-col{display:flex;flex-direction:column;align-items:center;gap:6px;height:100%;justify-content:flex-end}
+.tgl-quart-bar{width:100%;border-radius:3px 3px 0 0;display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden}
+.tgl-quart-seg{width:100%}
+.tgl-quart-label{display:flex;justify-content:space-between;align-items:baseline;width:100%;padding:0 2px}
+.tgl-quart-name{font-size:11px;font-weight:700;color:var(--ink);font-family:'JetBrains Mono',monospace}
+.tgl-quart-num{font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(26,29,35,.4)}
+.tgl-gantt{background:var(--paper);border:1px solid var(--ink-soft);border-radius:10px;padding:16px 18px;direction:ltr}
+.tgl-gantt-head{display:flex;justify-content:space-between;align-items:flex-start;direction:rtl;margin-bottom:14px}
+.tgl-gantt-title-block{text-align:right}
+.tgl-gantt-title{font-family:'Suez One',serif;font-size:15px;color:var(--ink)}
+.tgl-gantt-sub{font-size:10.5px;color:rgba(26,29,35,.5);margin-top:3px}
+.tgl-gantt-count{font-family:'JetBrains Mono',monospace;font-size:10.5px;color:rgba(26,29,35,.4);letter-spacing:.06em;text-transform:uppercase}
+.tgl-gantt-count strong{color:var(--ink);font-weight:600}
+.tgl-gantt-table{display:grid;grid-template-columns:38px minmax(180px,1fr) repeat(4,1fr);gap:0;position:relative}
+.tgl-gantt-thead{display:contents}
+.tgl-gantt-th{padding:6px 8px;border-bottom:1.5px solid var(--ink);font-size:11.5px;font-weight:600;color:rgba(26,29,35,.55);font-family:'JetBrains Mono',monospace;letter-spacing:.04em;text-transform:uppercase}
+.tgl-gantt-th.gantt-q{display:flex;justify-content:space-between;align-items:baseline}
+.tgl-gantt-q-mark{color:var(--ink);font-weight:700;font-family:'Suez One',serif;font-size:13px;text-transform:none;letter-spacing:0}
+.tgl-gantt-q-months{font-size:10.5px;color:rgba(26,29,35,.4)}
+.tgl-gantt-rows{display:contents}
+.tgl-gantt-row{display:contents}
+.tgl-gantt-cell{padding:7px 8px;border-bottom:1px dashed var(--ink-softer);font-size:11.5px;color:var(--ink);display:flex;align-items:center;direction:rtl}
+.tgl-gantt-cell.idx{font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(26,29,35,.4)}
+.tgl-gantt-cell.gantt-quart{position:relative;border-inline-end:1px solid var(--ink-softer);direction:ltr;padding:0}
+.tgl-gantt-cell.gantt-quart:last-child{border-inline-end:none}
+.tgl-gantt-item-name{display:flex;align-items:center;gap:8px;width:100%;justify-content:flex-end}
+.tgl-gantt-status-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.tgl-gantt-owner{font-size:10.5px;color:rgba(26,29,35,.45);margin-inline-start:6px;font-family:'JetBrains Mono',monospace}
+.tgl-gantt-bar-track{position:absolute;top:50%;left:0;right:0;height:14px;transform:translateY(-50%);pointer-events:none}
+.tgl-gantt-bar{position:absolute;height:14px;border-radius:3px;display:flex;align-items:center;font-size:9.5px;color:#fff;font-family:'JetBrains Mono',monospace;font-weight:700;overflow:hidden;pointer-events:auto}
+.tgl-gantt-bar-fill{height:100%;padding-inline-start:5px;display:flex;align-items:center}
+.tgl-gantt-bar-rest{flex:1;background:rgba(0,0,0,.08)}
+.tgl-gantt-bar[data-st="planned"] .tgl-gantt-bar-fill{background:#94a3b8}
+.tgl-gantt-bar[data-st="progress"] .tgl-gantt-bar-fill{background:#c2773f}
+.tgl-gantt-bar[data-st="live"] .tgl-gantt-bar-fill{background:#3f8a5e}
+.tgl-gantt-bar[data-st="planned"]{background:rgba(148,163,184,.18)}
+.tgl-gantt-bar[data-st="progress"]{background:rgba(194,119,63,.18)}
+.tgl-gantt-bar[data-st="live"]{background:rgba(63,138,94,.18)}
+.tgl-gantt-bar-pct{margin-inline-start:auto;padding-inline-end:6px;color:rgba(26,29,35,.55);font-weight:600}
+.tgl-today{position:absolute;top:0;bottom:0;width:0;border-inline-end:1.2px solid var(--accent);pointer-events:none;z-index:3}
+.tgl-today-tag{position:absolute;top:-8px;transform:translateX(-50%);background:var(--accent);color:#fff;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;padding:1px 6px;border-radius:3px;letter-spacing:.05em}
+.tgl-foot{display:flex;justify-content:space-between;align-items:center;padding:8px 4px;font-size:10.5px;color:rgba(26,29,35,.5);font-family:'JetBrains Mono',monospace;letter-spacing:.04em;text-transform:uppercase}
+.tgl-foot-legend{display:flex;gap:14px;align-items:center}
+.tgl-foot-leg{display:flex;align-items:center;gap:6px}
+.tgl-foot-dot{width:9px;height:9px;border-radius:2px}
 </style>
 </head>
 <body>
@@ -1271,7 +1370,7 @@ function renderWorld(ps) {
   else if (activeWorld === 'departments') renderDepartmentsPage();
   else if (activeWorld === 'product_portfolio') renderProductLaunches(productLaunchItems);
   else if (activeWorld === 'product_launches') renderProductRoadmap();
-  else if (activeWorld === 'launches') renderRoadmap(allProjects.filter(p => p.launchDate || p.deadline));
+  else if (activeWorld === 'launches') renderRoadmap();
   else renderWorldPage(ps);
 }
 
@@ -3195,12 +3294,415 @@ function prmLegend() {
 }
 
 // ══════════════════════════════════════════════════
-const rmF = { hideCompleted: false, env: 'all' };
+// TECH GO-LIVE ROADMAP — pipeline board only
+// ══════════════════════════════════════════════════
+const TGL_STATUS_BUCKETS = {
+  planned:  { he:'מתוכנן',     en:'Planned',     stages:['Backlog','Discovery & Planning','Technical Specs','UI/UX Design'], color:'#94a3b8' },
+  progress: { he:'בעבודה',      en:'In progress', stages:['In Development','QA & Testing','Launch Prep'],                     color:'#c2773f' },
+  live:     { he:'עלה לאוויר',   en:'Live',        stages:['Go Live'],                                                          color:'#3f8a5e' },
+};
+const TGL_EXCLUDE_STAGES = new Set(['On Hold','Cancelled']);
 
-function setRmHideCompleted(v) { rmF.hideCompleted=v; renderRoadmap(window.__rmPs); }
-function setRmEnv(v)           { rmF.env=v;           renderRoadmap(window.__rmPs); }
+const tglF = { status: 'all', team: 'all' };
+function setTglStatus(v) { tglF.status = v; renderRoadmap(); }
+function setTglTeam(v)   { tglF.team   = v; renderRoadmap(); }
 
-function renderRoadmap(ps) {
+function tglBucket(stage) {
+  for (const [k, def] of Object.entries(TGL_STATUS_BUCKETS)) {
+    if (def.stages.includes(stage)) return k;
+  }
+  return null;
+}
+
+function tglParseQuarters(qStr) {
+  if (!qStr) return [];
+  return qStr.split(',').map(s => s.trim()).map(s => {
+    const m = s.match(/Q([1-4])\s+(\d{4})/);
+    return m ? { q: +m[1], y: +m[2] } : null;
+  }).filter(Boolean);
+}
+
+function renderRoadmap() {
+  const ps      = pipelineProjects || [];
+  const todayMs = new Date().setHours(0,0,0,0);
+  const today   = new Date(todayMs);
+
+  let proj = ps.filter(p => {
+    if (TGL_EXCLUDE_STAGES.has(p.devStage)) return false;
+    return !!tglBucket(p.devStage);
+  });
+
+  const teamCounts = {};
+  proj.forEach(p => {
+    const t = p.pm || '—';
+    teamCounts[t] = (teamCounts[t] || 0) + 1;
+  });
+  const allTeams = Object.keys(teamCounts).filter(t => t !== '—').sort((a,b) => teamCounts[b] - teamCounts[a]);
+
+  if (tglF.team !== 'all')   proj = proj.filter(p => (p.pm||'—') === tglF.team);
+  if (tglF.status !== 'all') proj = proj.filter(p => tglBucket(p.devStage) === tglF.status);
+
+  const total    = proj.length;
+  const liveCnt  = proj.filter(p => tglBucket(p.devStage) === 'live').length;
+  const progCnt  = proj.filter(p => tglBucket(p.devStage) === 'progress').length;
+  const planCnt  = proj.filter(p => tglBucket(p.devStage) === 'planned').length;
+
+  const deptAgg = new Map();
+  proj.forEach(p => {
+    const dept = p.department || 'לא משויך';
+    if (!deptAgg.has(dept)) deptAgg.set(dept, { name: dept, days: 0, count: 0, byStatus: {planned:0, progress:0, live:0} });
+    const a = deptAgg.get(dept);
+    a.days  += +(p.spPlan || 0);
+    a.count += 1;
+    a.byStatus[tglBucket(p.devStage)] = (a.byStatus[tglBucket(p.devStage)]||0) + +(p.spPlan || 0);
+  });
+  const deptRows = [...deptAgg.values()].sort((a,b) => b.days - a.days);
+  const totalDays = deptRows.reduce((s,d) => s+d.days, 0);
+
+  const typeAgg = new Map();
+  proj.forEach(p => {
+    const t = (p.devType || 'אחר').replace(/[^\p{L}\p{N}\s&\/]+/gu,'').trim() || 'אחר';
+    if (!typeAgg.has(t)) typeAgg.set(t, { name: t, count: 0, days: 0 });
+    const a = typeAgg.get(t);
+    a.count += 1;
+    a.days  += +(p.spPlan || 0);
+  });
+  const typeRows = [...typeAgg.values()].sort((a,b) => b.count - a.count);
+  const typeTotalCount = typeRows.reduce((s,t) => s+t.count, 0);
+  const typeColors = ['#3b82f6','#c2773f','#7c6fff','#3ecf8e','#d97706','#a855f7','#0ea5e9','#94a3b8'];
+
+  const teamAgg = new Map();
+  proj.forEach(p => {
+    const t = p.pm || 'ללא PM';
+    if (!teamAgg.has(t)) teamAgg.set(t, { name: t, count: 0 });
+    teamAgg.get(t).count += 1;
+  });
+  const teamRows = [...teamAgg.values()].sort((a,b) => b.count - a.count);
+  const teamMaxCount = teamRows.length ? teamRows[0].count : 1;
+  const teamColors = ['#3b82f6','#7c6fff','#c2773f','#3ecf8e','#d97706','#a855f7','#D05A72','#0ea5e9','#94a3b8'];
+
+  const quarterAgg = { 1:{planned:0,progress:0,live:0,total:0}, 2:{planned:0,progress:0,live:0,total:0}, 3:{planned:0,progress:0,live:0,total:0}, 4:{planned:0,progress:0,live:0,total:0} };
+  proj.forEach(p => {
+    const qs = tglParseQuarters(p.quarter);
+    const b  = tglBucket(p.devStage);
+    qs.forEach(({q,y}) => {
+      if (y !== 2026 || !quarterAgg[q]) return;
+      quarterAgg[q][b]++;
+      quarterAgg[q].total++;
+    });
+  });
+  const quarterMax = Math.max(1, ...[1,2,3,4].map(q => quarterAgg[q].total));
+
+  function quarterColX(q, monthInQ, dayInMonth) {
+    const colW = 1 / 4;
+    const base = (q - 1) * colW;
+    const monthOff = ((monthInQ - 1) + (dayInMonth - 1) / 31) / 3;
+    return (base + monthOff * colW) * 100;
+  }
+
+  function projectSpanPct(p) {
+    const qs = tglParseQuarters(p.quarter);
+    if (qs.length === 0 && p.tl && p.tl.from && p.tl.to) {
+      const f = new Date(p.tl.from), t = new Date(p.tl.to);
+      return { left: quarterColX(Math.floor(f.getMonth()/3)+1, (f.getMonth()%3)+1, f.getDate()),
+               right: quarterColX(Math.floor(t.getMonth()/3)+1, (t.getMonth()%3)+1, t.getDate()) };
+    }
+    if (qs.length === 0 && p.deadline) {
+      const d = new Date(p.deadline);
+      const q = Math.floor(d.getMonth()/3)+1;
+      return { left: quarterColX(q, 1, 1), right: quarterColX(q, (d.getMonth()%3)+1, d.getDate()) };
+    }
+    if (qs.length === 0) return null;
+    const q26 = qs.filter(x => x.y === 2026).map(x => x.q);
+    if (!q26.length) return null;
+    const qMin = Math.min(...q26), qMax = Math.max(...q26);
+    return { left: quarterColX(qMin, 1, 1), right: quarterColX(qMax, 3, 28) };
+  }
+
+  function projectPct(p) {
+    if (p.hub && typeof p.hub.completionPct === 'number') return p.hub.completionPct;
+    const b = tglBucket(p.devStage);
+    if (b === 'live') return 100;
+    if (b === 'planned') return 0;
+    return 50;
+  }
+
+  proj.sort((a,b) => {
+    const ba = tglBucket(a.devStage), bb = tglBucket(b.devStage);
+    const order = { live: 0, progress: 1, planned: 2 };
+    if (order[ba] !== order[bb]) return order[ba] - order[bb];
+    const sa = projectSpanPct(a), sb = projectSpanPct(b);
+    return ((sa?.left ?? 100) - (sb?.left ?? 100));
+  });
+
+  const todayPct = quarterColX(Math.floor(today.getMonth()/3)+1, (today.getMonth()%3)+1, today.getDate());
+
+  document.getElementById('content').innerHTML = `
+  <div class="page tgl-page">
+    ${tglHeader(today, allTeams)}
+    ${tglKpiRow(total, liveCnt, progCnt, planCnt, ps.length)}
+    <div class="tgl-grid">
+      <div class="tgl-side">
+        ${tglDeptCard(deptRows, totalDays)}
+        ${tglTypeCard(typeRows, typeTotalCount, typeColors)}
+        ${tglTeamCard(teamRows, teamMaxCount, teamColors)}
+        ${tglQuartCard(quarterAgg, quarterMax)}
+      </div>
+      ${tglGantt(proj, todayPct, projectSpanPct, projectPct)}
+    </div>
+    ${tglFooter()}
+  </div>`;
+}
+
+function tglHeader(today, allTeams) {
+  const dateStr = `${today.getDate()} · ${today.toLocaleDateString('en-US',{month:'short'})} · ${today.getFullYear()}`;
+  const statusChips = ['all', ...Object.keys(TGL_STATUS_BUCKETS)].map(k => {
+    const label = k === 'all' ? 'הכל' : TGL_STATUS_BUCKETS[k].he;
+    return `<button class="tgl-chip ${tglF.status===k?'active':''}" onclick="setTglStatus('${k}')">${label}</button>`;
+  }).join('');
+  const teamChips = ['all', ...allTeams].map(t => {
+    const label = t === 'all' ? 'הכל' : t;
+    const safe = t.replace(/'/g,"\\'");
+    return `<button class="tgl-chip ${tglF.team===t?'active':''}" onclick="setTglTeam('${safe}')">${label}</button>`;
+  }).join('');
+  return `
+  <div class="tgl-head">
+    <div>
+      <div class="tgl-asof">AS OF</div>
+      <div class="tgl-asof-date">${dateStr}</div>
+    </div>
+    <div class="tgl-title-block">
+      <div class="tgl-eyebrow">Mayven · Roadmap 2026</div>
+      <div class="tgl-title">מפת דרכים שנתית — עליות לאוויר 2026</div>
+      <div class="tgl-filter-row">
+        ${statusChips}
+        <span class="tgl-filter-label">Status</span>
+      </div>
+      <div class="tgl-filter-row">
+        ${teamChips}
+        <span class="tgl-filter-label">Teams</span>
+      </div>
+    </div>
+  </div>`;
+}
+
+function tglKpiRow(total, liveCnt, progCnt, planCnt, totalAll) {
+  const pct = n => totalAll ? Math.round(n / totalAll * 100) : 0;
+  const card = (label, num, pctNum, sub, dot) => `
+    <div class="tgl-kpi">
+      <div class="tgl-kpi-top">
+        <span class="tgl-kpi-dot" style="background:${dot}"></span>
+        <div class="tgl-kpi-label">${label}</div>
+      </div>
+      <div class="tgl-kpi-num">${num}</div>
+      <div class="tgl-kpi-foot">
+        <span class="tgl-kpi-sub">${sub}</span>
+        <span class="tgl-kpi-pct">${pctNum}%</span>
+      </div>
+    </div>`;
+  return `
+  <div class="tgl-kpi-row">
+    ${card('סך פיצ׳רים בתכנית',    total,    100,         'פיתוחים חדשים · שנת 2026', '#3ecf8e')}
+    ${card('עלו לאוויר',           liveCnt,  pct(liveCnt),'Live in production',        TGL_STATUS_BUCKETS.live.color)}
+    ${card('בעבודה כעת',           progCnt,  pct(progCnt),'In progress',               TGL_STATUS_BUCKETS.progress.color)}
+    ${card('מתוכנן להמשך השנה',    planCnt,  pct(planCnt),'Planned · H2',              TGL_STATUS_BUCKETS.planned.color)}
+  </div>`;
+}
+
+function tglDeptCard(rows, totalDays) {
+  const maxDays = rows.length ? rows[0].days : 1;
+  const rowsHtml = rows.map(r => {
+    const w = maxDays ? (r.days / maxDays * 100) : 0;
+    const segs = ['planned','progress','live'].map(k => {
+      const d = r.byStatus[k] || 0;
+      if (!d || !r.days) return '';
+      return `<div class="tgl-dept-seg" style="width:${(d/r.days*100).toFixed(1)}%;background:${TGL_STATUS_BUCKETS[k].color}"></div>`;
+    }).join('');
+    return `<div class="tgl-dept-row">
+      <div class="tgl-dept-days">${r.days}<span class="tgl-dept-days-unit">d</span></div>
+      <div>
+        <div class="tgl-dept-bar" style="width:${w}%">${segs}</div>
+      </div>
+      <div>
+        <div class="tgl-dept-label">${r.name}</div>
+        <div class="tgl-dept-count">${r.count} פיצ׳רים</div>
+      </div>
+    </div>`;
+  }).join('');
+  return `
+  <div class="tgl-card">
+    <div class="tgl-card-head">
+      <div>
+        <div class="tgl-card-total">${totalDays}<span class="tgl-card-total-unit"> dev-days · total</span></div>
+      </div>
+      <div>
+        <div class="tgl-card-title">ימי פיתוח לפי מחלקה מבקשת</div>
+        <div class="tgl-card-sub">סך ימי הפיתוח המוקצים למחלקה.<br>צבע הסגמנט = סטטוס.</div>
+      </div>
+    </div>
+    ${rowsHtml || '<div class="tgl-card-sub" style="text-align:center;padding:12px">אין נתונים</div>'}
+  </div>`;
+}
+
+function tglTypeCard(rows, totalCount, palette) {
+  const segs = rows.map((r,i) => {
+    const w = totalCount ? (r.count / totalCount * 100) : 0;
+    return { ...r, w, color: palette[i % palette.length] };
+  });
+  const segHtml = segs.map(s => `<div class="tgl-stack-seg" style="width:${s.w}%;background:${s.color}">${s.w >= 8 ? Math.round(s.w)+'%' : ''}</div>`).join('');
+  const legHtml = segs.map(s => `
+    <div class="tgl-stack-leg">
+      <span class="tgl-stack-leg-val">${s.count} · ${s.days}d</span>
+      <span class="tgl-stack-leg-name">${s.name}</span>
+      <span class="tgl-stack-leg-dot" style="background:${s.color}"></span>
+    </div>`).join('');
+  return `
+  <div class="tgl-card">
+    <div class="tgl-card-head">
+      <div></div>
+      <div>
+        <div class="tgl-card-title">חלוקה לפי סוג פיתוח</div>
+        <div class="tgl-card-sub">חלוקת ה-${totalCount} פיצ׳רים לפי סוג. כל קטע = % מהפיצ׳רים.</div>
+      </div>
+    </div>
+    <div class="tgl-stack-bar">${segHtml || ''}</div>
+    <div class="tgl-stack-legend">${legHtml}</div>
+  </div>`;
+}
+
+function tglTeamCard(rows, maxCount, palette) {
+  const rowsHtml = rows.map((r,i) => {
+    const w = (r.count / maxCount * 100);
+    const color = palette[i % palette.length];
+    return `<div class="tgl-team-row">
+      <div class="tgl-team-num">${r.count}</div>
+      <div class="tgl-team-bar"><div class="tgl-team-bar-fill" style="width:${w}%;background:${color}"></div></div>
+      <div class="tgl-team-info">
+        <div class="tgl-team-name">${r.name}</div>
+        <div class="tgl-team-sub">${r.count} פיצ׳רים פעילים</div>
+      </div>
+    </div>`;
+  }).join('');
+  return `
+  <div class="tgl-card">
+    <div class="tgl-card-head">
+      <div></div>
+      <div>
+        <div class="tgl-card-title">חלוקה לפי צוותים</div>
+        <div class="tgl-card-sub">כמה פיצ׳רים פעילים תחת כל PM/אחראי לאורך השנה.</div>
+      </div>
+    </div>
+    ${rowsHtml || '<div class="tgl-card-sub" style="text-align:center;padding:12px">אין נתונים</div>'}
+  </div>`;
+}
+
+function tglQuartCard(qAgg, qMax) {
+  const cols = [1,2,3,4].map(q => {
+    const data = qAgg[q];
+    const segs = ['planned','progress','live'].map(k => {
+      const cnt = data[k] || 0;
+      if (!cnt) return '';
+      const h = cnt / qMax * 100;
+      return `<div class="tgl-quart-seg" style="height:${h}%;background:${TGL_STATUS_BUCKETS[k].color}"></div>`;
+    }).join('');
+    return `<div class="tgl-quart-col">
+      <div class="tgl-quart-bar" style="height:${(data.total/qMax*100).toFixed(1)}%">${segs}</div>
+      <div class="tgl-quart-label"><span class="tgl-quart-name">Q${q}</span><span class="tgl-quart-num">${data.total}</span></div>
+    </div>`;
+  }).join('');
+  return `
+  <div class="tgl-card">
+    <div class="tgl-card-head">
+      <div></div>
+      <div>
+        <div class="tgl-card-title">קצב מסירה רבעוני</div>
+        <div class="tgl-card-sub">כל עמודה: מספר פיצ׳רים שמתחילים ברבעון, מחולקים לפי סטטוס.</div>
+      </div>
+    </div>
+    <div class="tgl-quart-chart">${cols}</div>
+  </div>`;
+}
+
+function tglGantt(proj, todayPct, spanFn, pctFn) {
+  const qHeads = [
+    { n:1, mo:'Jan–Mar' },
+    { n:2, mo:'Apr–Jun' },
+    { n:3, mo:'Jul–Sep' },
+    { n:4, mo:'Oct–Dec' },
+  ];
+  const headHtml = qHeads.map(q => `
+    <div class="tgl-gantt-th gantt-q">
+      <span class="tgl-gantt-q-mark">Q${q.n}</span>
+      <span class="tgl-gantt-q-months">${q.mo}</span>
+    </div>`).join('');
+
+  const rowsHtml = proj.map((p, i) => {
+    const span = spanFn(p);
+    const bucket = tglBucket(p.devStage);
+    const pct = pctFn(p);
+    const id = 'F' + String(i+1).padStart(2,'0');
+    let bar = '';
+    if (span) {
+      const left  = span.left;
+      const width = Math.max(2, span.right - span.left);
+      const fillW = Math.max(0, Math.min(100, pct));
+      bar = `<div class="tgl-gantt-bar" data-st="${bucket}" style="left:${left}%;width:${width}%">
+        <div class="tgl-gantt-bar-fill" style="width:${fillW}%"></div>
+        <div class="tgl-gantt-bar-pct">${pct}%</div>
+      </div>`;
+    }
+    return `<div class="tgl-gantt-row">
+      <div class="tgl-gantt-cell idx">${id}</div>
+      <div class="tgl-gantt-cell">
+        <div class="tgl-gantt-item-name">
+          <span class="tgl-gantt-owner">· ${p.pm||p.owner||''}</span>
+          <span>${(p.name||'').replace(/^✨\s*/,'').slice(0,42)}</span>
+          <span class="tgl-gantt-status-dot" style="background:${TGL_STATUS_BUCKETS[bucket]?.color || '#94a3b8'}"></span>
+        </div>
+      </div>
+      <div class="tgl-gantt-cell gantt-quart" style="grid-column:span 4">${bar}</div>
+    </div>`;
+  }).join('');
+
+  return `
+  <div class="tgl-gantt">
+    <div class="tgl-gantt-head">
+      <div>
+        <div class="tgl-gantt-count">Items <strong>${proj.length}</strong> / <strong>${proj.length}</strong></div>
+      </div>
+      <div class="tgl-gantt-title-block">
+        <div class="tgl-gantt-title">ציר זמן רבעוני · Roadmap Gantt</div>
+        <div class="tgl-gantt-sub">כל מייצג פיצ׳ר אחד לאורך הרבעונים שבהם הוא בפיתוח. צבע הפס מציין סטטוס, והמילוי מציין אחוז התקדמות.</div>
+      </div>
+    </div>
+    <div class="tgl-gantt-table" style="position:relative">
+      <div class="tgl-gantt-thead">
+        <div class="tgl-gantt-th"></div>
+        <div class="tgl-gantt-th" style="text-align:right;justify-content:flex-end;display:flex">פיצ׳ר · בעלים</div>
+        ${headHtml}
+      </div>
+      <div class="tgl-gantt-rows" style="display:contents">${rowsHtml}</div>
+      <div class="tgl-today" style="left:calc(38px + minmax(180px,1fr) + 0%);"></div>
+      <div class="tgl-gantt-today-overlay" style="position:absolute;top:32px;bottom:0;left:0;right:0;pointer-events:none">
+        <div style="position:absolute;top:0;bottom:0;left:calc((100% - 38px - 180px) * ${(todayPct/100).toFixed(4)} + 38px + 180px);border-inline-end:1.2px solid var(--accent);z-index:3"></div>
+        <div style="position:absolute;top:0;left:calc((100% - 38px - 180px) * ${(todayPct/100).toFixed(4)} + 38px + 180px);transform:translateX(-50%);background:var(--accent);color:#fff;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;padding:1px 6px;border-radius:3px;letter-spacing:.05em">TODAY</div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function tglFooter() {
+  const legs = Object.entries(TGL_STATUS_BUCKETS).map(([k,v]) =>
+    `<span class="tgl-foot-leg"><span class="tgl-foot-dot" style="background:${v.color}"></span>${v.he} · ${v.en}</span>`
+  ).join('');
+  return `
+  <div class="tgl-foot">
+    <div class="tgl-foot-legend">${legs}</div>
+    <div>ROADMAP · v2026.05 · Maven Product Team</div>
+  </div>`;
+}
+
+function _renderRoadmap_LEGACY_UNUSED(ps) {
   window.__rmPs = ps;
   const todayMs = new Date().setHours(0,0,0,0);
   const today   = new Date(todayMs);
