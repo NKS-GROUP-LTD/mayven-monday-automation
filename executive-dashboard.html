@@ -734,6 +734,116 @@ body::before{content:"";position:fixed;inset:0;background-image:url("data:image/
 .tgl-foot-legend{display:flex;gap:14px;align-items:center}
 .tgl-foot-leg{display:flex;align-items:center;gap:6px}
 .tgl-foot-dot{width:9px;height:9px;border-radius:2px}
+
+/* ══════════════════════════════════════════════════
+   HOME PAGE (.home- prefix)
+   ══════════════════════════════════════════════════ */
+.home-page{display:flex;flex-direction:column;gap:24px;max-width:1480px;margin:0 auto}
+.home-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;padding-bottom:16px;border-bottom:1.5px solid var(--ink)}
+.home-title{font-family:'Suez One',serif;font-size:34px;font-weight:700;margin:0;line-height:1;color:var(--ink)}
+.home-sub{font-family:'Heebo',sans-serif;font-size:13px;color:rgba(26,29,35,.62);margin-top:8px}
+
+/* KPI strip — 12-col grid, each card spans 2 cols */
+.home-kpi-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:14px}
+.home-kpi{grid-column:span 4;background:var(--paper);border:2px solid var(--ink);border-radius:8px;box-shadow:3px 3px 0 var(--ink);padding:16px 18px 12px;display:flex;flex-direction:column;gap:6px;cursor:pointer;position:relative;transition:transform .12s,box-shadow .12s}
+.home-kpi:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--ink)}
+.home-kpi:active{transform:translate(1px,1px);box-shadow:2px 2px 0 var(--ink)}
+@media (min-width:1100px){.home-kpi{grid-column:span 2}}
+@media (min-width:900px) and (max-width:1099px){.home-kpi{grid-column:span 4}}
+@media (max-width:899px){.home-kpi{grid-column:span 6}}
+.home-kpi-q{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:rgba(26,29,35,.6);line-height:1.3;min-height:28px}
+.home-kpi-num{font-family:'Suez One',serif;font-size:48px;font-weight:700;line-height:1;color:var(--ink);letter-spacing:-.01em}
+.home-kpi-break{font-family:'Heebo',sans-serif;font-size:13px;color:rgba(26,29,35,.7);line-height:1.4;min-height:20px}
+.home-kpi-break .bad{color:var(--accent);font-weight:600}
+.home-kpi-delta{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.02em;line-height:1;color:rgba(26,29,35,.5);min-height:14px}
+.home-kpi-delta.up{color:var(--accent)}
+.home-kpi-delta.down{color:var(--green-fg)}
+.home-kpi-delta.neutral{color:rgba(26,29,35,.5)}
+.home-kpi-ts{position:absolute;bottom:6px;left:10px;font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(26,29,35,.45);opacity:.6}
+
+/* Quarterly chart */
+.home-q-card{background:var(--paper);border:2px solid var(--ink);border-radius:8px;box-shadow:3px 3px 0 var(--ink);padding:20px 24px 18px}
+.home-q-title{font-family:'Suez One',serif;font-size:24px;font-weight:700;color:var(--ink);line-height:1.1;margin-bottom:18px}
+.home-q-chart{display:flex;flex-direction:column;gap:14px;margin-top:8px}
+.home-q-row{display:flex;align-items:center;gap:14px}
+.home-q-label{width:48px;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;color:var(--ink);flex-shrink:0;text-align:center}
+.home-q-track{flex:1;height:46px;background:var(--paper-deep);border:1.5px solid var(--ink);border-radius:6px;overflow:hidden;position:relative;cursor:pointer;transition:transform .12s}
+.home-q-track:hover{transform:translate(-1px,-1px);box-shadow:2px 2px 0 var(--ink)}
+.home-q-bar{height:100%;background:var(--ink);opacity:.3;display:flex;align-items:center;padding:0 14px;transition:width .25s ease-out;min-width:46px}
+.home-q-bar.current{opacity:1}
+.home-q-count{font-family:'Suez One',serif;font-size:32px;font-weight:700;color:var(--paper);line-height:1}
+.home-q-empty{font-family:'Heebo',sans-serif;font-size:12px;color:rgba(26,29,35,.5);position:absolute;top:50%;right:14px;transform:translateY(-50%)}
+.home-q-note{margin-top:14px;font-family:'Heebo',sans-serif;font-size:13px;color:rgba(26,29,35,.65);text-align:center;padding-top:12px;border-top:1px dashed var(--ink-soft)}
+
+/* Needs You Today */
+.home-att-card{background:var(--paper);border:2px solid var(--ink);border-radius:8px;box-shadow:3px 3px 0 var(--ink);overflow:hidden}
+.home-att-title{font-family:'Suez One',serif;font-size:24px;font-weight:700;color:var(--ink);line-height:1.1;padding:18px 24px 14px;border-bottom:1.5px dashed var(--ink-soft)}
+.home-att-list{display:flex;flex-direction:column}
+.home-att-row{display:flex;align-items:center;gap:14px;padding:13px 24px;border-bottom:1px dashed var(--ink-soft);transition:background .08s}
+.home-att-row:last-child{border-bottom:none}
+.home-att-row:hover{background:var(--paper-deep)}
+.home-att-pill{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);background:var(--red-bg);border:2px solid var(--accent);border-radius:4px;padding:3px 9px;flex-shrink:0;white-space:nowrap}
+.home-att-pill.no-dl{color:var(--yellow-fg);background:var(--yellow-bg);border-color:var(--yellow-fg)}
+.home-att-pill.upcoming{color:var(--orange-fg);background:var(--orange-bg);border-color:var(--orange-fg)}
+.home-att-desc{flex:1;font-family:'Heebo',sans-serif;font-size:13.5px;color:var(--ink);line-height:1.4;min-width:0}
+.home-att-desc .name{font-weight:600}
+.home-att-desc .reason{color:rgba(26,29,35,.6);margin-inline-start:6px}
+.home-att-open{font-family:'Heebo',sans-serif;font-size:12px;color:var(--accent);text-decoration:none;font-weight:600;white-space:nowrap;cursor:pointer;border:none;background:none;padding:0}
+.home-att-open:hover{text-decoration:underline}
+.home-att-empty{padding:32px 24px;text-align:center;color:rgba(26,29,35,.5);font-family:'Heebo',sans-serif;font-size:13px}
+
+/* This Week — 2 cols */
+.home-week-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:899px){.home-week-grid{grid-template-columns:1fr}}
+.home-week-card{background:var(--paper);border:2px solid var(--ink);border-radius:8px;box-shadow:3px 3px 0 var(--ink);overflow:hidden;display:flex;flex-direction:column}
+.home-week-title{font-family:'Suez One',serif;font-size:20px;font-weight:700;color:var(--ink);line-height:1.1;padding:14px 18px 12px;border-bottom:1.5px dashed var(--ink-soft)}
+.home-done-list{display:flex;flex-direction:column}
+.home-done-row{display:flex;align-items:center;gap:10px;padding:9px 18px;border-bottom:1px dashed var(--ink-soft);font-size:13px;color:var(--ink);min-width:0}
+.home-done-row:last-child{border-bottom:none}
+.home-done-date{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:var(--ink);background:var(--paper-deep);border:1px solid var(--ink-soft);padding:2px 7px;border-radius:4px;flex-shrink:0;white-space:nowrap}
+.home-done-name{flex:1;min-width:0;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.home-done-board{font-size:10px;color:rgba(26,29,35,.5);font-family:'JetBrains Mono',monospace;flex-shrink:0;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.home-week-empty{padding:32px 18px;text-align:center;color:rgba(26,29,35,.45);font-size:12.5px}
+
+/* 7-day grid */
+.home-7day{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;padding:12px}
+.home-7day-col{background:var(--paper-deep);border:1.4px solid var(--ink-soft);border-radius:6px;min-height:140px;padding:8px 5px;display:flex;flex-direction:column;align-items:center;gap:4px}
+.home-7day-col.today{border:1.5px solid var(--ink);background:var(--paper);box-shadow:2px 2px 0 var(--ink)}
+.home-7day-num{font-family:'Suez One',serif;font-size:18px;color:var(--ink);line-height:1}
+.home-7day-col.today .home-7day-num{color:var(--accent)}
+.home-7day-name{font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(26,29,35,.55);letter-spacing:.04em;text-transform:uppercase}
+.home-7day-dots{display:flex;flex-direction:column;align-items:center;gap:4px;margin-top:6px;width:100%}
+.home-7day-dot{width:24px;height:24px;border:1.5px solid var(--ink);border-radius:6px;background:var(--paper);display:flex;align-items:center;justify-content:center;font-size:13px;line-height:1;cursor:default;transition:transform .1s}
+.home-7day-dot:hover{transform:scale(1.18)}
+
+/* Modal */
+.home-modal-overlay{position:fixed;inset:0;background:rgba(26,29,35,.7);z-index:9999;display:flex;align-items:center;justify-content:center;padding:24px;animation:home-fade-in .15s ease-out}
+@keyframes home-fade-in{from{opacity:0}to{opacity:1}}
+.home-modal{background:var(--paper);border:2px solid var(--ink);border-radius:10px;box-shadow:6px 6px 0 var(--ink);max-width:800px;width:100%;max-height:80vh;display:flex;flex-direction:column;overflow:hidden}
+.home-modal-head{display:flex;align-items:center;justify-content:space-between;padding:16px 22px 14px;border-bottom:1.5px solid var(--ink);background:var(--paper-deep);flex-shrink:0;gap:14px}
+.home-modal-title{font-family:'Suez One',serif;font-size:24px;font-weight:700;color:var(--ink);line-height:1.15;flex:1;min-width:0}
+.home-modal-close{appearance:none;background:var(--paper);border:1.5px solid var(--ink);border-radius:6px;width:32px;height:32px;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:2px 2px 0 var(--ink);color:var(--ink);flex-shrink:0;transition:transform .1s}
+.home-modal-close:hover{transform:translate(-1px,-1px);box-shadow:3px 3px 0 var(--ink)}
+.home-modal-close:active{transform:translate(1px,1px);box-shadow:none}
+.home-modal-body{padding:18px 22px;overflow-y:auto;flex:1}
+.home-modal-foot{padding:10px 22px;border-top:1.5px dashed var(--ink-soft);font-family:'Heebo',sans-serif;font-size:11.5px;color:rgba(26,29,35,.5);text-align:center;flex-shrink:0}
+
+.home-modal-tabs{display:flex;gap:2px;margin-bottom:14px;border-bottom:1.5px solid var(--ink-soft)}
+.home-modal-tab{appearance:none;background:transparent;border:1.5px solid transparent;border-bottom:none;border-radius:6px 6px 0 0;padding:8px 14px;font-family:'Heebo',sans-serif;font-size:12.5px;font-weight:500;color:rgba(26,29,35,.6);cursor:pointer;display:flex;align-items:center;gap:6px;margin-bottom:-1.5px}
+.home-modal-tab.active{background:var(--paper);color:var(--ink);font-weight:700;border-color:var(--ink-soft);border-bottom-color:var(--paper)}
+.home-modal-tab-badge{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:17px;padding:0 5px;border-radius:9px;background:var(--paper-shade);color:var(--ink);font-size:10px;font-weight:700;font-family:'JetBrains Mono',monospace}
+.home-modal-tab.active .home-modal-tab-badge{background:var(--accent);color:var(--paper)}
+
+.home-modal-table{width:100%;border-collapse:collapse;font-family:'Heebo',sans-serif;font-size:13px}
+.home-modal-table thead th{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:rgba(26,29,35,.65);text-align:right;padding:8px 10px;border-bottom:1.5px solid var(--ink)}
+.home-modal-table tbody td{padding:9px 10px;border-bottom:1px solid var(--paper-shade);color:var(--ink);vertical-align:middle}
+.home-modal-table tbody tr:last-child td{border-bottom:none}
+.home-modal-table tbody tr:hover td{background:var(--paper-deep)}
+.home-modal-table td.muted{color:rgba(26,29,35,.55)}
+.home-modal-table td.bad{color:var(--accent);font-weight:600}
+.home-modal-table .name{font-weight:600;max-width:300px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.home-modal-pill{display:inline-flex;align-items:center;font-family:'JetBrains Mono',monospace;font-size:10.5px;font-weight:600;letter-spacing:.03em;background:var(--paper-deep);border:1px solid var(--ink-soft);padding:2px 7px;border-radius:4px;color:var(--ink);white-space:nowrap}
+.home-modal-empty{padding:30px 10px;text-align:center;color:rgba(26,29,35,.5);font-size:13px}
 </style>
 </head>
 <body>
@@ -907,6 +1017,7 @@ const PIPELINE_CANCEL_STAGES = new Set(['Cancelled']);
 
 // ── Worlds ──
 const WORLDS = [
+  { key:'home',        he:'ראשי',                en:'Home',         icon:'🏠' },
   { key:'overview',    he:'סקירה כללית',       en:'Overview',    icon:'📊' },
   { key:'pipeline',    he:'פורטפוליו טכנולוגיה', en:'Tech Pipeline', icon:'⚙️' },
   { key:'tech',             he:'פיתוח טכנולוגי',    en:'Tech & Dev',        icon:'👩‍💻' },
@@ -962,7 +1073,7 @@ const db = window.supabase.createClient(SUPABASE_URL, ANON_KEY);
 let allProjects          = [];
 let pipelineProjects     = [];
 let productLaunchItems   = [];
-let activeWorld  = 'overview';
+let activeWorld  = 'home';
 let filterTeam   = 'all';
 let filterSearch = '';
 
@@ -1299,6 +1410,10 @@ function navTo(key) {
   const w = WORLDS.find(x => x.key === key);
   document.getElementById('tbCurr').textContent = w?.he || '';
   document.getElementById('tbEn').textContent   = w?.en || '';
+  const currentHash = (location.hash || '').replace(/^#/, '');
+  if (currentHash !== key) {
+    try { history.replaceState(null, '', '#' + key); } catch(e) { location.hash = '#' + key; }
+  }
   buildSidebar();
   applyFilters();
 }
@@ -1364,7 +1479,8 @@ function miniBar(pct, health) {
 // RENDER DISPATCHER
 // ══════════════════════════════════════════════════
 function renderWorld(ps) {
-  if (activeWorld === 'overview')      renderOverview(ps);
+  if (activeWorld === 'home')          renderHome();
+  else if (activeWorld === 'overview') renderOverview(ps);
   else if (activeWorld === 'pipeline') renderPipeline(pipelineProjects);
   else if (activeWorld === 'tech')     renderTechPage(ps);
   else if (activeWorld === 'departments') renderDepartmentsPage();
@@ -4370,6 +4486,856 @@ function buildTeamFilter() {
 }
 
 // ══════════════════════════════════════════════════
+// HOME PAGE
+// ══════════════════════════════════════════════════
+const HOME_ACTIVE_STATUSES = new Set([
+  'בעבודה',
+  'מאושר לביצוע',
+  'ממתין לאישור מנהל',
+  'בעבודה - צד שלישי',
+  'יש לבצע תיקונים :)',
+  'אושר על ידי מנהל',
+  'למעקב',
+  'דגל אדום',
+]);
+const HOME_TASK_COMPLETE_STATUSES = new Set(['הסתיימה','מבוטלת','בנק משימות']);
+const HOME_OUT_OF_TIME_EXCLUDE   = new Set(['הסתיימה','מבוטלת','בנק משימות','מחיקה']);
+const HOME_PORTFOLIO_DONE_STAGES = new Set(['Stock Date','Go Live']);
+
+function homeStartOfDay(d) {
+  if (!d) return null;
+  const x = new Date(d);
+  x.setHours(0,0,0,0);
+  return x.getTime();
+}
+
+function homeTypeLabel(rawType) {
+  const t = (rawType || '').trim();
+  if (!t) return 'אחר';
+  if (t.includes('Tech Project') || t.includes('Website Dev') || t.includes('A/B Tests') || t.includes('Subscription')) return 'טכנולוגיה';
+  if (t.includes('New Product')   || t.includes('PR Box') || t.includes('Accessories') || t.includes('Product Launch')) return 'מוצר';
+  if (t.includes('Changing Projects') || t.includes('Wellness Club') || t.includes('Promotion')) return 'קמפיין';
+  if (t.includes('Department')) return 'מחלקה';
+  return 'אחר';
+}
+
+function homeTypeToWorld(label) {
+  if (label === 'טכנולוגיה') return 'tech';
+  if (label === 'מוצר')      return 'product_portfolio';
+  if (label === 'קמפיין')    return 'campaigns';
+  if (label === 'מחלקה')     return 'departments';
+  return 'overview';
+}
+
+function homeFmtShort(d) {
+  if (!d) return '—';
+  const dt = (d instanceof Date) ? d : new Date(d);
+  if (isNaN(dt.getTime())) return '—';
+  const dd = String(dt.getDate()).padStart(2,'0');
+  const mm = String(dt.getMonth()+1).padStart(2,'0');
+  return `${dd}.${mm}`;
+}
+
+function homeEscape(s) {
+  return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+/* ── processHome(): aggregate raw data into the shape needed by renderHome ── */
+function processHome() {
+  const raw      = window.__rawItems || [];
+  const portfolioItems = productLaunchItems || [];
+  const pipelineItems  = pipelineProjects  || [];
+
+  const todayMs = homeStartOfDay(new Date());
+
+  // Join maps (by project name)
+  const portfolioByName = new Map();
+  for (const it of portfolioItems) {
+    if (it?.name) portfolioByName.set(it.name.trim(), it);
+  }
+  const pipelineByName = new Map();
+  for (const p of pipelineItems) {
+    if (p?.name) pipelineByName.set(p.name.trim(), p);
+  }
+
+  // Deadline source per task spec priority: portfolio.stock → pipeline.deadline → null
+  function projectDeadlineFor(projectName) {
+    const key = (projectName || '').trim();
+    const portfolio = portfolioByName.get(key);
+    if (portfolio) {
+      const stockTxt = portfolio.column_values?.find(c => c.column_id === PL.STOCK_DATE)?.text_value;
+      const d = parseDate(stockTxt);
+      if (d) return { source: 'portfolio', date: d, portfolio };
+    }
+    const pipe = pipelineByName.get(key);
+    if (pipe?.deadline) return { source: 'pipeline', date: pipe.deadline, pipe };
+    return null;
+  }
+
+  function portfolioStageOf(projectName) {
+    const portfolio = portfolioByName.get((projectName || '').trim());
+    if (!portfolio) return null;
+    return portfolio.column_values?.find(c => c.column_id === PL.STAGE)?.text_value || null;
+  }
+
+  function pipelineStatusOf(projectName) {
+    return pipelineByName.get((projectName || '').trim())?.status || null;
+  }
+
+  // ── Group raw Hub items by project name ──
+  const projMap = new Map();
+  for (const item of raw) {
+    const name = item.column_values?.find(c => c.column_id === C.BOARD_NAME)?.text_value;
+    if (!name) continue;
+    if (!projMap.has(name)) {
+      projMap.set(name, {
+        name,
+        items: [],
+        statuses: [],
+        type: null,
+        completionDate: null,    // max date_mm0p2hfk across tasks
+        hasRedFlagTask: false,
+      });
+    }
+    const proj = projMap.get(name);
+    proj.items.push(item);
+    const status = item.column_values?.find(c => c.column_id === C.STATUS)?.text_value || null;
+    proj.statuses.push(status);
+    if (status === 'דגל אדום') proj.hasRedFlagTask = true;
+    if (!proj.type) {
+      const t = item.column_values?.find(c => c.column_id === C.PROJECT_TYPE)?.text_value;
+      if (t) proj.type = t;
+    }
+    const cdTxt = item.column_values?.find(c => c.column_id === C.COMPLETION_DATE)?.text_value;
+    const cd = parseDate(cdTxt);
+    if (cd && (!proj.completionDate || cd > proj.completionDate)) proj.completionDate = cd;
+  }
+
+  // ── Derive per-project attributes ──
+  const projectsArr = [];
+  for (const [, p] of projMap) {
+    const active = p.statuses.some(s => HOME_ACTIVE_STATUSES.has(s));
+    const allTasksComplete = p.statuses.length > 0
+      && p.statuses.every(s => HOME_TASK_COMPLETE_STATUSES.has(s));
+    const stage      = portfolioStageOf(p.name);
+    const pipeStatus = pipelineStatusOf(p.name);
+    const portfolioComplete = HOME_PORTFOLIO_DONE_STAGES.has(stage);
+    const pipelineComplete  = pipeStatus === 'הסתיימה';
+    const isComplete = allTasksComplete || portfolioComplete || pipelineComplete;
+
+    const dl = projectDeadlineFor(p.name);
+    const deadlineDate   = dl?.date   || null;
+    const deadlineSource = dl?.source || null;
+    const deadlineMs     = deadlineDate ? homeStartOfDay(deadlineDate) : null;
+    const overdueDays    = (deadlineMs !== null && deadlineMs < todayMs)
+      ? Math.floor((todayMs - deadlineMs) / 864e5) : 0;
+    const daysUntilDl    = (deadlineMs !== null && deadlineMs >= todayMs)
+      ? Math.ceil((deadlineMs - todayMs) / 864e5) : null;
+
+    // Red flag: portfolio RED FLAG OR active+overdue+not-complete OR any task status="דגל אדום"
+    let redFlag = false, redFlagReason = null;
+    if (stage === 'RED FLAG') { redFlag = true; redFlagReason = 'portfolio_red_flag'; }
+    else if (active && deadlineMs !== null && deadlineMs < todayMs && !isComplete) {
+      redFlag = true; redFlagReason = 'overdue_active';
+    }
+    else if (p.hasRedFlagTask) { redFlag = true; redFlagReason = 'task_red_flag'; }
+
+    const typeLabel = homeTypeLabel(p.type);
+
+    projectsArr.push({
+      name: p.name,
+      rawType: p.type,
+      typeLabel,
+      world: homeTypeToWorld(typeLabel),
+      active,
+      isComplete,
+      deadlineDate, deadlineSource, deadlineMs,
+      overdueDays, daysUntilDl,
+      redFlag, redFlagReason,
+      hasRedFlagTask: p.hasRedFlagTask,
+      stage, pipeStatus,
+      completionDate: p.completionDate,
+      statuses: p.statuses,
+      items: p.items,
+      taskCount: p.items.length,
+    });
+  }
+
+  return {
+    todayMs,
+    projects: projectsArr,
+    raw,
+    portfolioItems,
+    pipelineItems,
+    portfolioByName,
+    pipelineByName,
+  };
+}
+
+/* ── Modal helpers ── */
+function ensureHomeModalRoot() {
+  let root = document.getElementById('home-modal-root');
+  if (root) return root;
+  root = document.createElement('div');
+  root.id = 'home-modal-root';
+  document.body.appendChild(root);
+  return root;
+}
+
+function openHomeModal(title, bodyHtml) {
+  const root = ensureHomeModalRoot();
+  root.innerHTML = `
+    <div class="home-modal-overlay" id="home-modal-overlay" role="dialog" aria-modal="true">
+      <div class="home-modal" id="home-modal-panel">
+        <div class="home-modal-head">
+          <div class="home-modal-title">${title}</div>
+          <button class="home-modal-close" id="home-modal-close" aria-label="סגירה">✕</button>
+        </div>
+        <div class="home-modal-body" id="home-modal-body">${bodyHtml}</div>
+        <div class="home-modal-foot">לחץ ESC או לחץ מחוץ למודל לסגירה</div>
+      </div>
+    </div>`;
+
+  const overlay = document.getElementById('home-modal-overlay');
+  const closeBtn = document.getElementById('home-modal-close');
+  closeBtn.addEventListener('click', closeHomeModal);
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) closeHomeModal();
+  });
+  document.addEventListener('keydown', homeModalEscHandler);
+}
+
+function homeModalEscHandler(e) {
+  if (e.key === 'Escape') closeHomeModal();
+}
+
+function closeHomeModal() {
+  const root = document.getElementById('home-modal-root');
+  if (root) root.innerHTML = '';
+  document.removeEventListener('keydown', homeModalEscHandler);
+}
+
+/* ── Modal content builders ── */
+function homeModalTableHtml(headers, rows, emptyMsg) {
+  if (!rows.length) return `<div class="home-modal-empty">${homeEscape(emptyMsg || 'אין נתונים להצגה')}</div>`;
+  return `<table class="home-modal-table">
+    <thead><tr>${headers.map(h => `<th>${homeEscape(h)}</th>`).join('')}</tr></thead>
+    <tbody>${rows.map(r => `<tr>${r}</tr>`).join('')}</tbody>
+  </table>`;
+}
+
+function homeModalTabbedHtml(tabs) {
+  // tabs: [{ key, label, count, contentHtml }]
+  const tabBtns = tabs.map((t, i) => `
+    <button class="home-modal-tab ${i === 0 ? 'active' : ''}" data-tab="${homeEscape(t.key)}" onclick="homeModalSwitchTab('${homeEscape(t.key)}')">
+      <span>${homeEscape(t.label)}</span>
+      <span class="home-modal-tab-badge">${t.count}</span>
+    </button>`).join('');
+  const panes = tabs.map((t, i) => `
+    <div class="home-modal-pane" data-pane="${homeEscape(t.key)}" style="display:${i === 0 ? 'block' : 'none'}">
+      ${t.contentHtml}
+    </div>`).join('');
+  return `<div class="home-modal-tabs">${tabBtns}</div>${panes}`;
+}
+
+function homeModalSwitchTab(key) {
+  const body = document.getElementById('home-modal-body');
+  if (!body) return;
+  body.querySelectorAll('.home-modal-tab').forEach(b => {
+    b.classList.toggle('active', b.dataset.tab === key);
+  });
+  body.querySelectorAll('.home-modal-pane').forEach(p => {
+    p.style.display = p.dataset.pane === key ? 'block' : 'none';
+  });
+}
+
+/* ── KPI drill-down click handlers ── */
+function openKpiTasksInWork(d) {
+  const raw = d.raw;
+  const out = [];
+  for (const item of raw) {
+    const status = item.column_values?.find(c => c.column_id === C.STATUS)?.text_value || null;
+    if (status !== 'בעבודה') continue;
+    const tlRaw  = item.column_values?.find(c => c.column_id === C.TIMELINE)?.value;
+    const tl     = parseTL(tlRaw);
+    if (!tl.to) continue;
+    const endMs = homeStartOfDay(tl.to);
+    if (endMs >= d.todayMs) continue;
+    if (HOME_OUT_OF_TIME_EXCLUDE.has(status)) continue;
+    const overdueDays = Math.floor((d.todayMs - endMs) / 864e5);
+    const name = item.name || '—';
+    const project = item.column_values?.find(c => c.column_id === C.BOARD_NAME)?.text_value || '—';
+    const owner = item.column_values?.find(c => c.column_id === C.OWNER)?.text_value || '—';
+    out.push({ name, project, overdueDays, owner, endDate: tl.to });
+  }
+  out.sort((a,b) => b.overdueDays - a.overdueDays);
+  const rows = out.map(r => `
+    <td class="name">${homeEscape(r.name)}</td>
+    <td class="muted">${homeEscape(r.project)}</td>
+    <td class="bad">${r.overdueDays} ימים</td>
+    <td class="muted">${homeEscape(r.owner)}</td>
+  `);
+  openHomeModal(`משימות חורגות בעבודה (${out.length})`,
+    homeModalTableHtml(['משימה','פרויקט','חריגה','בעלים'], rows, 'אין משימות חורגות בעבודה ✓'));
+}
+
+function openKpiActiveProjects(d) {
+  const active = d.projects.filter(p => p.active);
+  const byLabel = new Map();
+  for (const p of active) {
+    if (!byLabel.has(p.typeLabel)) byLabel.set(p.typeLabel, []);
+    byLabel.get(p.typeLabel).push(p);
+  }
+  const tabs = [];
+  for (const label of ['טכנולוגיה','מוצר','קמפיין','מחלקה','אחר']) {
+    const list = byLabel.get(label) || [];
+    if (!list.length && label === 'אחר') continue;
+    list.sort((a,b) => b.taskCount - a.taskCount);
+    const rows = list.map(p => `
+      <td class="name">${homeEscape(p.name)}</td>
+      <td class="muted">${homeEscape(p.rawType || '—')}</td>
+      <td>${p.deadlineDate ? `<span class="home-modal-pill">${homeFmtShort(p.deadlineDate)}</span>` : '<span class="muted">—</span>'}</td>
+      <td class="muted">${p.taskCount} משימות</td>
+    `);
+    tabs.push({
+      key: label,
+      label,
+      count: list.length,
+      contentHtml: homeModalTableHtml(['פרויקט','סוג','דד-ליין','גודל'], rows, 'אין פרויקטים פעילים מסוג זה'),
+    });
+  }
+  openHomeModal(`פרויקטים פעילים (${active.length})`, tabs.length ? homeModalTabbedHtml(tabs) : '<div class="home-modal-empty">אין פרויקטים פעילים כעת</div>');
+}
+
+function openKpiRedFlags(d) {
+  const reds = d.projects.filter(p => p.redFlag);
+  reds.sort((a,b) => (b.overdueDays || 0) - (a.overdueDays || 0));
+  const reasonText = (k) => k === 'portfolio_red_flag' ? 'דגל אדום בפורטפוליו'
+    : k === 'overdue_active' ? 'פעיל וחרג מהדד-ליין'
+    : k === 'task_red_flag' ? 'משימה בדגל אדום' : '—';
+  const rows = reds.map(p => `
+    <td class="name">${homeEscape(p.name)}</td>
+    <td class="muted">${homeEscape(p.typeLabel)}</td>
+    <td>${p.deadlineDate ? `<span class="home-modal-pill">${homeFmtShort(p.deadlineDate)}</span>` : '<span class="muted">—</span>'}</td>
+    <td class="bad">${p.overdueDays || 0} ימים</td>
+    <td class="muted">${homeEscape(reasonText(p.redFlagReason))}</td>
+  `);
+  openHomeModal(`פרויקטים בדגל אדום (${reds.length})`,
+    homeModalTableHtml(['פרויקט','סוג','דד-ליין','חריגה','סיבה'], rows, 'אין פרויקטים בדגל אדום ✓'));
+}
+
+function openKpiAvgDelay(d) {
+  const active = d.projects.filter(p => p.active && p.deadlineMs !== null);
+  const delayed = active.filter(p => p.overdueDays > 0);
+  delayed.sort((a,b) => b.overdueDays - a.overdueDays);
+  const rows = delayed.map(p => `
+    <td class="name">${homeEscape(p.name)}</td>
+    <td>${p.deadlineDate ? `<span class="home-modal-pill">${homeFmtShort(p.deadlineDate)}</span>` : '<span class="muted">—</span>'}</td>
+    <td class="bad">${p.overdueDays} ימים</td>
+    <td class="muted">${homeEscape(p.typeLabel)}</td>
+  `);
+  openHomeModal(`פרויקטים בפיגור (${delayed.length} מתוך ${active.length})`,
+    homeModalTableHtml(['פרויקט','דד-ליין','פיגור','סוג'], rows, 'אין פרויקטים בפיגור ✓'));
+}
+
+function openKpiCompleted30(d) {
+  const window30 = d.todayMs - 30 * 864e5;
+  const completed = d.projects.filter(p => p.isComplete && p.completionDate && homeStartOfDay(p.completionDate) >= window30);
+  completed.sort((a,b) => (b.completionDate?.getTime()||0) - (a.completionDate?.getTime()||0));
+  const rows = completed.map(p => `
+    <td class="name">${homeEscape(p.name)}</td>
+    <td><span class="home-modal-pill">${homeFmtShort(p.completionDate)}</span></td>
+    <td class="muted">${homeEscape(p.typeLabel)}</td>
+    <td class="muted">${p.taskCount} משימות</td>
+  `);
+  openHomeModal(`פרויקטים שהסתיימו ב-30 הימים האחרונים (${completed.length})`,
+    homeModalTableHtml(['פרויקט','הסתיים','סוג','גודל'], rows, 'לא הסתיימו פרויקטים בתקופה זו'));
+}
+
+function openKpiNoDeadline(d) {
+  const noDl = d.projects.filter(p => p.active && p.deadlineMs === null);
+  const byLabel = new Map();
+  for (const p of noDl) {
+    if (!byLabel.has(p.typeLabel)) byLabel.set(p.typeLabel, []);
+    byLabel.get(p.typeLabel).push(p);
+  }
+  const tabs = [];
+  for (const label of ['טכנולוגיה','מוצר','קמפיין','מחלקה','אחר']) {
+    const list = byLabel.get(label) || [];
+    if (!list.length) continue;
+    list.sort((a,b) => {
+      const ad = a.completionDate?.getTime() || 0;
+      const bd = b.completionDate?.getTime() || 0;
+      return bd - ad;
+    });
+    const rows = list.map(p => {
+      // Last activity = max completion date in tasks; fall back to "—"
+      const lastActivity = p.completionDate ? homeFmtShort(p.completionDate) : '—';
+      return `
+        <td class="name">${homeEscape(p.name)}</td>
+        <td class="muted">${homeEscape(p.rawType || '—')}</td>
+        <td class="muted">${homeEscape(lastActivity)}</td>
+        <td class="muted">${p.taskCount} משימות</td>
+      `;
+    });
+    tabs.push({
+      key: label,
+      label,
+      count: list.length,
+      contentHtml: homeModalTableHtml(['פרויקט','סוג','פעילות אחרונה','גודל'], rows, 'אין פרויקטים ללא דד-ליין מסוג זה'),
+    });
+  }
+  openHomeModal(`פרויקטים ללא דד-ליין (${noDl.length})`,
+    tabs.length ? homeModalTabbedHtml(tabs) : '<div class="home-modal-empty">כל הפרויקטים הפעילים חוברו לדד-ליין ✓</div>');
+}
+
+function openKpiQuarter(d, qIdx, year) {
+  const qStart = new Date(year, qIdx*3, 1).getTime();
+  const qEnd   = new Date(year, qIdx*3+3, 1).getTime();
+  const projs = d.projects.filter(p => p.isComplete && p.completionDate
+    && p.completionDate.getTime() >= qStart
+    && p.completionDate.getTime() <  qEnd);
+  projs.sort((a,b) => b.completionDate - a.completionDate);
+  const rows = projs.map(p => `
+    <td class="name">${homeEscape(p.name)}</td>
+    <td><span class="home-modal-pill">${homeFmtShort(p.completionDate)}</span></td>
+    <td class="muted">${homeEscape(p.typeLabel)}</td>
+    <td class="muted">${p.taskCount} משימות</td>
+  `);
+  openHomeModal(`פרויקטים שהסתיימו ב-Q${qIdx+1} ${year} (${projs.length})`,
+    homeModalTableHtml(['פרויקט','הסתיים','סוג','גודל'], rows, 'אין פרויקטים שהסתיימו ברבעון זה'));
+}
+
+/* ── Make handlers globally addressable ── */
+window.openKpiTasksInWork    = openKpiTasksInWork;
+window.openKpiActiveProjects = openKpiActiveProjects;
+window.openKpiRedFlags       = openKpiRedFlags;
+window.openKpiAvgDelay       = openKpiAvgDelay;
+window.openKpiCompleted30    = openKpiCompleted30;
+window.openKpiNoDeadline     = openKpiNoDeadline;
+window.openKpiQuarter        = openKpiQuarter;
+window.closeHomeModal        = closeHomeModal;
+window.homeModalSwitchTab    = homeModalSwitchTab;
+
+/* ── Cache the current home data on window for click handlers ── */
+let __homeData = null;
+function homeClickTasksInWork()     { if (__homeData) openKpiTasksInWork(__homeData); }
+function homeClickActiveProjects()  { if (__homeData) openKpiActiveProjects(__homeData); }
+function homeClickRedFlags()        { if (__homeData) openKpiRedFlags(__homeData); }
+function homeClickAvgDelay()        { if (__homeData) openKpiAvgDelay(__homeData); }
+function homeClickCompleted30()     { if (__homeData) openKpiCompleted30(__homeData); }
+function homeClickNoDeadline()      { if (__homeData) openKpiNoDeadline(__homeData); }
+function homeClickQuarter(qIdx, yr) { if (__homeData) openKpiQuarter(__homeData, qIdx, yr); }
+window.homeClickTasksInWork    = homeClickTasksInWork;
+window.homeClickActiveProjects = homeClickActiveProjects;
+window.homeClickRedFlags       = homeClickRedFlags;
+window.homeClickAvgDelay       = homeClickAvgDelay;
+window.homeClickCompleted30    = homeClickCompleted30;
+window.homeClickNoDeadline     = homeClickNoDeadline;
+window.homeClickQuarter        = homeClickQuarter;
+
+/* ──────────────────────────────────────────────────
+   renderHome — main entry point
+   ────────────────────────────────────────────────── */
+function renderHome() {
+  const d = processHome();
+  __homeData = d;
+  const now = new Date();
+  const todayMs = d.todayMs;
+  const nowHHMM = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+
+  // ── KPI 1: Tasks in work + out-of-time breakdown ──
+  let inWorkTotal = 0, outOfTime = 0;
+  for (const item of d.raw) {
+    const status = item.column_values?.find(c => c.column_id === C.STATUS)?.text_value || null;
+    if (status !== 'בעבודה') continue;
+    inWorkTotal++;
+    const tl = parseTL(item.column_values?.find(c => c.column_id === C.TIMELINE)?.value);
+    if (tl.to && homeStartOfDay(tl.to) < todayMs && !HOME_OUT_OF_TIME_EXCLUDE.has(status)) {
+      outOfTime++;
+    }
+  }
+  const onTime = inWorkTotal - outOfTime;
+  const outOfTimePct = inWorkTotal > 0 ? Math.round(outOfTime / inWorkTotal * 100) : 0;
+
+  // ── KPI 2: Active projects + type breakdown ──
+  const active = d.projects.filter(p => p.active);
+  const activeByLabel = { 'טכנולוגיה':0, 'מוצר':0, 'קמפיין':0, 'מחלקה':0, 'אחר':0 };
+  for (const p of active) activeByLabel[p.typeLabel] = (activeByLabel[p.typeLabel] || 0) + 1;
+
+  // ── KPI 3: Red flags + breakdown ──
+  const reds = d.projects.filter(p => p.redFlag);
+  const redsByLabel = { 'טכנולוגיה':0, 'מוצר':0, 'קמפיין':0, 'מחלקה':0, 'אחר':0 };
+  for (const p of reds) redsByLabel[p.typeLabel] = (redsByLabel[p.typeLabel] || 0) + 1;
+
+  // ── KPI 4: Avg delay ──
+  const activeWithDl = d.projects.filter(p => p.active && p.deadlineMs !== null);
+  const delayed      = activeWithDl.filter(p => p.overdueDays > 0);
+  const avgDelay     = activeWithDl.length
+    ? Math.round(activeWithDl.reduce((s,p) => s + p.overdueDays, 0) / activeWithDl.length)
+    : 0;
+  // 7d delta — re-compute avg delay as it would have been 7 days ago for the same set
+  const sevenDaysAgoMs = todayMs - 7 * 864e5;
+  let avgDelayPrev = 0;
+  if (activeWithDl.length) {
+    const prevTotal = activeWithDl.reduce((s,p) => {
+      const overdueThen = p.deadlineMs !== null && p.deadlineMs < sevenDaysAgoMs
+        ? Math.floor((sevenDaysAgoMs - p.deadlineMs) / 864e5) : 0;
+      return s + overdueThen;
+    }, 0);
+    avgDelayPrev = Math.round(prevTotal / activeWithDl.length);
+  }
+  const avgDelayDelta = avgDelay - avgDelayPrev;
+
+  // ── KPI 5: Completed in past 30 days ──
+  const window30Start = todayMs - 30 * 864e5;
+  const completed30 = d.projects.filter(p => p.isComplete && p.completionDate
+    && homeStartOfDay(p.completionDate) >= window30Start
+    && homeStartOfDay(p.completionDate) <= todayMs);
+  const prev30Start = todayMs - 60 * 864e5;
+  const prev30End   = todayMs - 30 * 864e5;
+  const completed30Prev = d.projects.filter(p => p.isComplete && p.completionDate
+    && homeStartOfDay(p.completionDate) >= prev30Start
+    && homeStartOfDay(p.completionDate) <  prev30End).length;
+  // 7d delta for KPI5 = current 30d count vs same 30d window ending 7 days ago
+  const win30Win7AgoStart = todayMs - 37 * 864e5;
+  const win30Win7AgoEnd   = todayMs - 7  * 864e5;
+  const completed30Win7Ago = d.projects.filter(p => p.isComplete && p.completionDate
+    && homeStartOfDay(p.completionDate) >= win30Win7AgoStart
+    && homeStartOfDay(p.completionDate) <  win30Win7AgoEnd).length;
+  const completed30Delta = completed30.length - completed30Win7Ago;
+
+  // ── KPI 6: Active projects with no deadline ──
+  const noDl = d.projects.filter(p => p.active && p.deadlineMs === null);
+  const noDlByLabel = { 'טכנולוגיה':0, 'מוצר':0, 'קמפיין':0, 'מחלקה':0, 'אחר':0 };
+  for (const p of noDl) noDlByLabel[p.typeLabel] = (noDlByLabel[p.typeLabel] || 0) + 1;
+
+  // ── Quarterly chart ──
+  const year = now.getFullYear();
+  const curQIdx = Math.floor(now.getMonth() / 3);
+  const quarters = [0,1,2,3].map(qi => {
+    const qStart = new Date(year, qi*3, 1).getTime();
+    const qEnd   = new Date(year, qi*3+3, 1).getTime();
+    const cnt = d.projects.filter(p => p.isComplete && p.completionDate
+      && p.completionDate.getTime() >= qStart
+      && p.completionDate.getTime() <  qEnd).length;
+    return { qi, label: `Q${qi+1}`, count: cnt };
+  });
+  const maxQ = Math.max(...quarters.map(q => q.count), 1);
+  const curQ = quarters[curQIdx];
+  const prevQ = curQIdx > 0 ? quarters[curQIdx - 1] : null;
+  let qNote;
+  if (!prevQ || prevQ.count === 0) {
+    qNote = 'אין דאטה השוואתי';
+  } else {
+    const pct = Math.round(curQ.count / prevQ.count * 100);
+    qNote = `אנחנו ב-${pct}% מהקצב של הרבעון הקודם`;
+  }
+
+  // ── Section C — Needs You Today ──
+  const needs = [];
+  // 1) Red flags (overdue active or portfolio red flag or task red flag)
+  for (const p of reds) {
+    let reason;
+    if (p.redFlagReason === 'portfolio_red_flag') reason = 'דגל אדום בפורטפוליו';
+    else if (p.redFlagReason === 'overdue_active') reason = `חרג ב-${p.overdueDays} ימים`;
+    else reason = 'משימה בדגל אדום';
+    needs.push({
+      priority: 0,
+      label: 'דגל אדום',
+      labelClass: '',
+      name: p.name,
+      reason,
+      sortKey: p.deadlineMs ?? (Date.now() + 1e9),
+      world: p.world,
+    });
+  }
+  // 2) צפוי לחרוג — active project with deadline in next 7 days, not overdue, not red flag
+  const upcomingWindowMs = todayMs + 7 * 864e5;
+  for (const p of d.projects) {
+    if (!p.active || p.isComplete || p.redFlag) continue;
+    if (p.deadlineMs === null) continue;
+    if (p.deadlineMs < todayMs)        continue;
+    if (p.deadlineMs > upcomingWindowMs) continue;
+    needs.push({
+      priority: 1,
+      label: 'צפוי לחרוג',
+      labelClass: 'upcoming',
+      name: p.name,
+      reason: `צפוי לחרוג ב-${p.daysUntilDl} ימים`,
+      sortKey: p.deadlineMs,
+      world: p.world,
+    });
+  }
+  // 3) ללא דדליין — active projects without a deadline source
+  for (const p of noDl) {
+    if (p.redFlag) continue;
+    needs.push({
+      priority: 2,
+      label: 'ללא דדליין',
+      labelClass: 'no-dl',
+      name: p.name,
+      reason: 'ללא דדליין מוגדר',
+      sortKey: Date.now() + 2e9,
+      world: p.world,
+    });
+  }
+  needs.sort((a,b) => a.priority - b.priority || a.sortKey - b.sortKey);
+  const needsTop = needs.slice(0, 7);
+
+  // ── Section D Left: completed this past 7 days ──
+  const weekAgoMs = todayMs - 7 * 864e5;
+  const doneWeek = [];
+  for (const item of d.raw) {
+    const status = item.column_values?.find(c => c.column_id === C.STATUS)?.text_value || null;
+    if (status !== 'הסתיימה') continue;
+    const cd = parseDate(item.column_values?.find(c => c.column_id === C.COMPLETION_DATE)?.text_value);
+    if (!cd) continue;
+    const cdMs = homeStartOfDay(cd);
+    if (cdMs < weekAgoMs || cdMs > todayMs) continue;
+    const board = item.column_values?.find(c => c.column_id === C.BOARD_NAME)?.text_value || '';
+    doneWeek.push({ name: item.name || '—', board, date: cd });
+  }
+  doneWeek.sort((a,b) => b.date - a.date);
+  const doneWeekTop = doneWeek.slice(0, 8);
+
+  // ── Section D Right: 7-day grid ──
+  const days = [];
+  for (let i = 0; i < 7; i++) {
+    const dt = new Date(todayMs + i * 864e5);
+    days.push({
+      dt,
+      dayMs: homeStartOfDay(dt),
+      dotNum: dt.getDate(),
+      dayName: dt.toLocaleDateString('he-IL', { weekday:'short' }),
+      events: [],
+    });
+  }
+  function pushEvent(dayMs, ev) {
+    const slot = days.find(d => d.dayMs === dayMs);
+    if (slot) slot.events.push(ev);
+  }
+  // Portfolio: stock + launch
+  for (const it of d.portfolioItems) {
+    const stockTxt  = it.column_values?.find(c => c.column_id === PL.STOCK_DATE)?.text_value;
+    const launchTxt = it.column_values?.find(c => c.column_id === PL.LAUNCH_DATE)?.text_value;
+    const sd = parseDate(stockTxt);
+    if (sd) {
+      const m = homeStartOfDay(sd);
+      if (m >= todayMs && m <= todayMs + 6 * 864e5) {
+        pushEvent(m, { icon:'📦', name: it.name, project: it.name, type:'תאריך מחסן' });
+      }
+    }
+    const ld = parseDate(launchTxt);
+    if (ld) {
+      const m = homeStartOfDay(ld);
+      if (m >= todayMs && m <= todayMs + 6 * 864e5) {
+        pushEvent(m, { icon:'🚀', name: it.name, project: it.name, type:'תאריך השקה' });
+      }
+    }
+  }
+  // Pipeline: deadline
+  for (const p of d.pipelineItems) {
+    if (!p.deadline) continue;
+    const m = homeStartOfDay(p.deadline);
+    if (m >= todayMs && m <= todayMs + 6 * 864e5) {
+      pushEvent(m, { icon:'💻', name: p.name, project: p.name, type:'דד-ליין פיתוח' });
+    }
+  }
+  // Hub: timerange end with CALC_DEADLINE=='כן'
+  for (const item of d.raw) {
+    const calc = item.column_values?.find(c => c.column_id === C.CALC_DEADLINE)?.text_value;
+    if (calc !== 'כן') continue;
+    const tl = parseTL(item.column_values?.find(c => c.column_id === C.TIMELINE)?.value);
+    if (!tl.to) continue;
+    const m = homeStartOfDay(tl.to);
+    if (m >= todayMs && m <= todayMs + 6 * 864e5) {
+      const board = item.column_values?.find(c => c.column_id === C.BOARD_NAME)?.text_value || '';
+      pushEvent(m, { icon:'✨', name: item.name || '—', project: board, type:'סיום משימה' });
+    }
+  }
+
+  // ── Render ──
+  function deltaHtml(delta, suffix) {
+    if (delta === null || delta === undefined || Number.isNaN(delta)) return '—';
+    if (delta > 0) return `<span class="home-kpi-delta up">↑ ${delta} מול שבוע קודם</span>`;
+    if (delta < 0) return `<span class="home-kpi-delta down">↓ ${Math.abs(delta)} מול שבוע קודם</span>`;
+    return `<span class="home-kpi-delta neutral">→ ללא שינוי</span>`;
+  }
+  const breakdownByLabel = (m, total) => {
+    const parts = [];
+    for (const [k,v] of Object.entries(m)) {
+      if (v > 0) parts.push(`${v} ${k}`);
+    }
+    return parts.length ? parts.join(' · ') : `${total} סה״כ`;
+  };
+
+  const kpiCards = [
+    {
+      q: 'כמה משימות בעבודה?',
+      num: inWorkTotal.toLocaleString('he-IL'),
+      breakHtml: inWorkTotal === 0
+        ? '<span class="muted">אין משימות בעבודה</span>'
+        : `${onTime} בזמן · <span class="bad">${outOfTime} חורגות (${outOfTimePct}%)</span>`,
+      delta: '<span class="home-kpi-delta neutral">—</span>',
+      onclick: 'window.homeClickTasksInWork()',
+    },
+    {
+      q: 'כמה פרויקטים פעילים?',
+      num: active.length.toLocaleString('he-IL'),
+      breakHtml: breakdownByLabel(activeByLabel, active.length),
+      delta: '<span class="home-kpi-delta neutral">—</span>',
+      onclick: 'window.homeClickActiveProjects()',
+    },
+    {
+      q: 'כמה פרויקטים בדגל אדום?',
+      num: reds.length.toLocaleString('he-IL'),
+      breakHtml: reds.length === 0
+        ? '<span class="muted">אין דגלים אדומים ✓</span>'
+        : breakdownByLabel(redsByLabel, reds.length),
+      delta: '<span class="home-kpi-delta neutral">—</span>',
+      onclick: 'window.homeClickRedFlags()',
+    },
+    {
+      q: 'מה ממוצע הפיגור בפרויקטים?',
+      num: `${avgDelay}<span style="font-family:'Heebo',sans-serif;font-size:18px;font-weight:500;margin-inline-start:4px;color:rgba(26,29,35,.6)">ימים</span>`,
+      breakHtml: activeWithDl.length === 0
+        ? '<span class="muted">אין פרויקטים עם דד-ליין</span>'
+        : `<span class="${delayed.length ? 'bad' : ''}">${delayed.length}</span> מתוך ${activeWithDl.length} פרויקטים בפיגור`,
+      delta: deltaHtml(avgDelayDelta, 'ימים'),
+      onclick: 'window.homeClickAvgDelay()',
+    },
+    {
+      q: 'כמה פרויקטים הסתיימו ב-30 הימים האחרונים?',
+      num: completed30.length.toLocaleString('he-IL'),
+      breakHtml: `מול ${completed30Prev} ב-30 הימים הקודמים`,
+      delta: deltaHtml(completed30Delta, ''),
+      onclick: 'window.homeClickCompleted30()',
+    },
+    {
+      q: 'כמה פרויקטים ללא דדליין?',
+      num: noDl.length.toLocaleString('he-IL'),
+      breakHtml: noDl.length === 0
+        ? '<span class="muted">כל הפרויקטים מחוברים ✓</span>'
+        : breakdownByLabel(noDlByLabel, noDl.length),
+      delta: '<span class="home-kpi-delta neutral">—</span>',
+      onclick: 'window.homeClickNoDeadline()',
+    },
+  ];
+
+  const kpiHtml = kpiCards.map(c => `
+    <button class="home-kpi" onclick="${c.onclick}" type="button">
+      <div class="home-kpi-q">${homeEscape(c.q)}</div>
+      <div class="home-kpi-num">${c.num}</div>
+      <div class="home-kpi-break">${c.breakHtml}</div>
+      ${c.delta}
+      <div class="home-kpi-ts">מעודכן ${nowHHMM}</div>
+    </button>
+  `).join('');
+
+  const qChartHtml = `
+    <div class="home-q-card">
+      <div class="home-q-title">פרויקטים שהסתיימו השנה לפי רבעון</div>
+      <div class="home-q-chart">
+        ${quarters.map(q => {
+          const w = Math.max(8, Math.round(q.count / maxQ * 100));
+          const isCurrent = q.qi === curQIdx;
+          return `<div class="home-q-row">
+            <div class="home-q-label">${q.label}</div>
+            <div class="home-q-track" onclick="window.homeClickQuarter(${q.qi}, ${year})" role="button" tabindex="0" title="פרויקטים שהסתיימו ב-${q.label} ${year}">
+              <div class="home-q-bar ${isCurrent ? 'current' : ''}" style="width:${w}%">
+                ${q.count > 0 ? `<span class="home-q-count">${q.count}</span>` : ''}
+              </div>
+              ${q.count === 0 ? '<span class="home-q-empty">0</span>' : ''}
+            </div>
+          </div>`;
+        }).join('')}
+      </div>
+      <div class="home-q-note">${homeEscape(qNote)}</div>
+    </div>
+  `;
+
+  const needsHtml = `
+    <div class="home-att-card">
+      <div class="home-att-title">דורש את תשומת ליבך</div>
+      ${needsTop.length === 0
+        ? `<div class="home-att-empty">אין פריטים שדורשים תשומת לב כעת ✓</div>`
+        : `<div class="home-att-list">${needsTop.map(n => `
+            <div class="home-att-row">
+              <div class="home-att-pill ${n.labelClass}">${homeEscape(n.label)}</div>
+              <div class="home-att-desc">
+                <span class="name">${homeEscape(n.name)}</span>
+                <span class="reason">— ${homeEscape(n.reason)}</span>
+              </div>
+              <button class="home-att-open" onclick="window.navTo('${homeEscape(n.world)}')">פתח →</button>
+            </div>
+          `).join('')}</div>`
+      }
+    </div>
+  `;
+
+  const doneWeekHtml = `
+    <div class="home-week-card">
+      <div class="home-week-title">מה הסתיים השבוע</div>
+      ${doneWeekTop.length === 0
+        ? `<div class="home-week-empty">לא הסתיימו משימות השבוע</div>`
+        : `<div class="home-done-list">${doneWeekTop.map(r => `
+            <div class="home-done-row">
+              <div class="home-done-date">${homeFmtShort(r.date)}</div>
+              <div class="home-done-name">${homeEscape(r.name.length > 50 ? r.name.slice(0,50)+'…' : r.name)}</div>
+              <div class="home-done-board" title="${homeEscape(r.board)}">${homeEscape(r.board)}</div>
+            </div>
+          `).join('')}</div>`
+      }
+    </div>
+  `;
+
+  const weekGridHtml = `
+    <div class="home-week-card">
+      <div class="home-week-title">השבוע הקרוב — 7 ימים</div>
+      <div class="home-7day">
+        ${days.map((day,i) => `
+          <div class="home-7day-col ${i === 0 ? 'today' : ''}">
+            <div class="home-7day-num">${day.dotNum}</div>
+            <div class="home-7day-name">${homeEscape(day.dayName)}</div>
+            <div class="home-7day-dots">
+              ${day.events.map(ev => `
+                <div class="home-7day-dot" title="${homeEscape(ev.name)}${ev.project && ev.project !== ev.name ? ' — '+homeEscape(ev.project) : ''} · ${homeEscape(ev.type)}">${ev.icon}</div>
+              `).join('')}
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+
+  document.getElementById('content').innerHTML = `
+    <div class="home-page">
+      <div class="home-head">
+        <div>
+          <h1 class="home-title">ראשי</h1>
+          <div class="home-sub">איפה אנחנו עומדים מול הזמנים, ומה דורש את תשומת ליבך · ${now.toLocaleDateString('he-IL',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}</div>
+        </div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(26,29,35,.5);letter-spacing:.04em;text-transform:uppercase">◇ Mayven · Executive Home ◇</div>
+      </div>
+
+      <div class="home-kpi-grid">
+        ${kpiHtml}
+      </div>
+
+      ${qChartHtml}
+
+      ${needsHtml}
+
+      <div class="home-week-grid">
+        ${doneWeekHtml}
+        ${weekGridHtml}
+      </div>
+    </div>
+  `;
+}
+
+// ══════════════════════════════════════════════════
 // INIT
 // ══════════════════════════════════════════════════
 async function init() {
@@ -4381,6 +5347,21 @@ async function init() {
     productLaunchItems   = plRaw;
     updateMeta(raw.length);
     buildTeamFilter();
+    const hashKey = (location.hash || '').replace(/^#/, '');
+    if (hashKey && WORLDS.some(w => w.key === hashKey)) {
+      activeWorld = hashKey;
+      const w = WORLDS.find(x => x.key === hashKey);
+      document.getElementById('tbCurr').textContent = w?.he || '';
+      document.getElementById('tbEn').textContent   = w?.en || '';
+    } else {
+      const w = WORLDS.find(x => x.key === 'home');
+      document.getElementById('tbCurr').textContent = w?.he || '';
+      document.getElementById('tbEn').textContent   = w?.en || '';
+    }
+    window.addEventListener('hashchange', () => {
+      const k = (location.hash || '').replace(/^#/, '') || 'home';
+      if (WORLDS.some(w => w.key === k) && k !== activeWorld) navTo(k);
+    });
     buildSidebar();
     applyFilters();
     document.getElementById('loading').style.display = 'none';
