@@ -4756,36 +4756,83 @@ function ovSectionC(projects){
 }
 
 // ── Section D — PROJECT-level timing (project = Monday group; one row per project) ──
-// Project status roll-up follows the Mayven Way precedence: דגל אדום > הסתיימה > בעבודה > למעקב.
-// Stage = team Project Stage (representative) → portfolio stage fallback → "—".
-// Timeline span (min start → max end of the project's tasks) is used ONLY to test month-overlap.
+// Stage = portfolio stage (Product Portfolio / Pipeline) → "—" when no portfolio match.
+//   (team boards' free-text "Project Stage ⭐" column is a name mirror, not a workflow stage.)
+//
+// Status roll-up precedence (Mayven Way):
+//   any דגל אדום → דגל אדום
+//   any task in the active set → בעבודה
+//   else (no active tasks) by completion:
+//     every task in {הסתיימה,מבוטלת} AND ≥1 הסתיימה → הסתיימה
+//     every task מבוטלת                              → מבוטלת        (excluded from "completed")
+//     every task בנק משימות (or bank+cancelled, 0 done) → לא התחיל   (excluded from Section D)
+//     fallback                                        → למעקב
+// בנק משימות = NOT STARTED (never counts as done).
 function ovProjectStageStatus(p, maps){
-  const board = ovState.boards[p.boardId];
-  const col = (board && board.col) ? board.col : (()=>null);
-  // Status roll-up
+  const st = p.items.map(d=>d.status);
   let status;
-  if (p.items.some(d=>d.status==='דגל אדום')) status='דגל אדום';
-  else if (p.items.length && p.items.every(d=>d.isDone)) status='הסתיימה';
-  else if (p.items.some(d=>d.isActive)) status='בעבודה';
-  else status='למעקב';
-  // Stage — sourced from the PORTFOLIOS (the reliable workflow stage). The team boards'
-  // "Project Stage ⭐" column is a free-text mirror of the group/project name (not a real
-  // stage), so it is intentionally ignored. "—" when the project has no portfolio match.
+  if (st.some(s=>s==='דגל אדום')) status='דגל אדום';
+  else if (st.some(s=>OV_ACTIVE_SET.has(s))) status='בעבודה';
+  else {
+    const anyDone        = st.some(s=>s==='הסתיימה');
+    const allDoneOrCancel= st.length>0 && st.every(s=> s==='הסתיימה' || s==='מבוטלת');
+    const allCancel      = st.length>0 && st.every(s=> s==='מבוטלת');
+    const allBankOrCancel= st.length>0 && st.every(s=> s==='בנק משימות' || s==='מבוטלת');
+    if (allDoneOrCancel && anyDone)      status='הסתיימה';
+    else if (allCancel)                  status='מבוטלת';
+    else if (allBankOrCancel && !anyDone) status='לא התחיל';
+    else                                 status='למעקב';
+  }
+  // Project completion date = max Completion among the project's הסתיימה tasks
+  let compMs=null;
+  for (const d of p.items) if (d.status==='הסתיימה' && d.completion){
+    const t=ovDayMs(d.completion); if (compMs===null||t>compMs) compMs=t;
+  }
+  // Stage from portfolio
   const nk = ovNorm(p.key);
   const prod = maps.prod.get(nk) || null;
   const pipe = maps.pipe.get(nk) || null;
   let stage = '—';
   if (prod && prod.stage) stage = prod.stage;
   else if (pipe && pipe.devStage) stage = pipe.devStage;
-  // Timeline span (project-level only)
-  let spanStart=null, spanEnd=null;
-  const tlId = col('timeline');
-  if (tlId) for (const d of p.items) {
-    const tl = parseTL(cv(d.item, tlId).r);
-    if (tl.from){ const t=ovDayMs(tl.from); if(spanStart===null||t<spanStart)spanStart=t; }
-    if (tl.to){   const t=ovDayMs(tl.to);   if(spanEnd===null  ||t>spanEnd)  spanEnd=t; }
-  }
-  return { status, stage, spanStart, spanEnd };
+  return { status, stage, compMs };
+}
+
+// Fix 1 — keep only REAL projects in Section D. Excludes department/personal-task piles
+// and board-name pseudo-projects (the "Project Name" column on team boards often holds the
+// board name, collapsing whole boards into one fake group). Does NOT affect rollup/KPIs.
+function ovDClean(s){
+  return (s||'')
+    .replace(/[\u{1F000}-\u{1FAFF}\u{2190}-\u{2BFF}\u{2600}-\u{27BF}\u{FE00}-\u{FE0F}\u{200D}]/gu,'')
+    .replace(/\s+/g,' ').trim().toLowerCase();
+}
+const OV_STATUS_NAMES = new Set([...OV_ACTIVE_SET, ...OV_DONE_SET, 'מאושר','ממתין','בעבודה - צד שלישי'].map(ovDClean));
+function ovIsRealProject(p){
+  if (!p.key || !p.key.trim()) return false;
+  const board = ovState.boards[p.boardId];
+  const tbHe  = (board && board.tb) ? board.tb.he : (p.dept||'');
+  const bname = (board && board.name) ? board.name : '';
+  const keyC  = ovDClean(p.key);
+  if (!keyC) return false;
+  // Bucket/pile detection runs on the project KEY only. A real named project that merely
+  // *sits inside* a bucket group (e.g. "✨ Edible- X" under a "2B Organized ⚡" group) keeps
+  // its distinct Project-Name key and survives; a true bucket group with no Project Name falls
+  // back to key = group title and is caught here.
+  if (keyC.startsWith('all tasks') || keyC.startsWith('2b organized') ||
+      keyC.startsWith('משימות אישי') || keyC.startsWith('משימות צוות') ||
+      keyC.includes('mayven hub- all tasks') ||
+      keyC==='כל המשימות' || keyC.startsWith('כל המשימות') ||
+      keyC==='topics' || keyC==='מושגים' ||
+      keyC==='משימות שהסתיימו' || keyC==='משימות שבוטלו' || keyC==='משימות שנכנסו לעבודה') return false;
+  // group titles that are themselves status names used as buckets (e.g. "למעקב", "מאושר לביצוע")
+  if (OV_STATUS_NAMES.has(keyC)) return false;
+  if (keyC.startsWith('team ')) return false;
+  if (bname && keyC===ovDClean(bname)) return false;
+  if (tbHe && (keyC===ovDClean(tbHe) || keyC==='team '+ovDClean(tbHe))) return false;
+  const col = (board && board.col) ? board.col : (()=>null);
+  const ptId = col('projectType');
+  if (ptId) for (const d of p.items) { const v=cv(d.item, ptId).t; if (v && /department/i.test(v)) return false; }
+  return true;
 }
 
 function ovStatusChip(status){
@@ -4809,6 +4856,9 @@ function ovProjRow(p, e, dateMs){
   </div>`;
 }
 
+const OV_LAUNCH_STAGES = new Set(['Stock Date','Go Live','Launch Prep','Product Manufacturing']);
+const OV_ACTIVEISH     = new Set(['דגל אדום','בעבודה','למעקב']);
+
 function ovSectionD(projects){
   const maps = ovPortfolioMaps();
   const now = new Date();
@@ -4819,23 +4869,29 @@ function ovSectionD(projects){
   const CAP = 12;
   const moreHtml = (n)=> n>CAP ? `<div class="ov-more">+${n-CAP} נוספים</div>` : '';
 
-  const enr = projects.map(p => ({ p, e: ovProjectStageStatus(p, maps) }));
+  // Fix 1 — only real projects (exclude department/personal-task piles)
+  const enr = projects.filter(ovIsRealProject).map(p => ({ p, e: ovProjectStageStatus(p, maps) }));
 
-  // LEFT — projects completed this calendar month
-  const done = enr.filter(o => o.p.complete && o.p.maxComp)
-    .map(o => ({ ...o, t: ovDayMs(o.p.maxComp) }))
-    .filter(o => o.t>=monthStart && o.t<=monthEnd)
-    .sort((a,b)=> b.t-a.t);
+  // LEFT — Fix 2: projects whose roll-up status is הסתיימה AND whose latest completion is this month
+  const done = enr.filter(o => o.e.status==='הסתיימה' && o.e.compMs!==null
+      && o.e.compMs>=monthStart && o.e.compMs<=monthEnd)
+    .sort((a,b)=> b.e.compMs-a.e.compMs);
   const leftRows = done.length
-    ? done.slice(0,CAP).map(o=>ovProjRow(o.p,o.e,o.t)).join('') + moreHtml(done.length)
+    ? done.slice(0,CAP).map(o=>ovProjRow(o.p,o.e,o.e.compMs)).join('') + moreHtml(done.length)
     : `<div class="ov-empty">לא הסתיימו פרויקטים החודש</div>`;
 
-  // RIGHT block 1 — launching / due this month (future-facing); fall back to rolling 30d if sparse
-  let launch = enr.filter(o => !o.p.complete && o.p.dlMs!==null && o.p.dlMs>=todayMs && o.p.dlMs<=monthEnd)
+  // Fix 3 — deadline-driven candidates: active-ish real projects with a deadline in the current month
+  const monthCand = enr.filter(o => OV_ACTIVEISH.has(o.e.status)
+      && o.p.dlMs!==null && o.p.dlMs>=monthStart && o.p.dlMs<=monthEnd);
+
+  // RIGHT block 1 — 🚀 עולים לאוויר: candidates whose stage indicates go-live/stock
+  let launch = monthCand.filter(o => OV_LAUNCH_STAGES.has(o.e.stage))
     .sort((a,b)=> a.p.dlMs-b.p.dlMs);
   let launchLabel = '🚀 עולים לאוויר · יעד החודש';
   if (launch.length < 3) {
-    launch = enr.filter(o => !o.p.complete && o.p.dlMs!==null && o.p.dlMs>=todayMs && o.p.dlMs<=rolling30)
+    // sparse → rolling 30d fallback (same stage filter), honest relabel
+    launch = enr.filter(o => OV_ACTIVEISH.has(o.e.status) && OV_LAUNCH_STAGES.has(o.e.stage)
+        && o.p.dlMs!==null && o.p.dlMs>=todayMs && o.p.dlMs<=rolling30)
       .sort((a,b)=> a.p.dlMs-b.p.dlMs);
     launchLabel = '🚀 עולים לאוויר · 30 הימים הקרובים';
   }
@@ -4844,14 +4900,11 @@ function ovSectionD(projects){
     ? launch.slice(0,CAP).map(o=>ovProjRow(o.p,o.e,o.p.dlMs)).join('') + moreHtml(launch.length)
     : `<div class="ov-empty">אין פרויקטים שעולים החודש</div>`;
 
-  // RIGHT block 2 — active projects whose timeline overlaps this month (not complete, not in launch)
-  const planned = enr.filter(o => o.p.active && !o.p.complete
-      && !launchKeys.has(o.p.boardId+'::'+o.p.key)
-      && o.e.spanStart!==null && o.e.spanEnd!==null
-      && o.e.spanStart<=monthEnd && o.e.spanEnd>=monthStart)
-    .sort((a,b)=> ((a.p.dlMs??a.e.spanEnd??Infinity)-(b.p.dlMs??b.e.spanEnd??Infinity)));
+  // RIGHT block 2 — 📅 מתוכננים החודש: deadline in month, not in launch (stage-based split). No task-timeline overlap.
+  const planned = monthCand.filter(o => !launchKeys.has(o.p.boardId+'::'+o.p.key))
+    .sort((a,b)=> a.p.dlMs-b.p.dlMs);
   const plannedRows = planned.length
-    ? planned.slice(0,CAP).map(o=>ovProjRow(o.p,o.e,o.p.dlMs??o.e.spanEnd)).join('') + moreHtml(planned.length)
+    ? planned.slice(0,CAP).map(o=>ovProjRow(o.p,o.e,o.p.dlMs)).join('') + moreHtml(planned.length)
     : `<div class="ov-empty">אין פרויקטים מתוכננים החודש</div>`;
 
   return `<div class="ov-section"><div class="ov-d-grid">
