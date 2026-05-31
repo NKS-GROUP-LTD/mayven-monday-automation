@@ -734,6 +734,84 @@ body::before{content:"";position:fixed;inset:0;background-image:url("data:image/
 .tgl-foot-legend{display:flex;gap:14px;align-items:center}
 .tgl-foot-leg{display:flex;align-items:center;gap:6px}
 .tgl-foot-dot{width:9px;height:9px;border-radius:2px}
+
+/* ── Executive Overview (ovexec) ── */
+.ov-red{color:var(--red-fg)}.ov-green{color:var(--green-fg)}
+.ov-section{display:flex;flex-direction:column;gap:12px}
+.ov-section-h{font-family:'Suez One',serif;font-size:16px;color:var(--ink)}
+.ov-empty{padding:18px;color:rgba(26,29,35,.55);font-size:13px;border:1.5px dashed var(--ink-soft);border-radius:10px;text-align:center}
+.ov-loadstate{text-align:left;font-size:12px;color:rgba(26,29,35,.62)}
+.ov-asof{font-size:10.5px;color:rgba(26,29,35,.5);margin-top:3px}
+.ov-spinner{display:inline-block;width:11px;height:11px;border:2px solid var(--ink-soft);border-top-color:var(--accent);border-radius:50%;animation:spin .75s linear infinite;vertical-align:-1px;margin-inline-end:4px}
+.ov-unit{font-family:'Heebo',sans-serif;font-size:14px;color:rgba(26,29,35,.55)}
+
+/* Section A — department strip */
+.ov-dept-strip{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px}
+.ov-dept{text-align:right;font-family:inherit;cursor:pointer;background:var(--paper);border:1.5px solid var(--ink);box-shadow:3px 3px 0 var(--ink);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:5px;transition:transform .08s,box-shadow .08s}
+.ov-dept:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--ink)}
+.ov-dept:active{transform:translate(1px,1px);box-shadow:2px 2px 0 var(--ink)}
+.ov-dept-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.ov-dept-name{font-family:'Heebo',sans-serif;font-weight:700;font-size:13.5px;color:var(--ink)}
+.ov-dept-mgr{font-size:11px;color:rgba(26,29,35,.55)}
+.ov-dept-num{font-family:'Suez One',serif;font-size:30px;line-height:1;color:var(--ink)}
+.ov-dept-sub{font-size:11px;color:rgba(26,29,35,.55);margin-top:-2px}
+.ov-dept-break{font-size:11.5px;color:rgba(26,29,35,.7)}
+.ov-bar{display:flex;height:7px;border-radius:4px;overflow:hidden;background:var(--paper-shade);border:1px solid var(--ink-softer);margin-top:4px}
+.ov-bar-seg{height:100%}
+.ov-bar-done{background:var(--green-fg)}
+.ov-bar-active{background:var(--ink-soft)}
+.ov-bar-blocked{background:var(--accent)}
+
+/* Section B — KPI cards */
+.ov-kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}
+.ov-kpi{text-align:right;font-family:inherit;cursor:pointer;background:var(--paper-deep);border:1.5px solid var(--ink);box-shadow:3px 3px 0 var(--ink);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:6px;transition:transform .08s,box-shadow .08s}
+.ov-kpi:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--ink)}
+.ov-kpi:active{transform:translate(1px,1px);box-shadow:2px 2px 0 var(--ink)}
+.ov-kpi-q{font-size:12.5px;color:rgba(26,29,35,.7);min-height:34px}
+.ov-kpi-num{font-family:'Suez One',serif;font-size:38px;line-height:1;color:var(--ink)}
+.ov-kpi-break{font-size:11.5px;color:rgba(26,29,35,.62)}
+
+/* Section C — needs attention */
+.ov-attn-list{display:flex;flex-direction:column;gap:8px}
+.ov-attn{display:flex;align-items:center;gap:12px;background:var(--paper);border:1.5px solid var(--ink-soft);border-radius:9px;padding:10px 14px}
+.ov-attn-pill{flex-shrink:0;font-size:11px;font-weight:700;padding:3px 9px;border-radius:999px;border:1.5px solid currentColor}
+.ov-attn-red{color:var(--red-fg);background:var(--red-bg)}
+.ov-attn-risk{color:var(--yellow-fg);background:var(--yellow-bg)}
+.ov-attn-nodl{color:rgba(26,29,35,.6);background:var(--paper-shade)}
+.ov-attn-desc{flex:1;font-size:12.5px;color:var(--ink)}
+.ov-attn-open{flex-shrink:0;font-size:11.5px;font-weight:700;color:var(--accent);text-decoration:none}
+.ov-attn-open:hover{text-decoration:underline}
+
+/* Section D — what's happening */
+.ov-d-grid{display:grid;grid-template-columns:1fr 1.4fr;gap:18px}
+.ov-d-col{display:flex;flex-direction:column;gap:12px}
+.ov-done-list{display:flex;flex-direction:column;gap:6px}
+.ov-done-row{display:flex;align-items:center;gap:10px;padding:6px 4px;border-bottom:1px dashed var(--ink-softer)}
+.ov-date-pill{flex-shrink:0;font-size:11px;background:var(--green-bg);color:var(--green-fg);border-radius:5px;padding:2px 7px}
+.ov-done-name{flex:1;font-size:12.5px;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ov-done-dept{flex-shrink:0;font-size:11px;color:rgba(26,29,35,.5)}
+.ov-week{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.ov-day{background:var(--paper);border:1.5px solid var(--ink-soft);border-radius:8px;padding:8px 5px;min-height:96px;display:flex;flex-direction:column;gap:6px}
+.ov-day-h{text-align:center;border-bottom:1px solid var(--ink-softer);padding-bottom:4px}
+.ov-day-wd{display:block;font-size:11px;font-weight:700;color:var(--ink)}
+.ov-day-dm{display:block;font-size:10px;color:rgba(26,29,35,.5)}
+.ov-day-events{display:flex;flex-wrap:wrap;gap:4px;justify-content:center;align-content:flex-start;flex:1}
+.ov-ev{width:22px;height:22px;border-radius:6px;border:1.5px solid;display:flex;align-items:center;justify-content:center;background:var(--paper);cursor:default}
+.ov-ev-ic{font-size:12px;line-height:1}
+.ov-day-empty{color:var(--ink-softer);font-size:12px}
+@media(max-width:900px){.ov-d-grid{grid-template-columns:1fr}}
+
+/* Modal */
+.ov-overlay{display:none;position:fixed;inset:0;background:rgba(26,29,35,.42);z-index:50;align-items:center;justify-content:center;padding:24px}
+.ov-modal{background:var(--paper);border:2px solid var(--ink);border-radius:12px;box-shadow:6px 6px 0 var(--ink);width:92%;max-width:760px;max-height:82vh;display:flex;flex-direction:column}
+.ov-modal-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 18px;border-bottom:1.5px solid var(--ink-soft);font-family:'Suez One',serif;font-size:15px}
+.ov-modal-close{cursor:pointer;background:none;border:1.5px solid var(--ink);border-radius:6px;width:26px;height:26px;font-size:13px;line-height:1;color:var(--ink)}
+.ov-modal-body{padding:8px 0;overflow:auto}
+.ov-tbl{width:100%;border-collapse:collapse;font-size:12.5px}
+.ov-tbl th{text-align:right;font-size:11px;color:rgba(26,29,35,.55);font-weight:700;padding:8px 14px;border-bottom:1.5px solid var(--ink-soft);position:sticky;top:0;background:var(--paper)}
+.ov-tbl td{padding:8px 14px;border-bottom:1px solid var(--ink-softer);color:var(--ink)}
+.ov-tbl tr:hover td{background:var(--paper-deep)}
+.ov-st{font-size:11px;background:var(--paper-shade);border-radius:5px;padding:2px 7px}
 </style>
 </head>
 <body>
@@ -887,6 +965,24 @@ const PL = {
   BRIEF:         'link_mm1q4mfb',    // task brief
 };
 
+// ── Team boards (Overview / "תצוגה כללית" page) ──
+// IDs verified live 2026-05-31. Team boards do NOT share column ids — the
+// Overview page resolves columns by TITLE per board (see ovBuildColResolver).
+// Fetched read-only, one call per board (parallel) via the team-boards-fetch edge fn.
+const TEAM_BOARDS_FETCH_URL = 'https://syrhxhytlkcnakicnyde.supabase.co/functions/v1/team-boards-fetch';
+const TEAM_BOARDS = [
+  { id:'18390642189', he:'מרקטינג',           mgr:'שמעון',  emoji:'🎀' },
+  { id:'18404395098', he:'טכנולוגיה',         mgr:'מיכל',   emoji:'💻' },
+  { id:'18409966592', he:'מוצר',              mgr:'קים',    emoji:'📦' },
+  { id:'18391276985', he:'לוגיסטיקה',         mgr:'נמרוד',  emoji:'📦' },
+  { id:'18390477104', he:'פרפורמנס',          mgr:'יאיר',   emoji:'🔥' },
+  { id:'18392040653', he:'שירות ומכירות',     mgr:'ליאור',  emoji:'☎️' },
+  { id:'18392041728', he:'פיננסים',           mgr:'אמיר',   emoji:'💰' },
+  { id:'18392890397', he:'HR',                mgr:'אלינור', emoji:'👥' },
+  { id:'18393812533', he:'משרד',              mgr:'אביטל',  emoji:'🌻' },
+  { id:'18392435688', he:'PM',                mgr:'אראל',   emoji:'🦄' },
+];
+
 const PIPELINE_STAGE_ORDER = [
   'Backlog',
   'Discovery & Planning',
@@ -907,6 +1003,7 @@ const PIPELINE_CANCEL_STAGES = new Set(['Cancelled']);
 
 // ── Worlds ──
 const WORLDS = [
+  { key:'ovexec',      he:'תצוגה כללית',        en:'Executive Overview', icon:'🏠' },
   { key:'overview',    he:'סקירה כללית',       en:'Overview',    icon:'📊' },
   { key:'pipeline',    he:'פורטפוליו טכנולוגיה', en:'Tech Pipeline', icon:'⚙️' },
   { key:'tech',             he:'פיתוח טכנולוגי',    en:'Tech & Dev',        icon:'👩‍💻' },
@@ -962,7 +1059,7 @@ const db = window.supabase.createClient(SUPABASE_URL, ANON_KEY);
 let allProjects          = [];
 let pipelineProjects     = [];
 let productLaunchItems   = [];
-let activeWorld  = 'overview';
+let activeWorld  = 'ovexec';
 let filterTeam   = 'all';
 let filterSearch = '';
 
@@ -1364,7 +1461,8 @@ function miniBar(pct, health) {
 // RENDER DISPATCHER
 // ══════════════════════════════════════════════════
 function renderWorld(ps) {
-  if (activeWorld === 'overview')      renderOverview(ps);
+  if (activeWorld === 'ovexec')        renderOverviewExec();
+  else if (activeWorld === 'overview') renderOverview(ps);
   else if (activeWorld === 'pipeline') renderPipeline(pipelineProjects);
   else if (activeWorld === 'tech')     renderTechPage(ps);
   else if (activeWorld === 'departments') renderDepartmentsPage();
@@ -4318,6 +4416,458 @@ function renderPipeline(ps) {
       : groupCards(filtered)
     }
   </div>`;
+}
+
+// ══════════════════════════════════════════════════
+// EXECUTIVE OVERVIEW (ovexec) — "תצוגה כללית"
+// Page-isolated. Reads ONLY team boards (live, via team-boards-fetch) +
+// portfolio globals (productLaunchItems, pipelineProjects). NEVER the Hub.
+// ══════════════════════════════════════════════════
+const OV_ACTIVE_SET = new Set(['בעבודה','מאושר לביצוע','ממתין לאישור מנהל','בעבודה - צד שלישי','יש לבצע תיקונים :)','אושר על ידי מנהל','למעקב','דגל אדום']);
+const OV_DONE_SET   = new Set(['הסתיימה','מבוטלת','בנק משימות','מחיקה']);
+const OV_MONDAY_BASE = 'https://mayven-team.monday.com/boards/';
+const ovState = { boards:{}, started:false, escBound:false };
+
+function ovTodayMs(){ return new Date(new Date().toDateString()).getTime(); }
+function ovDayMs(d){ return d ? new Date(new Date(d).toDateString()).getTime() : null; }
+function ovNorm(s){ return stripE(s||'').trim().toLowerCase(); }
+function ovDeptColor(id){
+  const i = TEAM_BOARDS.findIndex(t=>t.id===id);
+  return AVATAR_COLORS[(i<0?0:i) % AVATAR_COLORS.length];
+}
+
+// Per-board column resolver — resolves by TITLE (team boards do NOT share ids).
+function ovBuildColResolver(boardColumns){
+  const byTitle = {};
+  for (const c of (boardColumns||[])) {
+    const t = (c.title || '').replace(/\s*⭐\s*$/, '').trim();
+    if (t && !(t in byTitle)) byTitle[t] = c.id;
+  }
+  const TITLE_MAP = {
+    status:         ['Status'],
+    owner:          ['Owner'],
+    team:           ['Team'],
+    timeline:       ['Timeline'],
+    startDate:      ['Start Date'],
+    endDate:        ['End Date'],
+    completion:     ['Completion date','Completion Date'],
+    projectDeadline:['Project Deadline'],
+    boardName:      ['Board Name'],
+    groupName:      ['Group Name'],
+    projectName:    ['Project Name'],
+    projectStage:   ['Project Stage'],
+    projectType:    ['Project type','Project Type','Task Type'],
+    priority:       ['Priority'],
+    devStatus:      ['Dev Status'],
+    twoB:           ['2B Organized ⚡','2B Organized','Organized'],
+    plannedEffort:  ['Planned Effort'],
+    effort:         ['Effort'],
+  };
+  return (logical) => {
+    for (const title of (TITLE_MAP[logical] || [])) if (byTitle[title]) return byTitle[title];
+    return null;
+  };
+}
+
+// Parallel, progressive fetch — one call per board; sections fill as data arrives.
+function ovFetchBoards(){
+  if (ovState.started) return;
+  ovState.started = true;
+  TEAM_BOARDS.forEach(tb => {
+    fetch(`${TEAM_BOARDS_FETCH_URL}?board=${tb.id}`, { headers:{ 'Authorization':`Bearer ${PIPELINE_ANON_KEY}` } })
+      .then(r => r.json())
+      .then(json => {
+        if (!json || !json.ok) throw new Error(json && json.error ? json.error : 'fetch failed');
+        ovState.boards[tb.id] = ovNormalizeBoard(tb, json);
+        if (activeWorld === 'ovexec') ovRenderSections();
+      })
+      .catch(e => {
+        console.warn(`[ovexec] board ${tb.id} (${tb.he}) failed to load — skipped:`, e.message || e);
+        ovState.boards[tb.id] = { tb, error:String(e.message||e), items:[], derived:[], col:()=>null };
+        if (activeWorld === 'ovexec') ovRenderSections();
+      });
+  });
+}
+
+function ovNormalizeBoard(tb, json){
+  const cols = (json.board && json.board.columns) || [];
+  const col  = ovBuildColResolver(cols);
+  const items = (json.items||[]).map(it => ({
+    id: it.id, name: it.name, group_id: it.group_id, group_title: it.group_title,
+    column_values: (it.column_values||[]).map(c => ({ column_id:c.id, text_value:c.text, value:c.value })),
+  }));
+  const board = { tb, name:(json.board&&json.board.name)||tb.he, columns:cols, col, items };
+  board.derived = items.map(it => ovDeriveItem(board, it));
+  return board;
+}
+
+function ovProjectKey(board, item){
+  const pnId = board.col('projectName');
+  if (pnId) { const v = cv(item, pnId).t; if (v && v.trim()) return v.trim(); }
+  if (item.group_title && item.group_title.trim()) return item.group_title.trim();
+  const gnId = board.col('groupName');
+  if (gnId) { const v = cv(item, gnId).t; if (v && v.trim()) return v.trim(); }
+  return null;
+}
+
+function ovDeriveItem(board, item){
+  const col = board.col;
+  const statusId = col('status');
+  const status = statusId ? cv(item, statusId).t : null;
+  const tlId = col('timeline');
+  const tl = tlId ? parseTL(cv(item, tlId).r) : { from:null, to:null };
+  const tlEnd = tl.to || null;
+  const compId = col('completion');
+  const completion = compId ? parseDate(cv(item, compId).t) : null;
+  const ownerId = col('owner');
+  const owner = ownerId ? cv(item, ownerId).t : null;
+  const pdId = col('projectDeadline');
+  const pd = pdId ? parseTL(cv(item, pdId).r) : { from:null, to:null };
+  const isDone   = OV_DONE_SET.has(status);
+  const isActive = OV_ACTIVE_SET.has(status);
+  const outOfTime = !!(tlEnd && ovDayMs(tlEnd) < ovTodayMs() && !isDone);
+  return { item, status, tlEnd, completion, owner, projectKey: ovProjectKey(board,item),
+           projDeadlineEnd: pd.to||null, isDone, isActive, outOfTime };
+}
+
+// Portfolio cross-reference maps, keyed by normalized name.
+function ovPortfolioMaps(){
+  const prod = new Map();
+  for (const it of (productLaunchItems||[])) {
+    const k = ovNorm(it.name); if (!k) continue;
+    prod.set(k, { stage: cv(it, PL.STAGE).t || '', stock: parseDate(cv(it, PL.STOCK_DATE).t) });
+  }
+  const pipe = new Map();
+  for (const p of (pipelineProjects||[])) {
+    const k = ovNorm(p.name); if (!k) continue;
+    pipe.set(k, { status:p.status||null, deadline:p.deadline||null, devStage:p.devStage||null });
+  }
+  return { prod, pipe };
+}
+
+// Project = Monday group on a team board. Cross-referenced to portfolios.
+function ovBuildProjects(loaded, maps){
+  const todayMs = ovTodayMs();
+  const out = [];
+  for (const board of loaded) {
+    const groups = new Map();
+    for (const d of board.derived) {
+      if (!d.projectKey) continue;
+      const k = board.tb.id + '::' + d.projectKey;
+      if (!groups.has(k)) groups.set(k, []);
+      groups.get(k).push(d);
+    }
+    for (const [, ds] of groups) {
+      const key = ds[0].projectKey;
+      const nk  = ovNorm(key);
+      const prod = maps.prod.get(nk) || null;
+      const pipe = maps.pipe.get(nk) || null;
+      let teamPD = null;
+      for (const d of ds) if (d.projDeadlineEnd && (!teamPD || d.projDeadlineEnd>teamPD)) teamPD = d.projDeadlineEnd;
+      // Deadline priority: Portfolio stock → Pipeline deadline → team Project Deadline. NEVER task timelines.
+      let deadline=null, source=null;
+      if (prod && prod.stock) { deadline=prod.stock; source='product'; }
+      else if (pipe && pipe.deadline) { deadline=pipe.deadline; source='pipeline'; }
+      else if (teamPD) { deadline=teamPD; source='team'; }
+      let maxComp=null; for (const d of ds) if (d.completion && (!maxComp||d.completion>maxComp)) maxComp=d.completion;
+      const active   = ds.some(d => d.isActive);
+      const allDone  = ds.length>0 && ds.every(d => d.isDone);
+      const complete = allDone
+        || (prod && (prod.stage==='Stock Date' || prod.stage==='Go Live'))
+        || (pipe && pipe.status==='הסתיימה');
+      const hasRedTask = ds.some(d => d.status==='דגל אדום');
+      const dlMs = ovDayMs(deadline);
+      const overdue = dlMs!==null && dlMs < todayMs;
+      const redFlag = (prod && prod.stage==='RED FLAG')
+        || (active && deadline && overdue && !complete)
+        || hasRedTask;
+      const delayDays = (deadline && !complete) ? Math.max(0, Math.round((todayMs - dlMs)/864e5)) : 0;
+      out.push({ key, boardId:board.tb.id, dept:board.tb.he, mgr:board.tb.mgr, emoji:board.tb.emoji,
+        items:ds, active, complete, maxComp, deadline, source, dlMs, overdue, redFlag, hasRedTask,
+        delayDays, prodStage: prod?prod.stage:null });
+    }
+  }
+  return out;
+}
+
+function ovComputeKPIs(loaded, projects){
+  const todayMs = ovTodayMs();
+  let activeTasks=0, onTime=0, late=0;
+  for (const b of loaded) for (const d of b.derived) {
+    if (d.isActive) { activeTasks++; d.outOfTime ? late++ : onTime++; }
+  }
+  const activeProjects = projects.filter(p=>p.active);
+  const redProjects    = projects.filter(p=>p.redFlag);
+  const withDL         = projects.filter(p=>p.deadline && !p.complete);
+  const overdue        = withDL.filter(p=>p.delayDays>0);
+  const avgDelay       = withDL.length ? Math.round(withDL.reduce((s,p)=>s+p.delayDays,0)/withDL.length) : 0;
+  const d30 = todayMs - 30*864e5, d60 = todayMs - 60*864e5;
+  const compProjects = projects.filter(p=>p.complete && p.maxComp);
+  const last30 = compProjects.filter(p=>{ const t=ovDayMs(p.maxComp); return t>=d30 && t<=todayMs; });
+  const prev30 = compProjects.filter(p=>{ const t=ovDayMs(p.maxComp); return t>=d60 && t<d30; });
+  const noDL   = activeProjects.filter(p=>!p.deadline);
+  return { activeTasks, onTime, late, activeProjects, redProjects, withDL, overdue, avgDelay, last30, prev30, noDL };
+}
+
+function ovByDeptStr(list){
+  const m={}; for (const p of list) m[p.dept]=(m[p.dept]||0)+1;
+  const arr=Object.entries(m).sort((a,b)=>b[1]-a[1]).slice(0,3);
+  return arr.length ? arr.map(([d,n])=>`${d} ${n}`).join(' · ') : '—';
+}
+function ovEsc(s){ return (s==null?'':String(s)).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+// ── Render ──
+function renderOverviewExec(){
+  document.getElementById('content').innerHTML = `
+  <div class="page">
+    <div id="ov-overlay" class="ov-overlay" onclick="if(event.target===this)ovCloseModal()">
+      <div class="ov-modal">
+        <div class="ov-modal-head"><span id="ov-modal-title"></span>
+          <button class="ov-modal-close" onclick="ovCloseModal()">✕</button></div>
+        <div id="ov-modal-body" class="ov-modal-body"></div>
+      </div>
+    </div>
+    <div id="ov-root"></div>
+  </div>`;
+  if (!ovState.escBound) {
+    document.addEventListener('keydown', e => { if (e.key==='Escape') ovCloseModal(); });
+    ovState.escBound = true;
+  }
+  ovRenderSections();
+  ovFetchBoards();
+}
+
+function ovRenderSections(){
+  const root = document.getElementById('ov-root');
+  if (!root) return;
+  const loaded   = TEAM_BOARDS.map(tb=>ovState.boards[tb.id]).filter(b=>b && !b.error);
+  const failed   = TEAM_BOARDS.map(tb=>ovState.boards[tb.id]).filter(b=>b && b.error);
+  const attempted= Object.keys(ovState.boards).length;
+  const maps     = ovPortfolioMaps();
+  const projects = ovBuildProjects(loaded, maps);
+  const kpis     = ovComputeKPIs(loaded, projects);
+  root.innerHTML =
+      ovHeadHtml(loaded.length, attempted, failed.length)
+    + ovSectionA(loaded)
+    + ovSectionB(kpis)
+    + ovSectionC(projects)
+    + ovSectionD(loaded);
+}
+
+function ovHeadHtml(loadedN, attempted, failedN){
+  const total = TEAM_BOARDS.length;
+  const today = new Date().toLocaleDateString('he-IL',{day:'2-digit',month:'2-digit',year:'numeric'});
+  let state;
+  if (attempted < total) state = `<span class="ov-spinner"></span> טוען מחלקות… ${loadedN}/${total}`;
+  else if (failedN)      state = `${loadedN} מחלקות נטענו · <span class="ov-red">${failedN} נכשלו</span>`;
+  else                   state = `${loadedN} מחלקות`;
+  return `<div class="page-head">
+    <div>
+      <h1 class="page-title">🏠 תצוגה כללית</h1>
+      <div class="page-sub">איפה כל המחלקות עומדות · מה דורש תשומת לב הנהלה · מקור: בורדי צוות + פורטפוליו</div>
+    </div>
+    <div class="ov-loadstate">${state}<div class="ov-asof mono">נכון ל-${today}</div></div>
+  </div>`;
+}
+
+// ── Section A — Department rollup strip ──
+function ovDeptStats(board){
+  let active=0, inWork=0, approved=0, blocked=0, done=0;
+  for (const d of board.derived) {
+    if (d.isActive) active++;
+    if (d.status==='בעבודה') inWork++;
+    if (d.status==='מאושר לביצוע' || d.status==='אושר על ידי מנהל') approved++;
+    if (d.status==='דגל אדום') blocked++;
+    if (d.status==='הסתיימה') done++;
+  }
+  return { active, inWork, approved, blocked, done, total: board.derived.length };
+}
+function ovSectionA(loaded){
+  if (!loaded.length) return `<div class="ov-section"><div class="ov-empty">טוען נתוני מחלקות…</div></div>`;
+  const cards = loaded.map(b => ({ b, s: ovDeptStats(b) }))
+    .sort((a,b)=> b.s.active - a.s.active)
+    .map(({b,s}) => {
+      const activeNB = Math.max(0, s.active - s.blocked);
+      const tot = s.done + activeNB + s.blocked || 1;
+      const pD = s.done/tot*100, pA = activeNB/tot*100, pB = s.blocked/tot*100;
+      return `<button class="ov-dept" onclick="ovOpenDept('${b.tb.id}')">
+        <div class="ov-dept-top"><span class="ov-dept-name">${b.tb.emoji} ${b.tb.he}</span><span class="ov-dept-mgr">${ovEsc(b.tb.mgr)}</span></div>
+        <div class="ov-dept-num mono">${s.active}</div>
+        <div class="ov-dept-sub">משימות פעילות</div>
+        <div class="ov-dept-break">${s.inWork} בעבודה · ${s.approved} מאושר · <span class="ov-red">${s.blocked} דגל אדום</span></div>
+        <div class="ov-bar"><div class="ov-bar-seg ov-bar-done" style="width:${pD}%"></div><div class="ov-bar-seg ov-bar-active" style="width:${pA}%"></div><div class="ov-bar-seg ov-bar-blocked" style="width:${pB}%"></div></div>
+      </button>`;
+    }).join('');
+  return `<div class="ov-section"><div class="ov-section-h">מחלקות</div><div class="ov-dept-strip">${cards}</div></div>`;
+}
+
+// ── Section B — Company KPI cards ──
+function ovKpiCard(key, q, num, breakHtml){
+  return `<button class="ov-kpi" onclick="ovOpenKpi('${key}')">
+    <div class="ov-kpi-q">${q}</div>
+    <div class="ov-kpi-num mono">${num}</div>
+    <div class="ov-kpi-break">${breakHtml}</div>
+  </button>`;
+}
+function ovSectionB(k){
+  const delta = k.last30.length - k.prev30.length;
+  const deltaStr = `${delta>0?'▲ +':delta<0?'▼ ':'• '}${Math.abs(delta)} מול 30 הימים הקודמים`;
+  const cards = [
+    ovKpiCard('tasks','כמה משימות בעבודה?', k.activeTasks, `${k.onTime} בזמן · <span class="ov-red">${k.late} חורגות</span>`),
+    ovKpiCard('projects','כמה פרויקטים פעילים?', k.activeProjects.length, ovByDeptStr(k.activeProjects)),
+    ovKpiCard('red','כמה פרויקטים בדגל אדום?', k.redProjects.length, ovByDeptStr(k.redProjects)),
+    ovKpiCard('delay','ממוצע פיגור בפרויקטים', `${k.avgDelay} <span class="ov-unit">ימים</span>`, `${k.overdue.length} מתוך ${k.withDL.length} פרויקטים`),
+    ovKpiCard('done','הסתיימו ב-30 הימים האחרונים', k.last30.length, deltaStr),
+    ovKpiCard('nodl','פרויקטים ללא דדליין', k.noDL.length, ovByDeptStr(k.noDL)),
+  ].join('');
+  return `<div class="ov-section"><div class="ov-kpi-grid">${cards}</div></div>`;
+}
+
+// ── Section C — דורש את תשומת ליבך ──
+function ovWhyRed(p){
+  if (p.prodStage==='RED FLAG') return 'דגל אדום בפורטפוליו';
+  if (p.overdue && !p.complete)  return `באיחור ${p.delayDays} ימים`;
+  if (p.hasRedTask)              return 'משימה בדגל אדום';
+  return 'דגל אדום';
+}
+function ovAttentionList(projects){
+  const todayMs = ovTodayMs();
+  const red  = projects.filter(p=>p.redFlag)
+    .map(p=>({p,cat:'red',label:'דגל אדום',why:ovWhyRed(p)}));
+  const risk = projects.filter(p=>p.active && !p.complete && !p.redFlag && p.deadline && p.dlMs>=todayMs && p.dlMs<=todayMs+7*864e5)
+    .map(p=>({p,cat:'risk',label:'צפוי לחרוג',why:`דד-ליין ${fmtDate(p.deadline)}`}));
+  const nodl = projects.filter(p=>p.active && !p.complete && !p.deadline)
+    .map(p=>({p,cat:'nodl',label:'ללא דדליין',why:'אין דד-ליין מוגדר'}));
+  const order={red:0,risk:1,nodl:2};
+  return [...red,...risk,...nodl].sort((a,b)=> order[a.cat]-order[b.cat] || ((a.p.dlMs??Infinity)-(b.p.dlMs??Infinity)));
+}
+function ovSectionC(projects){
+  const rows = ovAttentionList(projects).slice(0,8).map(({p,cat,label,why}) => `
+    <div class="ov-attn">
+      <span class="ov-attn-pill ov-attn-${cat}">${label}</span>
+      <span class="ov-attn-desc"><b>${ovEsc(p.key)}</b> — ${ovEsc(p.dept)} — ${ovEsc(why)}</span>
+      <a class="ov-attn-open" href="${OV_MONDAY_BASE}${p.boardId}" target="_blank" rel="noopener">פתח →</a>
+    </div>`).join('');
+  const body = rows || `<div class="ov-empty">אין פריטים שדורשים תשומת לב כעת ✓</div>`;
+  return `<div class="ov-section"><div class="ov-section-h">דורש את תשומת ליבך</div><div class="ov-attn-list">${body}</div></div>`;
+}
+
+// ── Section D — מה קורה בחברה ──
+function ovSectionD(loaded){
+  const todayMs = ovTodayMs(), weekAgo = todayMs - 7*864e5;
+  // Left: completed last 7 days
+  const doneItems = [];
+  for (const b of loaded) for (const d of b.derived) {
+    if (d.status==='הסתיימה' && d.completion) {
+      const t = ovDayMs(d.completion);
+      if (t>=weekAgo && t<=todayMs) doneItems.push({ name:d.item.name, dept:b.tb.he, t });
+    }
+  }
+  doneItems.sort((a,b)=>b.t-a.t);
+  const leftRows = doneItems.slice(0,10).map(x => `
+    <div class="ov-done-row">
+      <span class="ov-date-pill mono">${new Date(x.t).toLocaleDateString('he-IL',{day:'2-digit',month:'2-digit'})}</span>
+      <span class="ov-done-name">${ovEsc(x.name)}</span>
+      <span class="ov-done-dept">${ovEsc(x.dept)}</span>
+    </div>`).join('') || `<div class="ov-empty">לא הסתיימו משימות בשבוע האחרון</div>`;
+
+  // Right: next 7 days
+  const days = [];
+  for (let i=0;i<7;i++){ const dt=new Date(todayMs+i*864e5);
+    days.push({ ms:todayMs+i*864e5, wd:dt.toLocaleDateString('he-IL',{weekday:'short'}),
+      dm:dt.toLocaleDateString('he-IL',{day:'2-digit',month:'2-digit'}), events:[] }); }
+  const pushEv = (dateObj, icon, name, sub, color) => {
+    const t = ovDayMs(dateObj); if (t===null) return;
+    const idx = Math.round((t-todayMs)/864e5);
+    if (idx>=0 && idx<7) days[idx].events.push({ icon, name, sub, color });
+  };
+  for (const it of (productLaunchItems||[])) {
+    pushEv(parseDate(cv(it,PL.STOCK_DATE).t),'📦', it.name,'מחסן · פורטפוליו מוצר','var(--blue-fg)');
+    pushEv(parseDate(cv(it,PL.LAUNCH_DATE).t),'🚀', it.name,'השקה · פורטפוליו מוצר','var(--purple-fg)');
+  }
+  for (const p of (pipelineProjects||[])) pushEv(p.deadline,'💻', p.name,'דד-ליין · טכנולוגיה','var(--ink)');
+  for (const b of loaded) for (const d of b.derived) {
+    if (d.isActive && d.tlEnd) pushEv(d.tlEnd,'✨', d.item.name, b.tb.he, ovDeptColor(b.tb.id));
+  }
+  const cols = days.map(day => `
+    <div class="ov-day">
+      <div class="ov-day-h"><span class="ov-day-wd">${day.wd}</span><span class="ov-day-dm mono">${day.dm}</span></div>
+      <div class="ov-day-events">${day.events.map(e=>`<span class="ov-ev" title="${ovEsc(e.name)} — ${ovEsc(e.sub)}" style="border-color:${e.color}"><span class="ov-ev-ic">${e.icon}</span></span>`).join('') || '<span class="ov-day-empty">·</span>'}</div>
+    </div>`).join('');
+
+  return `<div class="ov-section"><div class="ov-d-grid">
+    <div class="ov-d-col"><div class="ov-section-h">מה הסתיים השבוע</div><div class="ov-done-list">${leftRows}</div></div>
+    <div class="ov-d-col"><div class="ov-section-h">השבוע הקרוב (7 ימים)</div><div class="ov-week">${cols}</div></div>
+  </div></div>`;
+}
+
+// ── Modals ──
+function ovOpenModal(title, html){
+  const ov = document.getElementById('ov-overlay'); if (!ov) return;
+  document.getElementById('ov-modal-title').innerHTML = title;
+  document.getElementById('ov-modal-body').innerHTML = html;
+  ov.style.display = 'flex';
+}
+function ovCloseModal(){ const ov=document.getElementById('ov-overlay'); if (ov) ov.style.display='none'; }
+
+function ovTable(headers, rows){
+  if (!rows.length) return `<div class="ov-empty">אין נתונים</div>`;
+  return `<table class="ov-tbl"><thead><tr>${headers.map(h=>`<th>${h}</th>`).join('')}</tr></thead>
+    <tbody>${rows.map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
+}
+
+function ovOpenDept(boardId){
+  const b = ovState.boards[boardId]; if (!b || b.error) return;
+  const todayMs = ovTodayMs();
+  const rows = b.derived.filter(d=>d.isActive).map(d => ({
+    name:d.item.name, project:d.projectKey||'—', owner:d.owner||'—', status:d.status||'—',
+    end:d.tlEnd, od: d.outOfTime ? Math.round((todayMs-ovDayMs(d.tlEnd))/864e5) : 0,
+  })).sort((a,b)=> b.od-a.od);
+  const tbl = ovTable(['משימה','פרויקט','אחראי','סטטוס','סיום','פיגור'],
+    rows.map(r=>[ ovEsc(r.name), ovEsc(r.project), ovEsc(r.owner),
+      `<span class="ov-st">${ovEsc(r.status)}</span>`, `<span class="mono">${fmtDate(r.end)}</span>`,
+      r.od>0?`<span class="ov-red mono">${r.od}י׳</span>`:'<span class="muted">—</span>' ]));
+  ovOpenModal(`${b.tb.emoji} ${b.tb.he} — משימות פעילות (${rows.length})`, tbl);
+}
+
+function ovOpenKpi(which){
+  const loaded   = TEAM_BOARDS.map(tb=>ovState.boards[tb.id]).filter(b=>b && !b.error);
+  const maps     = ovPortfolioMaps();
+  const projects = ovBuildProjects(loaded, maps);
+  const k        = ovComputeKPIs(loaded, projects);
+  const todayMs  = ovTodayMs();
+  const projRow  = p => [ ovEsc(p.key), ovEsc(p.dept),
+    p.deadline?`<span class="mono">${fmtDate(p.deadline)}</span>`:'<span class="muted">—</span>',
+    p.complete?'<span class="ov-green">הושלם</span>':p.redFlag?'<span class="ov-red">דגל אדום</span>':'<span class="muted">פעיל</span>' ];
+  const cap = 200;
+  let title, html;
+  if (which==='tasks') {
+    const tasks=[]; for (const b of loaded) for (const d of b.derived) if (d.isActive)
+      tasks.push({dept:b.tb.he, name:d.item.name, end:d.tlEnd, late:d.outOfTime});
+    tasks.sort((a,b)=> (b.late-a.late) || ((ovDayMs(a.end)??Infinity)-(ovDayMs(b.end)??Infinity)));
+    title=`משימות בעבודה (${tasks.length})`;
+    html=ovTable(['מחלקה','משימה','סיום','חריגה'], tasks.slice(0,cap).map(t=>[ ovEsc(t.dept), ovEsc(t.name),
+      `<span class="mono">${fmtDate(t.end)}</span>`, t.late?'<span class="ov-red">חורגת</span>':'<span class="ov-green">בזמן</span>' ]));
+  } else if (which==='projects') {
+    title=`פרויקטים פעילים (${k.activeProjects.length})`;
+    html=ovTable(['פרויקט','מחלקה','דד-ליין','מצב'], k.activeProjects.slice(0,cap).map(projRow));
+  } else if (which==='red') {
+    title=`פרויקטים בדגל אדום (${k.redProjects.length})`;
+    html=ovTable(['פרויקט','מחלקה','סיבה'], k.redProjects.slice(0,cap).map(p=>[ ovEsc(p.key), ovEsc(p.dept), ovEsc(ovWhyRed(p)) ]));
+  } else if (which==='delay') {
+    const sorted=[...k.withDL].sort((a,b)=>b.delayDays-a.delayDays);
+    title=`פיגור בפרויקטים — ממוצע ${k.avgDelay} ימים (${k.withDL.length})`;
+    html=ovTable(['פרויקט','מחלקה','דד-ליין','פיגור'], sorted.slice(0,cap).map(p=>[ ovEsc(p.key), ovEsc(p.dept),
+      `<span class="mono">${fmtDate(p.deadline)}</span>`, p.delayDays>0?`<span class="ov-red mono">${p.delayDays}י׳</span>`:'<span class="ov-green mono">0</span>' ]));
+  } else if (which==='done') {
+    const sorted=[...k.last30].sort((a,b)=> ovDayMs(b.maxComp)-ovDayMs(a.maxComp));
+    title=`הסתיימו ב-30 הימים האחרונים (${k.last30.length})`;
+    html=ovTable(['פרויקט','מחלקה','הושלם'], sorted.slice(0,cap).map(p=>[ ovEsc(p.key), ovEsc(p.dept), `<span class="mono">${fmtDate(p.maxComp)}</span>` ]));
+  } else if (which==='nodl') {
+    title=`פרויקטים פעילים ללא דדליין (${k.noDL.length})`;
+    html=ovTable(['פרויקט','מחלקה','מצב'], k.noDL.slice(0,cap).map(p=>[ ovEsc(p.key), ovEsc(p.dept), p.redFlag?'<span class="ov-red">דגל אדום</span>':'<span class="muted">פעיל</span>' ]));
+  } else { return; }
+  ovOpenModal(title, html);
 }
 
 // ══════════════════════════════════════════════════
