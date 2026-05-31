@@ -782,24 +782,27 @@ body::before{content:"";position:fixed;inset:0;background-image:url("data:image/
 .ov-attn-open{flex-shrink:0;font-size:11.5px;font-weight:700;color:var(--accent);text-decoration:none}
 .ov-attn-open:hover{text-decoration:underline}
 
-/* Section D — what's happening */
-.ov-d-grid{display:grid;grid-template-columns:1fr 1.4fr;gap:18px}
-.ov-d-col{display:flex;flex-direction:column;gap:12px}
-.ov-done-list{display:flex;flex-direction:column;gap:6px}
-.ov-done-row{display:flex;align-items:center;gap:10px;padding:6px 4px;border-bottom:1px dashed var(--ink-softer)}
+/* Section D — project-level timing (one row per project) */
+.ov-d-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);gap:18px}
+.ov-d-col{display:flex;flex-direction:column;gap:12px;min-width:0}
+.ov-d-block{display:flex;flex-direction:column;gap:6px;min-width:0}
+.ov-d-block-h{font-size:12px;font-weight:700;color:var(--ink);padding:4px 0;border-bottom:1.5px solid var(--ink-soft)}
+.ov-proj-list{display:flex;flex-direction:column;gap:6px}
+.ov-proj-row{display:flex;align-items:center;gap:10px;padding:7px 4px;border-bottom:1px dashed var(--ink-softer)}
 .ov-date-pill{flex-shrink:0;font-size:11px;background:var(--green-bg);color:var(--green-fg);border-radius:5px;padding:2px 7px}
-.ov-done-name{flex:1;font-size:12.5px;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.ov-done-dept{flex-shrink:0;font-size:11px;color:rgba(26,29,35,.5)}
-.ov-week{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
-.ov-day{background:var(--paper);border:1.5px solid var(--ink-soft);border-radius:8px;padding:8px 5px;min-height:96px;display:flex;flex-direction:column;gap:6px}
-.ov-day-h{text-align:center;border-bottom:1px solid var(--ink-softer);padding-bottom:4px}
-.ov-day-wd{display:block;font-size:11px;font-weight:700;color:var(--ink)}
-.ov-day-dm{display:block;font-size:10px;color:rgba(26,29,35,.5)}
-.ov-day-events{display:flex;flex-wrap:wrap;gap:4px;justify-content:center;align-content:flex-start;flex:1}
-.ov-ev{width:22px;height:22px;border-radius:6px;border:1.5px solid;display:flex;align-items:center;justify-content:center;background:var(--paper);cursor:default}
-.ov-ev-ic{font-size:12px;line-height:1}
-.ov-day-empty{color:var(--ink-softer);font-size:12px}
-@media(max-width:900px){.ov-d-grid{grid-template-columns:1fr}}
+.ov-proj-main{flex:1;min-width:0}
+.ov-proj-name{font-size:12.5px;font-weight:700;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ov-proj-meta{font-size:10.5px;color:rgba(26,29,35,.5);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ov-pchip{flex-shrink:0;display:inline-block;font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:999px;border:1.5px solid currentColor;white-space:nowrap;line-height:1.5}
+.ov-pchip-stage{color:rgba(26,29,35,.6);background:var(--paper-shade);max-width:130px;overflow:hidden;text-overflow:ellipsis}
+.ov-pstatus-red{color:var(--red-fg);background:var(--red-bg)}
+.ov-pstatus-work{color:var(--ink);background:var(--paper-shade)}
+.ov-pstatus-done{color:var(--green-fg);background:var(--green-bg)}
+.ov-pstatus-watch{color:rgba(26,29,35,.55);background:var(--paper)}
+.ov-proj-open{flex-shrink:0;font-size:11px;font-weight:700;color:var(--accent);text-decoration:none}
+.ov-proj-open:hover{text-decoration:underline}
+.ov-more{font-size:11.5px;color:var(--accent);font-weight:700;padding:6px 4px}
+@media(max-width:900px){.ov-d-grid{grid-template-columns:minmax(0,1fr)}}
 
 /* Modal */
 .ov-overlay{display:none;position:fixed;inset:0;background:rgba(26,29,35,.42);z-index:50;align-items:center;justify-content:center;padding:24px}
@@ -4651,7 +4654,7 @@ function ovRenderSections(){
     + ovSectionA(loaded)
     + ovSectionB(kpis)
     + ovSectionC(projects)
-    + ovSectionD(loaded);
+    + ovSectionD(projects);
 }
 
 function ovHeadHtml(loadedN, attempted, failedN){
@@ -4752,52 +4755,121 @@ function ovSectionC(projects){
   return `<div class="ov-section"><div class="ov-section-h">דורש את תשומת ליבך</div><div class="ov-attn-list">${body}</div></div>`;
 }
 
-// ── Section D — מה קורה בחברה ──
-function ovSectionD(loaded){
-  const todayMs = ovTodayMs(), weekAgo = todayMs - 7*864e5;
-  // Left: completed last 7 days
-  const doneItems = [];
-  for (const b of loaded) for (const d of b.derived) {
-    if (d.status==='הסתיימה' && d.completion) {
-      const t = ovDayMs(d.completion);
-      if (t>=weekAgo && t<=todayMs) doneItems.push({ name:d.item.name, dept:b.tb.he, t });
-    }
+// ── Section D — PROJECT-level timing (project = Monday group; one row per project) ──
+// Project status roll-up follows the Mayven Way precedence: דגל אדום > הסתיימה > בעבודה > למעקב.
+// Stage = team Project Stage (representative) → portfolio stage fallback → "—".
+// Timeline span (min start → max end of the project's tasks) is used ONLY to test month-overlap.
+function ovProjectStageStatus(p, maps){
+  const board = ovState.boards[p.boardId];
+  const col = (board && board.col) ? board.col : (()=>null);
+  // Status roll-up
+  let status;
+  if (p.items.some(d=>d.status==='דגל אדום')) status='דגל אדום';
+  else if (p.items.length && p.items.every(d=>d.isDone)) status='הסתיימה';
+  else if (p.items.some(d=>d.isActive)) status='בעבודה';
+  else status='למעקב';
+  // Stage — sourced from the PORTFOLIOS (the reliable workflow stage). The team boards'
+  // "Project Stage ⭐" column is a free-text mirror of the group/project name (not a real
+  // stage), so it is intentionally ignored. "—" when the project has no portfolio match.
+  const nk = ovNorm(p.key);
+  const prod = maps.prod.get(nk) || null;
+  const pipe = maps.pipe.get(nk) || null;
+  let stage = '—';
+  if (prod && prod.stage) stage = prod.stage;
+  else if (pipe && pipe.devStage) stage = pipe.devStage;
+  // Timeline span (project-level only)
+  let spanStart=null, spanEnd=null;
+  const tlId = col('timeline');
+  if (tlId) for (const d of p.items) {
+    const tl = parseTL(cv(d.item, tlId).r);
+    if (tl.from){ const t=ovDayMs(tl.from); if(spanStart===null||t<spanStart)spanStart=t; }
+    if (tl.to){   const t=ovDayMs(tl.to);   if(spanEnd===null  ||t>spanEnd)  spanEnd=t; }
   }
-  doneItems.sort((a,b)=>b.t-a.t);
-  const leftRows = doneItems.slice(0,10).map(x => `
-    <div class="ov-done-row">
-      <span class="ov-date-pill mono">${new Date(x.t).toLocaleDateString('he-IL',{day:'2-digit',month:'2-digit'})}</span>
-      <span class="ov-done-name">${ovEsc(x.name)}</span>
-      <span class="ov-done-dept">${ovEsc(x.dept)}</span>
-    </div>`).join('') || `<div class="ov-empty">לא הסתיימו משימות בשבוע האחרון</div>`;
+  return { status, stage, spanStart, spanEnd };
+}
 
-  // Right: next 7 days
-  const days = [];
-  for (let i=0;i<7;i++){ const dt=new Date(todayMs+i*864e5);
-    days.push({ ms:todayMs+i*864e5, wd:dt.toLocaleDateString('he-IL',{weekday:'short'}),
-      dm:dt.toLocaleDateString('he-IL',{day:'2-digit',month:'2-digit'}), events:[] }); }
-  const pushEv = (dateObj, icon, name, sub, color) => {
-    const t = ovDayMs(dateObj); if (t===null) return;
-    const idx = Math.round((t-todayMs)/864e5);
-    if (idx>=0 && idx<7) days[idx].events.push({ icon, name, sub, color });
-  };
-  for (const it of (productLaunchItems||[])) {
-    pushEv(parseDate(cv(it,PL.STOCK_DATE).t),'📦', it.name,'מחסן · פורטפוליו מוצר','var(--blue-fg)');
-    pushEv(parseDate(cv(it,PL.LAUNCH_DATE).t),'🚀', it.name,'השקה · פורטפוליו מוצר','var(--purple-fg)');
+function ovStatusChip(status){
+  const map = {'דגל אדום':'red','הסתיימה':'done','בעבודה':'work','למעקב':'watch'};
+  return `<span class="ov-pchip ov-pstatus-${map[status]||'watch'}">${ovEsc(status)}</span>`;
+}
+function ovProjDateStr(ms){
+  return (ms==null) ? '—' : new Date(ms).toLocaleDateString('he-IL',{day:'2-digit',month:'2-digit'});
+}
+function ovProjRow(p, e, dateMs){
+  const name = p.key && p.key.length>50 ? p.key.slice(0,49)+'…' : (p.key||'—');
+  return `<div class="ov-proj-row">
+    <span class="ov-date-pill mono">${ovProjDateStr(dateMs)}</span>
+    <div class="ov-proj-main">
+      <div class="ov-proj-name">${ovEsc(name)}</div>
+      <div class="ov-proj-meta">${ovEsc(p.emoji)} ${ovEsc(p.dept)} · ${ovEsc(p.mgr)}</div>
+    </div>
+    <span class="ov-pchip ov-pchip-stage" title="שלב: ${ovEsc(e.stage)}">${ovEsc(e.stage)}</span>
+    ${ovStatusChip(e.status)}
+    <a class="ov-proj-open" href="${OV_MONDAY_BASE}${p.boardId}" target="_blank" rel="noopener">פתח →</a>
+  </div>`;
+}
+
+function ovSectionD(projects){
+  const maps = ovPortfolioMaps();
+  const now = new Date();
+  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).getTime();
+  const monthEnd   = new Date(now.getFullYear(), now.getMonth()+1, 0).getTime(); // last day @00:00
+  const todayMs = ovTodayMs();
+  const rolling30 = todayMs + 30*864e5;
+  const CAP = 12;
+  const moreHtml = (n)=> n>CAP ? `<div class="ov-more">+${n-CAP} נוספים</div>` : '';
+
+  const enr = projects.map(p => ({ p, e: ovProjectStageStatus(p, maps) }));
+
+  // LEFT — projects completed this calendar month
+  const done = enr.filter(o => o.p.complete && o.p.maxComp)
+    .map(o => ({ ...o, t: ovDayMs(o.p.maxComp) }))
+    .filter(o => o.t>=monthStart && o.t<=monthEnd)
+    .sort((a,b)=> b.t-a.t);
+  const leftRows = done.length
+    ? done.slice(0,CAP).map(o=>ovProjRow(o.p,o.e,o.t)).join('') + moreHtml(done.length)
+    : `<div class="ov-empty">לא הסתיימו פרויקטים החודש</div>`;
+
+  // RIGHT block 1 — launching / due this month (future-facing); fall back to rolling 30d if sparse
+  let launch = enr.filter(o => !o.p.complete && o.p.dlMs!==null && o.p.dlMs>=todayMs && o.p.dlMs<=monthEnd)
+    .sort((a,b)=> a.p.dlMs-b.p.dlMs);
+  let launchLabel = '🚀 עולים לאוויר · יעד החודש';
+  if (launch.length < 3) {
+    launch = enr.filter(o => !o.p.complete && o.p.dlMs!==null && o.p.dlMs>=todayMs && o.p.dlMs<=rolling30)
+      .sort((a,b)=> a.p.dlMs-b.p.dlMs);
+    launchLabel = '🚀 עולים לאוויר · 30 הימים הקרובים';
   }
-  for (const p of (pipelineProjects||[])) pushEv(p.deadline,'💻', p.name,'דד-ליין · טכנולוגיה','var(--ink)');
-  for (const b of loaded) for (const d of b.derived) {
-    if (d.isActive && d.tlEnd) pushEv(d.tlEnd,'✨', d.item.name, b.tb.he, ovDeptColor(b.tb.id));
-  }
-  const cols = days.map(day => `
-    <div class="ov-day">
-      <div class="ov-day-h"><span class="ov-day-wd">${day.wd}</span><span class="ov-day-dm mono">${day.dm}</span></div>
-      <div class="ov-day-events">${day.events.map(e=>`<span class="ov-ev" title="${ovEsc(e.name)} — ${ovEsc(e.sub)}" style="border-color:${e.color}"><span class="ov-ev-ic">${e.icon}</span></span>`).join('') || '<span class="ov-day-empty">·</span>'}</div>
-    </div>`).join('');
+  const launchKeys = new Set(launch.map(o=> o.p.boardId+'::'+o.p.key));
+  const launchRows = launch.length
+    ? launch.slice(0,CAP).map(o=>ovProjRow(o.p,o.e,o.p.dlMs)).join('') + moreHtml(launch.length)
+    : `<div class="ov-empty">אין פרויקטים שעולים החודש</div>`;
+
+  // RIGHT block 2 — active projects whose timeline overlaps this month (not complete, not in launch)
+  const planned = enr.filter(o => o.p.active && !o.p.complete
+      && !launchKeys.has(o.p.boardId+'::'+o.p.key)
+      && o.e.spanStart!==null && o.e.spanEnd!==null
+      && o.e.spanStart<=monthEnd && o.e.spanEnd>=monthStart)
+    .sort((a,b)=> ((a.p.dlMs??a.e.spanEnd??Infinity)-(b.p.dlMs??b.e.spanEnd??Infinity)));
+  const plannedRows = planned.length
+    ? planned.slice(0,CAP).map(o=>ovProjRow(o.p,o.e,o.p.dlMs??o.e.spanEnd)).join('') + moreHtml(planned.length)
+    : `<div class="ov-empty">אין פרויקטים מתוכננים החודש</div>`;
 
   return `<div class="ov-section"><div class="ov-d-grid">
-    <div class="ov-d-col"><div class="ov-section-h">מה הסתיים השבוע</div><div class="ov-done-list">${leftRows}</div></div>
-    <div class="ov-d-col"><div class="ov-section-h">השבוע הקרוב (7 ימים)</div><div class="ov-week">${cols}</div></div>
+    <div class="ov-d-col">
+      <div class="ov-section-h">פרויקטים שהסתיימו החודש</div>
+      <div class="ov-proj-list">${leftRows}</div>
+    </div>
+    <div class="ov-d-col">
+      <div class="ov-section-h">פרויקטים החודש</div>
+      <div class="ov-d-block">
+        <div class="ov-d-block-h">${launchLabel}</div>
+        <div class="ov-proj-list">${launchRows}</div>
+      </div>
+      <div class="ov-d-block">
+        <div class="ov-d-block-h">📅 מתוכננים החודש</div>
+        <div class="ov-proj-list">${plannedRows}</div>
+      </div>
+    </div>
   </div></div>`;
 }
 
