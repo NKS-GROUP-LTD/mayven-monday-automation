@@ -4465,6 +4465,7 @@ function ovBuildColResolver(boardColumns){
     twoB:           ['2B Organized ⚡','2B Organized','Organized'],
     plannedEffort:  ['Planned Effort'],
     effort:         ['Effort'],
+    calcDeadline:   ['In Deadline Project', 'In Deadline Scope', 'Calculate in Deadline', 'לחשב לדד ליין פרויקט'],
   };
   return (logical) => {
     for (const title of (TITLE_MAP[logical] || [])) if (byTitle[title]) return byTitle[title];
@@ -4768,8 +4769,25 @@ function ovSectionC(projects){
 //     every task בנק משימות (or bank+cancelled, 0 done) → לא התחיל   (excluded from Section D)
 //     fallback                                        → למעקב
 // בנק משימות = NOT STARTED (never counts as done).
+// Section-D counted set — a task is EXCLUDED only when its "In Deadline Project"
+// (calcDeadline) value is exactly "No" (case-insensitive, trimmed). Empty / null / "Yes"
+// → INCLUDED, so boards not yet backfilled (all empty) behave exactly as before.
+// Section-D-isolated: not used by Sections A/B/C.
+function ovCountedItems(p){
+  const board = ovState.boards[p.boardId];
+  const col = (board && board.col) ? board.col : (()=>null);
+  const cdId = col('calcDeadline');
+  if (!cdId) return p.items; // no scope column on this board → count everything
+  return p.items.filter(d => {
+    const v = cv(d.item, cdId).t;
+    return !(v && v.trim().toLowerCase()==='no');
+  });
+}
+
 function ovProjectStageStatus(p, maps){
-  const st = p.items.map(d=>d.status);
+  // Fix 3 (wiring) — Section D math runs over the COUNTED set only (calcDeadline!=="No").
+  const counted = ovCountedItems(p);
+  const st = counted.map(d=>d.status);
   let status;
   if (st.some(s=>s==='דגל אדום')) status='דגל אדום';
   else if (st.some(s=>OV_ACTIVE_SET.has(s))) status='בעבודה';
@@ -4783,9 +4801,9 @@ function ovProjectStageStatus(p, maps){
     else if (allBankOrCancel && !anyDone) status='לא התחיל';
     else                                 status='למעקב';
   }
-  // Project completion date = max Completion among the project's הסתיימה tasks
+  // Project completion date = max Completion among the project's COUNTED הסתיימה tasks
   let compMs=null;
-  for (const d of p.items) if (d.status==='הסתיימה' && d.completion){
+  for (const d of counted) if (d.status==='הסתיימה' && d.completion){
     const t=ovDayMs(d.completion); if (compMs===null||t>compMs) compMs=t;
   }
   // Stage from portfolio
@@ -4795,7 +4813,23 @@ function ovProjectStageStatus(p, maps){
   let stage = '—';
   if (prod && prod.stage) stage = prod.stage;
   else if (pipe && pipe.devStage) stage = pipe.devStage;
-  return { status, stage, compMs };
+  // Project deadline (Section-D, counted) — same priority as ovBuildProjects, but team
+  // Project Deadline is the max only over COUNTED tasks. Portfolio stock / pipeline deadline
+  // are project-level and unchanged.
+  let teamPD=null;
+  for (const d of counted) if (d.projDeadlineEnd && (!teamPD || d.projDeadlineEnd>teamPD)) teamPD=d.projDeadlineEnd;
+  let deadline=null;
+  if (prod && prod.stock) deadline=prod.stock;
+  else if (pipe && pipe.deadline) deadline=pipe.deadline;
+  else if (teamPD) deadline=teamPD;
+  const dlMs = ovDayMs(deadline);
+  // Overdue (חורג): an active/watch project past its deadline and not completed.
+  // Precedence: דגל אדום > חורג > בעבודה > הסתיימה > למעקב — so דגל אדום and completed/cancelled
+  // states keep their rollup; only בעבודה/למעקב flip to חורג.
+  const overdue = dlMs!==null && dlMs<ovTodayMs()
+    && status!=='הסתיימה' && status!=='מבוטלת' && status!=='לא התחיל' && status!=='דגל אדום';
+  if (overdue) status='חורג';
+  return { status, stage, compMs, deadline, dlMs, overdue };
 }
 
 // Fix 1 — keep only REAL projects in Section D. Excludes department/personal-task piles
@@ -4836,7 +4870,7 @@ function ovIsRealProject(p){
 }
 
 function ovStatusChip(status){
-  const map = {'דגל אדום':'red','הסתיימה':'done','בעבודה':'work','למעקב':'watch'};
+  const map = {'דגל אדום':'red','חורג':'red','הסתיימה':'done','בעבודה':'work','למעקב':'watch'};
   return `<span class="ov-pchip ov-pstatus-${map[status]||'watch'}">${ovEsc(status)}</span>`;
 }
 function ovProjDateStr(ms){
@@ -4857,7 +4891,7 @@ function ovProjRow(p, e, dateMs){
 }
 
 const OV_LAUNCH_STAGES = new Set(['Stock Date','Go Live','Launch Prep','Product Manufacturing']);
-const OV_ACTIVEISH     = new Set(['דגל אדום','בעבודה','למעקב']);
+const OV_ACTIVEISH     = new Set(['דגל אדום','חורג','בעבודה','למעקב']);
 
 function ovSectionD(projects){
   const maps = ovPortfolioMaps();
@@ -4882,29 +4916,33 @@ function ovSectionD(projects){
 
   // Fix 3 — deadline-driven candidates: active-ish real projects with a deadline in the current month
   const monthCand = enr.filter(o => OV_ACTIVEISH.has(o.e.status)
-      && o.p.dlMs!==null && o.p.dlMs>=monthStart && o.p.dlMs<=monthEnd);
+      && o.e.dlMs!==null && o.e.dlMs>=monthStart && o.e.dlMs<=monthEnd);
 
   // RIGHT block 1 — 🚀 עולים לאוויר: candidates whose stage indicates go-live/stock
   let launch = monthCand.filter(o => OV_LAUNCH_STAGES.has(o.e.stage))
-    .sort((a,b)=> a.p.dlMs-b.p.dlMs);
+    .sort((a,b)=> a.e.dlMs-b.e.dlMs);
   let launchLabel = '🚀 עולים לאוויר · יעד החודש';
   if (launch.length < 3) {
     // sparse → rolling 30d fallback (same stage filter), honest relabel
     launch = enr.filter(o => OV_ACTIVEISH.has(o.e.status) && OV_LAUNCH_STAGES.has(o.e.stage)
-        && o.p.dlMs!==null && o.p.dlMs>=todayMs && o.p.dlMs<=rolling30)
-      .sort((a,b)=> a.p.dlMs-b.p.dlMs);
+        && o.e.dlMs!==null && o.e.dlMs>=todayMs && o.e.dlMs<=rolling30)
+      .sort((a,b)=> a.e.dlMs-b.e.dlMs);
     launchLabel = '🚀 עולים לאוויר · 30 הימים הקרובים';
   }
   const launchKeys = new Set(launch.map(o=> o.p.boardId+'::'+o.p.key));
   const launchRows = launch.length
-    ? launch.slice(0,CAP).map(o=>ovProjRow(o.p,o.e,o.p.dlMs)).join('') + moreHtml(launch.length)
+    ? launch.slice(0,CAP).map(o=>ovProjRow(o.p,o.e,o.e.dlMs)).join('') + moreHtml(launch.length)
     : `<div class="ov-empty">אין פרויקטים שעולים החודש</div>`;
 
   // RIGHT block 2 — 📅 מתוכננים החודש: deadline in month, not in launch (stage-based split). No task-timeline overlap.
   const planned = monthCand.filter(o => !launchKeys.has(o.p.boardId+'::'+o.p.key))
-    .sort((a,b)=> a.p.dlMs-b.p.dlMs);
+    .sort((a,b)=>{
+      const ao=a.e.overdue?0:1, bo=b.e.overdue?0:1; // overdue (חורג) sorts to the top
+      if (ao!==bo) return ao-bo;
+      return a.e.dlMs-b.e.dlMs;
+    });
   const plannedRows = planned.length
-    ? planned.slice(0,CAP).map(o=>ovProjRow(o.p,o.e,o.p.dlMs)).join('') + moreHtml(planned.length)
+    ? planned.slice(0,CAP).map(o=>ovProjRow(o.p,o.e,o.e.dlMs)).join('') + moreHtml(planned.length)
     : `<div class="ov-empty">אין פרויקטים מתוכננים החודש</div>`;
 
   return `<div class="ov-section"><div class="ov-d-grid">
