@@ -4813,8 +4813,11 @@ function ovWhyRed(p){
   if (p.hasRedTask)              return 'משימה בדגל אדום';
   return 'דגל אדום';
 }
-function ovAttentionList(projects){
+function ovAttentionList(allProjects){
   const todayMs = ovTodayMs();
+  // Section C must only surface REAL projects — exclude departments / personal-task piles /
+  // board-name groups (same predicate Section D uses). Reuses ovIsRealProject unchanged.
+  const projects = allProjects.filter(ovIsRealProject);
   const red  = projects.filter(p=>p.redFlag)
     .map(p=>({p,cat:'red',label:'דגל אדום',why:ovWhyRed(p)}));
   const risk = projects.filter(p=>p.active && !p.complete && !p.redFlag && p.deadline && p.dlMs>=todayMs && p.dlMs<=todayMs+7*864e5)
