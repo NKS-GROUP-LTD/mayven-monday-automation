@@ -849,6 +849,21 @@ body::before{content:"";position:fixed;inset:0;background-image:url("data:image/
 .wl-bar-val{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;text-align:left;color:var(--ink)}
 .wl-bar-val.over{color:var(--accent)}
 .wl-suspect{font-family:'Heebo',sans-serif;font-weight:700;font-size:11px;color:var(--yellow-fg);background:var(--yellow-bg);border:1px solid var(--yellow-fg);border-radius:5px;padding:1px 6px;white-space:nowrap}
+/* on-time battery (under each person bar) */
+.wl-bar-mid{display:flex;flex-direction:column;gap:4px;min-width:0}
+.wl-batt{display:flex;align-items:center;gap:8px;cursor:pointer}
+.wl-batt-track{flex:1;display:flex;height:9px;border:1px solid var(--ink-softer);border-radius:4px;overflow:hidden;background:var(--paper-shade)}
+.wl-batt-seg{height:100%}
+.wl-batt-seg.ontime{background:var(--green-fg)}
+.wl-batt-seg.overdue{background:var(--accent)}
+.wl-batt-seg.undated{background:#b9b2a6}
+.wl-batt-counts{font-family:'JetBrains Mono',monospace;font-size:10.5px;font-weight:700;white-space:nowrap;color:var(--ink)}
+.wl-batt:hover .wl-batt-track{border-color:var(--ink)}
+.wl-batt-empty{font-size:10.5px;color:rgba(26,29,35,.45)}
+.wl-batt-chip{font-size:11px;font-weight:700;border-radius:5px;padding:1px 7px;white-space:nowrap;border:1px solid}
+.wl-batt-chip.ontime{color:var(--green-fg);background:var(--green-bg);border-color:var(--green-fg)}
+.wl-batt-chip.overdue{color:var(--red-fg);background:var(--red-bg);border-color:var(--red-fg)}
+.wl-batt-chip.undated{color:rgba(26,29,35,.6);background:var(--paper-shade);border-color:var(--ink-softer)}
 /* concurrency callout */
 .wl-conc-list{display:flex;flex-wrap:wrap;gap:8px}
 .wl-conc{display:flex;align-items:center;gap:7px;font-size:12px;background:var(--red-bg);color:var(--red-fg);border:1.5px solid var(--red-fg);border-radius:999px;padding:4px 11px;cursor:pointer;font-weight:700}
@@ -5271,6 +5286,37 @@ function wlComputePeople(){
   return { rows, win, cap };
 }
 
+// ── On-time battery — each person's ACTIVE tasks classified by THEIR OWN timeline end vs today ──
+// Same qualifying set as person-load (WL_PERSON_ACTIVE + In Deadline≠No) but NO window clamp and
+// undated tasks are KEPT (they're the ⚪ bucket). Retro toggle does not apply here.
+function wlBatteryTasks(person){
+  return wlAllItems().filter(it =>
+    it.owners.includes(person) &&
+    WL_PERSON_ACTIVE.has(it.status) &&
+    !(it.calc && it.calc.trim().toLowerCase() === 'no'));
+}
+function wlClassifyTask(it){
+  if (it.end == null) return 'undated';
+  return it.end >= ovTodayMs() ? 'ontime' : 'overdue'; // end===today counts on-time
+}
+function wlPersonBattery(person){
+  const tasks = wlBatteryTasks(person);
+  let ontime=0, overdue=0, undated=0;
+  for (const t of tasks){ const c=wlClassifyTask(t); if(c==='ontime')ontime++; else if(c==='overdue')overdue++; else undated++; }
+  return { ontime, overdue, undated, total:tasks.length, tasks };
+}
+function wlBatteryHtml(person){
+  const b = wlPersonBattery(person);
+  const esc = ovEsc(person).replace(/'/g,"\\'");
+  if (!b.total) return `<div class="wl-batt-empty">אין משימות פעילות</div>`;
+  const pct = n => n/b.total*100;
+  const seg = (cls,n)=> n? `<div class="wl-batt-seg ${cls}" style="width:${pct(n)}%"></div>` : '';
+  return `<div class="wl-batt" onclick="event.stopPropagation();wlOpenPersonTasks('${esc}')" title="לחצו לפירוט המשימות">
+    <div class="wl-batt-track">${seg('ontime',b.ontime)}${seg('overdue',b.overdue)}${seg('undated',b.undated)}</div>
+    <div class="wl-batt-counts">🟢 ${b.ontime} · 🔴 ${b.overdue} · ⚪ ${b.undated}</div>
+  </div>`;
+}
+
 // ── Metric 1 (rolled up) — per department, from the team column (fallback: board dept) ──
 function wlComputeDepts(){
   const { rows, win, cap } = wlComputePeople();
@@ -5467,9 +5513,12 @@ function wlBarRow(r, ceiling){
   const oneHundred = Math.min(100, 100 / ceiling * 100);
   return `<div class="wl-bar-row" onclick="wlOpenPerson('${ovEsc(r.person).replace(/'/g,"\\'")}')">
     <span class="wl-bar-name" title="${ovEsc(r.person)} · ${ovEsc(r.dept)}">${ovEsc(r.person)}</span>
-    <div class="wl-bar-track">
-      <div class="wl-bar-fill ${band}" style="width:${w}%"></div>
-      <div class="wl-bar-100" style="inset-inline-start:${oneHundred}%"></div>
+    <div class="wl-bar-mid">
+      <div class="wl-bar-track">
+        <div class="wl-bar-fill ${band}" style="width:${w}%"></div>
+        <div class="wl-bar-100" style="inset-inline-start:${oneHundred}%"></div>
+      </div>
+      ${wlBatteryHtml(r.person)}
     </div>
     <span class="wl-bar-val ${r.loading>100?'over':''}">${r.loading}%${r.concSuspect?` · <span class="wl-suspect">⚠ דאטה חריגה</span>`:r.conc>=3?` · ⚠${r.conc}`:''}</span>
   </div>`;
@@ -5496,6 +5545,7 @@ function wlLensPeople(){
       <div class="wl-section-h">עומס לפי אדם · ${win.label}</div>
       ${cap_}
       <div class="wl-legend"><span><i style="background:var(--accent)"></i> &gt;100% הקצאת יתר</span><span><i style="background:var(--ink-soft)"></i> 50–100%</span><span><i style="background:#b9b2a6"></i> &lt;50% תת-ניצול</span><span>⚠N = ריבוי-משימות</span></div>
+      <div class="wl-cap">הרצועה מתחת לכל שם = כמה מהמשימות הפעילות של האדם עומדות ב-Timeline שלהן: <b>🟢 בזמן</b> (תאריך סיום ≥ היום) · <b>🔴 חרגו</b> (סיום &lt; היום) · <b>⚪ ללא תאריך</b>. לחיצה על הרצועה פותחת את רשימת המשימות.</div>
       ${bars}
     </div>
     <div class="wl-section">
@@ -5609,17 +5659,42 @@ function wlOpenPerson(person){
     `<div style="padding:4px 14px">${body}</div>`);
 }
 
+// Battery drill-down: person's active tasks — overdue first (most-overdue top), then undated, then on-time (soonest first).
+function wlOpenPersonTasks(person){
+  const b = wlPersonBattery(person);
+  if (!b.total){ wlOpenModal(ovEsc(person), `<div class="wl-empty">אין משימות פעילות</div>`); return; }
+  const rank = { overdue:0, undated:1, ontime:2 };
+  const tasks = [...b.tasks].sort((a,c)=>{
+    const ca=wlClassifyTask(a), cc=wlClassifyTask(c);
+    if (rank[ca]!==rank[cc]) return rank[ca]-rank[cc];
+    if (ca==='undated') return 0;
+    return (a.end??0)-(c.end??0); // overdue: most-overdue (smallest end) first · on-time: soonest first
+  });
+  const chip = c => c==='overdue'?`<span class="wl-batt-chip overdue">🔴 חרגה</span>`
+    : c==='undated'?`<span class="wl-batt-chip undated">⚪ ללא תאריך</span>`
+    : `<span class="wl-batt-chip ontime">🟢 בזמן</span>`;
+  const tbl = ovTable(['משימה','פרויקט','תאריך סיום','מצב','סטטוס'],
+    tasks.map(t=>{
+      const c = wlClassifyTask(t);
+      return [ ovEsc(t.name), ovEsc(t.project||'—'),
+        `<span class="mono">${t.end!=null?fmtDate(new Date(t.end)):'ללא תאריך'}</span>`,
+        chip(c), `<span class="wl-st">${ovEsc(t.status||'—')}</span>` ];
+    }));
+  wlOpenModal(`${ovEsc(person)} — Timeline משימות פעילות · 🟢 ${b.ontime} · 🔴 ${b.overdue} · ⚪ ${b.undated}`, tbl);
+}
+
 function wlOpenDept(dept){
   const { rows } = wlComputeDepts();
   const d = rows.find(x=>x.dept===dept);
   if (!d){ wlOpenModal(ovEsc(dept), `<div class="wl-empty">אין נתונים</div>`); return; }
   const people = [...d.people].sort((a,b)=>b.loading-a.loading);
-  const tbl = ovTable(['אדם','עומס','ימים מוקצים','ריבוי-משימות','משימות'],
+  const tbl = ovTable(['אדם','עומס','ימים מוקצים','ריבוי-משימות','משימות','Timeline'],
     people.map(p=>[ `<b style="cursor:pointer" onclick="wlCloseModal();wlOpenPerson('${ovEsc(p.person).replace(/'/g,"\\'")}')">${ovEsc(p.person)}</b>`,
       `<span class="mono ${p.loading>100?'wl-red':''}">${p.loading}%</span>`,
       `<span class="mono">${p.allocDays}/${p.cap}</span>`,
       p.conc>=3?`<span class="wl-red mono">${p.conc}</span>`:`<span class="mono">${p.conc}</span>`,
-      `<span class="mono">${p.tasks.length}</span>` ]));
+      `<span class="mono">${p.tasks.length}</span>`,
+      wlBatteryHtml(p.person) ]));
   wlOpenModal(`${ovEsc(dept)} — עומס ממוצע ${d.avg}% · ${d.over} מעל 100% · ${d.headcount} אנשים`, tbl);
 }
 
