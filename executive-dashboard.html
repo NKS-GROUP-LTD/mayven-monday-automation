@@ -848,6 +848,11 @@ body::before{content:"";position:fixed;inset:0;background-image:url("data:image/
 .wl-bar-100{position:absolute;top:-2px;bottom:-2px;width:0;border-inline-start:2px dashed var(--red-fg);opacity:.7}
 .wl-bar-val{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;text-align:left;color:var(--ink)}
 .wl-bar-val.over{color:var(--accent)}
+.wl-bar-sub{display:block;font-family:'Heebo',sans-serif;font-weight:600;font-size:9.5px;color:rgba(26,29,35,.55);white-space:nowrap}
+/* daily distribution strip (per working-day util% under each person bar) */
+.wl-day-strip{display:flex;align-items:flex-end;gap:2px;height:18px}
+.wl-day-col{flex:1;min-width:3px;align-self:flex-end;background:var(--ink-soft);border-radius:1px 1px 0 0}
+.wl-day-col.over{background:var(--accent)}
 .wl-suspect{font-family:'Heebo',sans-serif;font-weight:700;font-size:11px;color:var(--yellow-fg);background:var(--yellow-bg);border:1px solid var(--yellow-fg);border-radius:5px;padding:1px 6px;white-space:nowrap}
 /* on-time battery (under each person bar) */
 .wl-bar-mid{display:flex;flex-direction:column;gap:4px;min-width:0}
@@ -5149,8 +5154,11 @@ function ovOpenKpi(which){
 // 'מאושר לביצוע' (not started), 'ממתין לאישור מנהל' (off the person), 'בעבודה - צד שלישי'
 // (vendor, not the person) and all done/parked statuses are deliberately excluded.
 const WL_PERSON_ACTIVE = new Set(['בעבודה','אושר על ידי מנהל','יש לבצע תיקונים :)']);
-const WL_RETRO_ADD   = new Set(['הסתיימה','מאושר לביצוע','ממתין לאישור מנהל']);
+const WL_RETRO_ADD   = new Set(['הסתיימה','מאושר לביצוע','דגל אדום']); // retro adds timing/planning context (per CEO)
 const WL_CONC_CAP = 8; // concurrency above this = messy board data, not real load → flag, don't show
+// Normalized daily-load model: each working day a person carries Σ task-weights; 4 task-units = a
+// full day = 100%. Tunable. Headline per person = the PEAK day's utilization in the window.
+const WL_DAILY_CAPACITY = 4;
 const WL_DAY = 864e5;
 const wlState = { boards:{}, started:false, window:'week', retro:false, lens:'people', escBound:false };
 
@@ -5236,11 +5244,12 @@ function wlAllItems(){
   return out;
 }
 
-// Qualifying task for LOAD (Metric 1). Retro adds completed/approved/waiting historical load.
+// Qualifying task for LOAD (Metric 1). Retro adds completed/approved/red-flag planning context.
+// In-Deadline is intentionally NOT filtered here: a task in an in-progress status is real work the
+// person is doing regardless of whether it counts toward a project deadline (Section D keeps it).
 function wlQualifies(it){
   const okStatus = WL_PERSON_ACTIVE.has(it.status) || (wlState.retro && WL_RETRO_ADD.has(it.status));
   if (!okStatus) return false;
-  if (it.calc && it.calc.trim().toLowerCase() === 'no') return false; // missing/empty → included
   if (it.start == null || it.end == null) return false;
   return true;
 }
@@ -5256,31 +5265,48 @@ function wlConcurrency(tasks, ws, we){
   return max;
 }
 
-// ── Metric 1 — per-person loading. Multi-owner tasks attribute days to EACH owner. ──
+// ── Metric 1 — per-person loading (normalized daily-weight model). ──
+// Each qualifying task contributes weight = 1 / (working days in its FULL range) on every working
+// day its range covers (clamped to the window). Per working day: dayLoad = Σ weights of the
+// person's tasks active that day; dayUtil% = dayLoad / WL_DAILY_CAPACITY × 100. The person's
+// headline = the PEAK dayUtil% across the window. Multi-owner tasks give full weight to EACH owner.
+function wlWindowWorkdays(ws, we){
+  const days = [];
+  for (let t = ws; t <= we; t += WL_DAY) if (wlIsWorkday(new Date(t))) days.push(t);
+  return days;
+}
 function wlComputePeople(){
   const win = wlWindow();
-  const cap = wlWorkdays(win.start, win.end) || 1;
+  const cap = wlWorkdays(win.start, win.end) || 1; // # working days in window (for caption/context)
+  const windowDays = wlWindowWorkdays(win.start, win.end);
   const items = wlAllItems().filter(wlQualifies);
+  for (const it of items) it.weight = 1 / (wlWorkdays(it.start, it.end) || 1); // per-day weight (full range)
   const byPerson = new Map();
   for (const it of items){
-    const cs = Math.max(it.start, win.start), ce = Math.min(it.end, win.end);
-    const allocDays = (ce >= cs) ? wlWorkdays(cs, ce) : 0;
     const overlaps = it.end >= win.start && it.start <= win.end;
     for (const person of it.owners){
-      if (!byPerson.has(person)) byPerson.set(person, { person, allocDays:0, tasks:[], depts:{} });
+      if (!byPerson.has(person)) byPerson.set(person, { person, tasks:[], depts:{} });
       const rec = byPerson.get(person);
-      rec.allocDays += allocDays;
       if (overlaps) rec.tasks.push(it);
       for (const tm of (it.teams.length ? it.teams : [it.dept])) rec.depts[tm] = (rec.depts[tm]||0)+1;
     }
   }
   const rows = [];
   for (const rec of byPerson.values()){
-    const loading = Math.round(rec.allocDays / cap * 100);
+    // daily utilization series across the window's working days
+    const series = windowDays.map(day => {
+      let load = 0;
+      for (const tk of rec.tasks) if (tk.start <= day && tk.end >= day) load += tk.weight;
+      return { dayMs:day, dayLoad:load, util:load / WL_DAILY_CAPACITY * 100 };
+    });
+    let peakUtil = 0, peakDayMs = null, peakLoad = 0;
+    for (const s of series) if (s.util > peakUtil){ peakUtil = s.util; peakDayMs = s.dayMs; peakLoad = s.dayLoad; }
+    const loading = Math.round(peakUtil);
     const conc = wlConcurrency(rec.tasks, win.start, win.end);
     const concSuspect = conc > WL_CONC_CAP; // implausibly high → board data still messy, not real load
     let dept='—', mx=0; for (const [k,n] of Object.entries(rec.depts)) if (n>mx){ mx=n; dept=k; }
-    rows.push({ person:rec.person, allocDays:rec.allocDays, tasks:rec.tasks, loading, cap, conc, concSuspect, dept });
+    rows.push({ person:rec.person, tasks:rec.tasks, loading, peakUtil, peakDayMs, peakLoad,
+      series, cap, conc, concSuspect, dept });
   }
   rows.sort((a,b)=> b.loading - a.loading || b.conc - a.conc);
   return { rows, win, cap };
@@ -5331,8 +5357,8 @@ function wlComputeDepts(){
     const avg = Math.round(loads.reduce((s,v)=>s+v,0)/loads.length);
     const med = loads.length % 2 ? loads[(loads.length-1)/2] : Math.round((loads[loads.length/2-1]+loads[loads.length/2])/2);
     const over = people.filter(p=>p.loading>100).length;
-    const allocDays = people.reduce((s,p)=>s+p.allocDays,0);
-    out.push({ dept, people, avg, min:loads[0], med, max:loads[loads.length-1], over, headcount:people.length, allocDays });
+    const taskCount = people.reduce((s,p)=>s+p.tasks.length,0);
+    out.push({ dept, people, avg, min:loads[0], med, max:loads[loads.length-1], over, headcount:people.length, taskCount });
   }
   out.sort((a,b)=> b.avg - a.avg);
   return { rows:out, win, cap };
@@ -5503,10 +5529,20 @@ function wlDQHtml(){
 }
 
 // ── Lens A — אנשים ──
-// NOTE on the metric: allocated-days = Σ per-task workdays-in-window. Since tasks overlap and
-// many timelines are long/left-open, this equals the AVERAGE number of timed tasks open per
-// working day (sum÷capacity). So 100% ≈ one task open per day on average; 300% ≈ three at once.
-// It is a pressure/over-extension ranking, NOT literal hours-utilization. Concurrency = the peak.
+// Normalized daily-weight model: headline = the PEAK day's utilization% in the window. Each active
+// task contributes 1/(working days in its full range) per working day it covers; that sum / capacity
+// (WL_DAILY_CAPACITY task-units = a full day = 100%). The small strip is the per-working-day series.
+function wlDayStripHtml(series){
+  if (!series || !series.length) return '';
+  const scale = Math.max(100, ...series.map(s=>s.util)); // scale to at least 100% so a full day reads full-height
+  const cols = series.map(s => {
+    const h = Math.max(3, Math.round(s.util / scale * 100));
+    const d = new Date(s.dayMs);
+    const lbl = d.toLocaleDateString('he-IL',{weekday:'short',day:'2-digit',month:'2-digit'});
+    return `<span class="wl-day-col ${s.util>100?'over':''}" style="height:${h}%" title="${lbl}: ${Math.round(s.util)}%"></span>`;
+  }).join('');
+  return `<div class="wl-day-strip" title="התפלגות יומית — אחוז עומס לכל יום עבודה בחלון">${cols}</div>`;
+}
 function wlBarRow(r, ceiling){
   const band = r.loading > 100 ? 'over' : r.loading >= 50 ? 'healthy' : 'under';
   const w = Math.min(100, r.loading / ceiling * 100);
@@ -5518,19 +5554,20 @@ function wlBarRow(r, ceiling){
         <div class="wl-bar-fill ${band}" style="width:${w}%"></div>
         <div class="wl-bar-100" style="inset-inline-start:${oneHundred}%"></div>
       </div>
+      ${wlDayStripHtml(r.series)}
       ${wlBatteryHtml(r.person)}
     </div>
-    <span class="wl-bar-val ${r.loading>100?'over':''}">${r.loading}%${r.concSuspect?` · <span class="wl-suspect">⚠ דאטה חריגה</span>`:r.conc>=3?` · ⚠${r.conc}`:''}</span>
+    <span class="wl-bar-val ${r.loading>100?'over':''}">${r.loading}%<small class="wl-bar-sub">שיא${r.concSuspect?` · <span class="wl-suspect">⚠ דאטה</span>`:r.conc>=3?` · ⚠${r.conc}`:''}</small></span>
   </div>`;
 }
 function wlLensPeople(){
   const { rows, win, cap } = wlComputePeople();
   const cap1 = cap || 1;
   // Visual ceiling: cap at 300% so the spread among the majority is readable; outliers peg full
-  // with their true % in the label. (Raw values reach the hundreds of % — see caption.)
+  // with their true % in the label.
   const maxLoad = Math.max(...rows.map(r=>r.loading), 0);
   const ceiling = Math.min(Math.max(maxLoad, 120), 300);
-  const cap_ = `<div class="wl-cap">עומס לפי אדם = ימי ה-Timeline של משימות <b>שהאדם עובד עליהן עכשיו</b> בלבד — סטטוס <b>'בעבודה' · 'אושר על ידי מנהל' · 'יש לבצע תיקונים :)'</b> — שנופלים בחלון "${win.label}" ÷ ימי העבודה בחלון (${cap1}, ספירת א׳–ה׳, ישראל) × 100. סטטוסים אחרים <b>לא</b> נחשבים עומס פעיל: 'מאושר לביצוע' (טרם התחיל), 'ממתין לאישור מנהל' (כבר לא אצל האדם), 'בעבודה - צד שלישי' (ספק עובד, לא האדם), וכן הסתיימה/מבוטלת/בנק/למעקב. בנוסף: In Deadline≠No, חייב Timeline. מעל 100% (ורוד) = יותר עבודה פעילה מימי העבודה בחלון. ⚠N = שיא משימות פעילות חופפות באותו יום (Concurrency). ${wlState.retro?'<b>רטרו פעיל:</b> נוסף לכך נספרים גם הסתיימה · מאושר לביצוע · ממתין לאישור מנהל (עומס היסטורי/כולל).':'<b>רטרו כבוי:</b> רק 3 סטטוסי העבודה הפעילים נספרים.'} שורה עם <b>⚠ דאטה חריגה</b> = ריבוי מעל ${WL_CONC_CAP}, כלומר דאטת הבורד עדיין לא נקייה (משימות פתוחות בסטטוס שגוי) ולא עומס אמיתי.</div>`;
+  const cap_ = `<div class="wl-cap">עומס = העומס ביום העמוס ביותר בחלון "${win.label}". כל משימה פעילה תורמת 1÷(מספר ימי העבודה בטווח שלה) לכל יום עבודה שהיא מכסה; סוכמים ליום ומחלקים בקיבולת (${WL_DAILY_CAPACITY} יחידות = יום מלא = 100%). נספרות משימות בסטטוס <b>בעבודה / אושר על ידי מנהל / יש לבצע תיקונים</b> עם Timeline (ללא סינון In-Deadline). מעל 100% (ורוד) = יום עמוס מקיבולת. הרצועה הקטנה = התפלגות יומית (אחוז העומס לכל יום עבודה בחלון). ⚠N = שיא משימות פעילות חופפות באותו יום (Concurrency). ${wlState.retro?'<b>רטרו פעיל:</b> נוספים גם הסתיימה · מאושר לביצוע · דגל אדום (הקשר תזמון/תכנון).':'<b>רטרו כבוי:</b> רק 3 סטטוסי העבודה הפעילים נספרים.'} שורה עם <b>⚠ דאטה חריגה</b> = ריבוי מעל ${WL_CONC_CAP}, כלומר דאטת הבורד עדיין לא נקייה (משימות פתוחות בסטטוס שגוי) ולא עומס אמיתי.</div>`;
   const bars = rows.length
     ? `<div class="wl-bars">${rows.map(r=>wlBarRow(r, ceiling)).join('')}</div>`
     : `<div class="wl-empty">אין משימות מתוזמנות בחלון הנבחר</div>`;
@@ -5557,9 +5594,8 @@ function wlLensPeople(){
 
 // ── Lens B — מחלקות ──
 function wlLensDepts(){
-  const { rows, win, cap } = wlComputeDepts();
-  const cap1 = cap || 1;
-  const cap_ = `<div class="wl-cap">עומס ממוצע לפי מחלקה = ממוצע אחוז העומס של האנשים במחלקה (חלון "${win.label}", קיבולת ${cap1} ימי עבודה). עומס אדם נספר מ<b>משימות פעילות בלבד</b> — סטטוס 'בעבודה' / 'אושר על ידי מנהל' / 'יש לבצע תיקונים' — לא כולל 'מאושר לביצוע' או 'צד שלישי'. זהות המחלקה נגזרת מעמודת ה-Team (סוג "צוות"); בהיעדרה — מבורד המקור. <b>ממוצע יכול להסתיר חוסר-איזון</b> — הרצועה מציגה את פיזור האנשים (כל נקודה = אדם; הקו = חציון; הקו המקווקו = 100%).</div>`;
+  const { rows, win } = wlComputeDepts();
+  const cap_ = `<div class="wl-cap">עומס ממוצע לפי מחלקה = ממוצע <b>אחוז העומס ביום העמוס ביותר</b> של האנשים במחלקה בחלון "${win.label}". עומס אדם = שיא העומס היומי — כל משימה פעילה תורמת 1÷(ימי העבודה בטווחה) לכל יום עבודה שהיא מכסה, סוכמים ליום ומחלקים בקיבולת (${WL_DAILY_CAPACITY} יחידות = יום מלא = 100%). נספרות משימות פעילות בלבד — 'בעבודה' / 'אושר על ידי מנהל' / 'יש לבצע תיקונים'. זהות המחלקה נגזרת מעמודת ה-Team (סוג "צוות"); בהיעדרה — מבורד המקור. <b>ממוצע יכול להסתיר חוסר-איזון</b> — הרצועה מציגה את פיזור האנשים (כל נקודה = אדם; הקו = חציון; הקו המקווקו = 100%).</div>`;
   if (!rows.length) return `<div class="wl-section"><div class="wl-section-h">עומס לפי מחלקה</div>${cap_}<div class="wl-empty">אין נתונים בחלון הנבחר</div></div>`;
   const scale = Math.max(120, ...rows.map(d=>d.max));
   const html = rows.map(d => {
@@ -5568,7 +5604,7 @@ function wlLensDepts(){
     const hundred = 100/scale*100;
     const h100 = hundred<=100?`<div class="wl-spark-100" style="inset-inline-start:${hundred}%"></div>`:'';
     return `<div class="wl-dept-row" onclick="wlOpenDept('${ovEsc(d.dept).replace(/'/g,"\\'")}')">
-      <div><div class="wl-dept-name">${ovEsc(d.dept)}</div><div class="wl-dept-sub">${d.headcount} אנשים · ${d.over>0?`<span class="wl-red">${d.over} מעל 100%</span>`:'0 מעל 100%'} · ${d.allocDays} ימים</div></div>
+      <div><div class="wl-dept-name">${ovEsc(d.dept)}</div><div class="wl-dept-sub">${d.headcount} אנשים · ${d.over>0?`<span class="wl-red">${d.over} מעל 100%</span>`:'0 מעל 100%'} · ${d.taskCount} משימות</div></div>
       <div class="wl-spark">${pts}${med}${h100}</div>
       <div class="wl-dept-stat ${d.avg>100?'wl-red':''}">${d.avg}%<br><span class="wl-dept-sub mono">${d.min}–${d.max}</span></div>
     </div>`;
@@ -5655,7 +5691,8 @@ function wlOpenPerson(person){
       <span class="mono" style="font-size:11px;text-align:left">${fmtDate(new Date(t.start))}→${fmtDate(new Date(t.end))}</span>
     </div>`;
   }).join('');
-  wlOpenModal(`${ovEsc(person)} — עומס ${r.loading}% · ${r.allocDays}/${r.cap} ימים · ריבוי ${r.conc} · ${tasks.length} משימות`,
+  const peakLbl = r.peakDayMs!=null ? fmtDate(new Date(r.peakDayMs)) : '—';
+  wlOpenModal(`${ovEsc(person)} — עומס שיא ${r.loading}% (יום עמוס: ${peakLbl}) · ריבוי ${r.conc} · ${tasks.length} משימות`,
     `<div style="padding:4px 14px">${body}</div>`);
 }
 
@@ -5688,10 +5725,9 @@ function wlOpenDept(dept){
   const d = rows.find(x=>x.dept===dept);
   if (!d){ wlOpenModal(ovEsc(dept), `<div class="wl-empty">אין נתונים</div>`); return; }
   const people = [...d.people].sort((a,b)=>b.loading-a.loading);
-  const tbl = ovTable(['אדם','עומס','ימים מוקצים','ריבוי-משימות','משימות','Timeline'],
+  const tbl = ovTable(['אדם','עומס שיא','ריבוי-משימות','משימות','Timeline'],
     people.map(p=>[ `<b style="cursor:pointer" onclick="wlCloseModal();wlOpenPerson('${ovEsc(p.person).replace(/'/g,"\\'")}')">${ovEsc(p.person)}</b>`,
       `<span class="mono ${p.loading>100?'wl-red':''}">${p.loading}%</span>`,
-      `<span class="mono">${p.allocDays}/${p.cap}</span>`,
       p.conc>=3?`<span class="wl-red mono">${p.conc}</span>`:`<span class="mono">${p.conc}</span>`,
       `<span class="mono">${p.tasks.length}</span>`,
       wlBatteryHtml(p.person) ]));
