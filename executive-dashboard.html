@@ -848,10 +848,13 @@ body::before{content:"";position:fixed;inset:0;background-image:url("data:image/
 .wl-bar-100{position:absolute;top:-2px;bottom:-2px;width:0;border-inline-start:2px dashed var(--red-fg);opacity:.7}
 .wl-bar-val{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;text-align:left;color:var(--ink)}
 .wl-bar-val.over{color:var(--accent)}
+.wl-suspect{font-family:'Heebo',sans-serif;font-weight:700;font-size:11px;color:var(--yellow-fg);background:var(--yellow-bg);border:1px solid var(--yellow-fg);border-radius:5px;padding:1px 6px;white-space:nowrap}
 /* concurrency callout */
 .wl-conc-list{display:flex;flex-wrap:wrap;gap:8px}
 .wl-conc{display:flex;align-items:center;gap:7px;font-size:12px;background:var(--red-bg);color:var(--red-fg);border:1.5px solid var(--red-fg);border-radius:999px;padding:4px 11px;cursor:pointer;font-weight:700}
 .wl-conc .wl-conc-n{font-family:'JetBrains Mono',monospace;background:var(--red-fg);color:#fff;border-radius:50%;width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;font-size:11px}
+.wl-conc-suspect{background:var(--yellow-bg);color:var(--yellow-fg);border-color:var(--yellow-fg)}
+.wl-conc-suspect .wl-conc-n{background:var(--yellow-fg)}
 /* dept distribution strip */
 .wl-dept-row{display:grid;grid-template-columns:120px 1fr auto;align-items:center;gap:12px;cursor:pointer;padding:8px 6px;border-bottom:1px dashed var(--ink-softer)}
 .wl-dept-row:hover{background:var(--paper-deep)}
@@ -5127,8 +5130,12 @@ function ovOpenKpi(which){
 //   Metric 2 — Duration/Bottleneck ("מה לוקח הכי הרבה זמן"): ALL statuses count.
 // Capacity unit = working days (Israel Sun–Thu). Effort column is mostly empty → never a load metric.
 // ══════════════════════════════════════════════════
-const WL_LOAD_ACTIVE = new Set([...OV_ACTIVE_SET].filter(s => s !== 'בעבודה - צד שלישי'));
+// Person-load active set: a task loads a PERSON only if they are actually working it now.
+// 'מאושר לביצוע' (not started), 'ממתין לאישור מנהל' (off the person), 'בעבודה - צד שלישי'
+// (vendor, not the person) and all done/parked statuses are deliberately excluded.
+const WL_PERSON_ACTIVE = new Set(['בעבודה','אושר על ידי מנהל','יש לבצע תיקונים :)']);
 const WL_RETRO_ADD   = new Set(['הסתיימה','מאושר לביצוע','ממתין לאישור מנהל']);
+const WL_CONC_CAP = 8; // concurrency above this = messy board data, not real load → flag, don't show
 const WL_DAY = 864e5;
 const wlState = { boards:{}, started:false, window:'week', retro:false, lens:'people', escBound:false };
 
@@ -5216,7 +5223,7 @@ function wlAllItems(){
 
 // Qualifying task for LOAD (Metric 1). Retro adds completed/approved/waiting historical load.
 function wlQualifies(it){
-  const okStatus = WL_LOAD_ACTIVE.has(it.status) || (wlState.retro && WL_RETRO_ADD.has(it.status));
+  const okStatus = WL_PERSON_ACTIVE.has(it.status) || (wlState.retro && WL_RETRO_ADD.has(it.status));
   if (!okStatus) return false;
   if (it.calc && it.calc.trim().toLowerCase() === 'no') return false; // missing/empty → included
   if (it.start == null || it.end == null) return false;
@@ -5256,8 +5263,9 @@ function wlComputePeople(){
   for (const rec of byPerson.values()){
     const loading = Math.round(rec.allocDays / cap * 100);
     const conc = wlConcurrency(rec.tasks, win.start, win.end);
+    const concSuspect = conc > WL_CONC_CAP; // implausibly high → board data still messy, not real load
     let dept='—', mx=0; for (const [k,n] of Object.entries(rec.depts)) if (n>mx){ mx=n; dept=k; }
-    rows.push({ person:rec.person, allocDays:rec.allocDays, tasks:rec.tasks, loading, cap, conc, dept });
+    rows.push({ person:rec.person, allocDays:rec.allocDays, tasks:rec.tasks, loading, cap, conc, concSuspect, dept });
   }
   rows.sort((a,b)=> b.loading - a.loading || b.conc - a.conc);
   return { rows, win, cap };
@@ -5463,7 +5471,7 @@ function wlBarRow(r, ceiling){
       <div class="wl-bar-fill ${band}" style="width:${w}%"></div>
       <div class="wl-bar-100" style="inset-inline-start:${oneHundred}%"></div>
     </div>
-    <span class="wl-bar-val ${r.loading>100?'over':''}">${r.loading}%${r.conc>=3?` · ⚠${r.conc}`:''}</span>
+    <span class="wl-bar-val ${r.loading>100?'over':''}">${r.loading}%${r.concSuspect?` · <span class="wl-suspect">⚠ דאטה חריגה</span>`:r.conc>=3?` · ⚠${r.conc}`:''}</span>
   </div>`;
 }
 function wlLensPeople(){
@@ -5473,15 +5481,15 @@ function wlLensPeople(){
   // with their true % in the label. (Raw values reach the hundreds of % — see caption.)
   const maxLoad = Math.max(...rows.map(r=>r.loading), 0);
   const ceiling = Math.min(Math.max(maxLoad, 120), 300);
-  const cap_ = `<div class="wl-cap">עומס לפי אדם = סך ימי ה-Timeline שלו שנופלים בחלון "${win.label}" ÷ ימי העבודה בחלון (${cap1}, ספירת א׳–ה׳, ישראל) × 100. כיוון שמשימות חופפות ו-Timelines ארוכים/פתוחים, זה שווה ל<b>מספר המשימות הממוצע הפתוח ביום עבודה</b>: 100% ≈ משימה אחת פתוחה ביום · 300% ≈ שלוש במקביל. זהו דירוג לחץ/הקצאת-יתר, לא ניצול-שעות. מעל 100% (ורוד) = הקצאת יתר. ⚠N = שיא הריבוי (Concurrency). הסקאלה נחתכת ב-300% לקריאוּת; חורגים ננעלים על מלא והערך המדויק בטקסט. משימות נספרות: סט פעיל ללא צד-שלישי/מבוטלת/בנק, In Deadline≠No, עם Timeline${wlState.retro?' · <b>רטרו פעיל: כולל גם הסתיימה/מאושר/ממתין</b>':''}.</div>`;
+  const cap_ = `<div class="wl-cap">עומס לפי אדם = ימי ה-Timeline של משימות <b>שהאדם עובד עליהן עכשיו</b> בלבד — סטטוס <b>'בעבודה' · 'אושר על ידי מנהל' · 'יש לבצע תיקונים :)'</b> — שנופלים בחלון "${win.label}" ÷ ימי העבודה בחלון (${cap1}, ספירת א׳–ה׳, ישראל) × 100. סטטוסים אחרים <b>לא</b> נחשבים עומס פעיל: 'מאושר לביצוע' (טרם התחיל), 'ממתין לאישור מנהל' (כבר לא אצל האדם), 'בעבודה - צד שלישי' (ספק עובד, לא האדם), וכן הסתיימה/מבוטלת/בנק/למעקב. בנוסף: In Deadline≠No, חייב Timeline. מעל 100% (ורוד) = יותר עבודה פעילה מימי העבודה בחלון. ⚠N = שיא משימות פעילות חופפות באותו יום (Concurrency). ${wlState.retro?'<b>רטרו פעיל:</b> נוסף לכך נספרים גם הסתיימה · מאושר לביצוע · ממתין לאישור מנהל (עומס היסטורי/כולל).':'<b>רטרו כבוי:</b> רק 3 סטטוסי העבודה הפעילים נספרים.'} שורה עם <b>⚠ דאטה חריגה</b> = ריבוי מעל ${WL_CONC_CAP}, כלומר דאטת הבורד עדיין לא נקייה (משימות פתוחות בסטטוס שגוי) ולא עומס אמיתי.</div>`;
   const bars = rows.length
     ? `<div class="wl-bars">${rows.map(r=>wlBarRow(r, ceiling)).join('')}</div>`
     : `<div class="wl-empty">אין משימות מתוזמנות בחלון הנבחר</div>`;
   // concurrency callout
   const conc = rows.filter(r=>r.conc>=3).sort((a,b)=>b.conc-a.conc);
-  const concCap = `<div class="wl-cap">ריבוי-משימות (Concurrency) = המספר המרבי של משימות חופפות לאותו אדם ביום עבודה אחד בחלון. ≥3 = סימן צוואר בקבוק (כשאין שעות, חפיפה היא הסמן הטוב ביותר ל"יותר מדי בו-זמנית"). לחיצה פותחת את המשימות.</div>`;
+  const concCap = `<div class="wl-cap">ריבוי-משימות (Concurrency) = המספר המרבי של משימות <b>פעילות</b> (3 סטטוסי העבודה בלבד) חופפות לאותו אדם ביום עבודה אחד בחלון. ≥3 = סימן צוואר בקבוק. ערך מעל ${WL_CONC_CAP} מסומן <b>⚠ דאטה חריגה</b> ולא כמספר — סביר שהדאטה עדיין לא נקייה ולא שמדובר בעומס אמיתי. לחיצה פותחת את המשימות.</div>`;
   const concList = conc.length
-    ? `<div class="wl-conc-list">${conc.map(r=>`<button class="wl-conc" onclick="wlOpenPerson('${ovEsc(r.person).replace(/'/g,"\\'")}')"><span class="wl-conc-n">${r.conc}</span> ${ovEsc(r.person)}</button>`).join('')}</div>`
+    ? `<div class="wl-conc-list">${conc.map(r=>`<button class="wl-conc ${r.concSuspect?'wl-conc-suspect':''}" onclick="wlOpenPerson('${ovEsc(r.person).replace(/'/g,"\\'")}')"><span class="wl-conc-n">${r.concSuspect?'⚠':r.conc}</span> ${ovEsc(r.person)}${r.concSuspect?' · דאטה חריגה':''}</button>`).join('')}</div>`
     : `<div class="wl-empty">אין אנשים עם 3+ משימות חופפות ✓</div>`;
   return `
     <div class="wl-section">
@@ -5501,7 +5509,7 @@ function wlLensPeople(){
 function wlLensDepts(){
   const { rows, win, cap } = wlComputeDepts();
   const cap1 = cap || 1;
-  const cap_ = `<div class="wl-cap">עומס ממוצע לפי מחלקה = ממוצע אחוז העומס של האנשים במחלקה (חלון "${win.label}", קיבולת ${cap1} ימי עבודה). זהות המחלקה נגזרת מעמודת ה-Team (סוג "צוות"); בהיעדרה — מבורד המקור. <b>ממוצע יכול להסתיר חוסר-איזון</b> — הרצועה מציגה את פיזור האנשים (כל נקודה = אדם; הקו = חציון; הקו המקווקו = 100%).</div>`;
+  const cap_ = `<div class="wl-cap">עומס ממוצע לפי מחלקה = ממוצע אחוז העומס של האנשים במחלקה (חלון "${win.label}", קיבולת ${cap1} ימי עבודה). עומס אדם נספר מ<b>משימות פעילות בלבד</b> — סטטוס 'בעבודה' / 'אושר על ידי מנהל' / 'יש לבצע תיקונים' — לא כולל 'מאושר לביצוע' או 'צד שלישי'. זהות המחלקה נגזרת מעמודת ה-Team (סוג "צוות"); בהיעדרה — מבורד המקור. <b>ממוצע יכול להסתיר חוסר-איזון</b> — הרצועה מציגה את פיזור האנשים (כל נקודה = אדם; הקו = חציון; הקו המקווקו = 100%).</div>`;
   if (!rows.length) return `<div class="wl-section"><div class="wl-section-h">עומס לפי מחלקה</div>${cap_}<div class="wl-empty">אין נתונים בחלון הנבחר</div></div>`;
   const scale = Math.max(120, ...rows.map(d=>d.max));
   const html = rows.map(d => {
