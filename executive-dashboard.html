@@ -815,6 +815,83 @@ body::before{content:"";position:fixed;inset:0;background-image:url("data:image/
 .ov-tbl td{padding:8px 14px;border-bottom:1px solid var(--ink-softer);color:var(--ink)}
 .ov-tbl tr:hover td{background:var(--paper-deep)}
 .ov-st{font-size:11px;background:var(--paper-shade);border-radius:5px;padding:2px 7px}
+
+/* ── Workload & Bottlenecks (wl) ── */
+.wl-red{color:var(--red-fg)}.wl-green{color:var(--green-fg)}.wl-muted{color:rgba(26,29,35,.5)}
+.wl-controls{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:6px}
+.wl-cgroup{display:flex;align-items:center;gap:0;border:1.5px solid var(--ink);border-radius:8px;overflow:hidden;box-shadow:2px 2px 0 var(--ink)}
+.wl-cbtn{font-family:'Heebo',sans-serif;font-size:12px;font-weight:700;cursor:pointer;background:var(--paper);color:var(--ink);border:none;border-inline-start:1.5px solid var(--ink-soft);padding:7px 13px;transition:background .08s}
+.wl-cbtn:first-child{border-inline-start:none}
+.wl-cbtn.on{background:var(--ink);color:var(--paper)}
+.wl-clabel{font-size:11px;color:rgba(26,29,35,.6);font-weight:700;margin-inline-end:2px}
+.wl-toggle{display:flex;align-items:center;gap:7px;font-size:12px;font-weight:700;color:var(--ink);cursor:pointer;border:1.5px solid var(--ink);border-radius:8px;padding:6px 12px;box-shadow:2px 2px 0 var(--ink);background:var(--paper)}
+.wl-toggle.on{background:var(--accent);color:#fff;border-color:var(--ink)}
+.wl-toggle .wl-dot{width:9px;height:9px;border-radius:50%;border:1.5px solid currentColor;background:transparent}
+.wl-toggle.on .wl-dot{background:#fff}
+.wl-section{display:flex;flex-direction:column;gap:10px;margin-top:18px}
+.wl-section-h{font-family:'Suez One',serif;font-size:16px;color:var(--ink)}
+.wl-cap{font-size:11.5px;color:rgba(26,29,35,.66);line-height:1.5;background:var(--paper-deep);border-inline-start:3px solid var(--ink-soft);border-radius:0 6px 6px 0;padding:6px 10px}
+.wl-card{background:var(--paper);border:1.5px solid var(--ink);box-shadow:3px 3px 0 var(--ink);border-radius:10px;padding:14px 16px}
+.wl-empty{padding:16px;color:rgba(26,29,35,.55);font-size:13px;border:1.5px dashed var(--ink-soft);border-radius:10px;text-align:center}
+.wl-grid2{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:16px;align-items:start}
+@media(max-width:980px){.wl-grid2{grid-template-columns:minmax(0,1fr)}}
+/* horizontal bar rows */
+.wl-bars{display:flex;flex-direction:column;gap:7px}
+.wl-bar-row{display:grid;grid-template-columns:130px 1fr 64px;align-items:center;gap:10px;cursor:pointer;padding:3px 4px;border-radius:7px;transition:background .08s}
+.wl-bar-row:hover{background:var(--paper-deep)}
+.wl-bar-name{font-size:12px;font-weight:700;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wl-bar-track{position:relative;height:18px;background:var(--paper-shade);border:1px solid var(--ink-softer);border-radius:5px;overflow:hidden}
+.wl-bar-fill{position:absolute;inset-inline-start:0;top:0;height:100%;border-radius:0}
+.wl-bar-fill.over{background:var(--accent)}
+.wl-bar-fill.healthy{background:var(--ink-soft)}
+.wl-bar-fill.under{background:#b9b2a6}
+.wl-bar-100{position:absolute;top:-2px;bottom:-2px;width:0;border-inline-start:2px dashed var(--red-fg);opacity:.7}
+.wl-bar-val{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;text-align:left;color:var(--ink)}
+.wl-bar-val.over{color:var(--accent)}
+/* concurrency callout */
+.wl-conc-list{display:flex;flex-wrap:wrap;gap:8px}
+.wl-conc{display:flex;align-items:center;gap:7px;font-size:12px;background:var(--red-bg);color:var(--red-fg);border:1.5px solid var(--red-fg);border-radius:999px;padding:4px 11px;cursor:pointer;font-weight:700}
+.wl-conc .wl-conc-n{font-family:'JetBrains Mono',monospace;background:var(--red-fg);color:#fff;border-radius:50%;width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;font-size:11px}
+/* dept distribution strip */
+.wl-dept-row{display:grid;grid-template-columns:120px 1fr auto;align-items:center;gap:12px;cursor:pointer;padding:8px 6px;border-bottom:1px dashed var(--ink-softer)}
+.wl-dept-row:hover{background:var(--paper-deep)}
+.wl-dept-name{font-size:12.5px;font-weight:700;color:var(--ink)}
+.wl-dept-sub{font-size:10.5px;color:rgba(26,29,35,.55)}
+.wl-spark{position:relative;height:20px;background:var(--paper-shade);border:1px solid var(--ink-softer);border-radius:5px}
+.wl-spark-pt{position:absolute;top:50%;transform:translate(-50%,-50%);width:7px;height:7px;border-radius:50%;background:var(--ink-soft);border:1px solid var(--ink)}
+.wl-spark-pt.over{background:var(--accent);border-color:var(--accent)}
+.wl-spark-med{position:absolute;top:-1px;bottom:-1px;width:2px;background:var(--ink)}
+.wl-spark-100{position:absolute;top:-1px;bottom:-1px;width:0;border-inline-start:2px dashed var(--red-fg);opacity:.6}
+.wl-dept-stat{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;text-align:left;white-space:nowrap}
+/* project rows */
+.wl-proj{display:grid;grid-template-columns:1fr auto;gap:8px 12px;cursor:pointer;padding:10px 6px;border-bottom:1px dashed var(--ink-softer);align-items:center}
+.wl-proj:hover{background:var(--paper-deep)}
+.wl-proj-top{display:flex;align-items:center;gap:8px;min-width:0}
+.wl-proj-name{font-size:13px;font-weight:700;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wl-proj-meta{font-size:10.5px;color:rgba(26,29,35,.55);margin-top:2px}
+.wl-proj-bn{font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:700;color:var(--ink);text-align:left;line-height:1}
+.wl-proj-bn small{font-family:'Heebo',sans-serif;font-size:10px;font-weight:400;color:rgba(26,29,35,.55);display:block}
+.wl-neck{font-size:11px;color:var(--ink);background:var(--yellow-bg);border:1px solid var(--yellow-fg);border-radius:6px;padding:2px 8px;margin-top:4px;display:inline-block}
+.wl-neck.over{background:var(--red-bg);border-color:var(--red-fg);color:var(--red-fg)}
+.wl-chip{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:999px;border:1.5px solid currentColor;white-space:nowrap;line-height:1.5;margin-inline-start:4px}
+.wl-chip-team{color:rgba(26,29,35,.62);background:var(--paper-shade)}
+.wl-chip-stage{color:rgba(26,29,35,.62);background:var(--paper);max-width:140px;overflow:hidden;text-overflow:ellipsis;vertical-align:bottom}
+/* data quality */
+.wl-dq{background:var(--yellow-bg);border:1.5px solid var(--yellow-fg);border-radius:9px;padding:11px 14px;font-size:11.5px;color:var(--ink);line-height:1.6}
+.wl-dq b{color:var(--yellow-fg)}
+.wl-dq ul{margin:5px 0 0;padding-inline-start:18px}
+/* timeline strip in modal */
+.wl-tlrow{display:grid;grid-template-columns:1fr 150px 70px;gap:10px;align-items:center;padding:7px 4px;border-bottom:1px dashed var(--ink-softer);font-size:12px}
+.wl-tlrow.olap{background:var(--yellow-bg)}
+.wl-tlname{font-weight:700;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wl-tlsub{font-size:10px;color:rgba(26,29,35,.55)}
+.wl-tlbar{position:relative;height:14px;background:var(--paper-shade);border:1px solid var(--ink-softer);border-radius:4px;direction:ltr}
+.wl-tlbar-fill{position:absolute;top:0;height:100%;background:var(--ink-soft);border-radius:3px}
+.wl-tlbar-fill.olap{background:var(--accent)}
+.wl-spinner{display:inline-block;width:11px;height:11px;border:2px solid var(--ink-soft);border-top-color:var(--accent);border-radius:50%;animation:spin .75s linear infinite;vertical-align:-1px;margin-inline-end:4px}
+.wl-legend{display:flex;flex-wrap:wrap;gap:12px;font-size:10.5px;color:rgba(26,29,35,.6);margin-top:2px}
+.wl-legend span{display:inline-flex;align-items:center;gap:4px}
+.wl-legend i{width:11px;height:11px;border-radius:3px;display:inline-block;border:1px solid var(--ink-softer)}
 </style>
 </head>
 <body>
@@ -1007,6 +1084,7 @@ const PIPELINE_CANCEL_STAGES = new Set(['Cancelled']);
 // ── Worlds ──
 const WORLDS = [
   { key:'ovexec',      he:'תצוגה כללית',        en:'Executive Overview', icon:'🏠' },
+  { key:'workload',    he:'עומסים וצווארי בקבוק', en:'Workload & Bottlenecks', icon:'⚖️' },
   { key:'overview',    he:'סקירה כללית',       en:'Overview',    icon:'📊' },
   { key:'pipeline',    he:'פורטפוליו טכנולוגיה', en:'Tech Pipeline', icon:'⚙️' },
   { key:'tech',             he:'פיתוח טכנולוגי',    en:'Tech & Dev',        icon:'👩‍💻' },
@@ -1465,6 +1543,7 @@ function miniBar(pct, health) {
 // ══════════════════════════════════════════════════
 function renderWorld(ps) {
   if (activeWorld === 'ovexec')        renderOverviewExec();
+  else if (activeWorld === 'workload') renderWorkload();
   else if (activeWorld === 'overview') renderOverview(ps);
   else if (activeWorld === 'pipeline') renderPipeline(pipelineProjects);
   else if (activeWorld === 'tech')     renderTechPage(ps);
@@ -5031,6 +5110,524 @@ function ovOpenKpi(which){
     html=ovTable(['פרויקט','מחלקה','מצב'], k.noDL.slice(0,cap).map(p=>[ ovEsc(p.key), ovEsc(p.dept), p.redFlag?'<span class="ov-red">דגל אדום</span>':'<span class="muted">פעיל</span>' ]));
   } else { return; }
   ovOpenModal(title, html);
+}
+
+// ══════════════════════════════════════════════════
+// WORKLOAD & BOTTLENECKS (workload) — "עומסים וצווארי בקבוק"
+// Page-isolated. Reads ONLY team boards (live, via team-boards-fetch) by TITLE-resolved
+// columns. Reuses ovNormalizeBoard / ovBuildColResolver (parsing) + ovDClean / OV_STATUS_NAMES
+// (pure predicates). Fetches into its OWN wlState — never depends on ovState. NEVER the Hub.
+//
+// Two distinct lenses (kept separate — different questions):
+//   Metric 1 — Resource Loading ("מי עמוס"): forward, Timeline-days vs capacity. Active set
+//     EXCLUDING 'בעבודה - צד שלישי','מבוטלת','בנק משימות', calcDeadline!=="No", has timeline.
+//   Metric 2 — Duration/Bottleneck ("מה לוקח הכי הרבה זמן"): ALL statuses count.
+// Capacity unit = working days (Israel Sun–Thu). Effort column is mostly empty → never a load metric.
+// ══════════════════════════════════════════════════
+const WL_LOAD_ACTIVE = new Set([...OV_ACTIVE_SET].filter(s => s !== 'בעבודה - צד שלישי'));
+const WL_RETRO_ADD   = new Set(['הסתיימה','מאושר לביצוע','ממתין לאישור מנהל']);
+const WL_DAY = 864e5;
+const wlState = { boards:{}, started:false, window:'week', retro:false, lens:'people', escBound:false };
+
+// ── Fetch (own state; reuse ovNormalizeBoard for title-resolver + parsing) ──
+function wlFetchBoards(){
+  if (wlState.started) return;
+  wlState.started = true;
+  TEAM_BOARDS.forEach(tb => {
+    fetch(`${TEAM_BOARDS_FETCH_URL}?board=${tb.id}`, { headers:{ 'Authorization':`Bearer ${PIPELINE_ANON_KEY}` } })
+      .then(r => r.json())
+      .then(json => {
+        if (!json || !json.ok) throw new Error(json && json.error ? json.error : 'fetch failed');
+        wlState.boards[tb.id] = ovNormalizeBoard(tb, json);
+        if (activeWorld === 'workload') wlRender();
+      })
+      .catch(e => {
+        console.warn(`[workload] board ${tb.id} (${tb.he}) failed to load — skipped:`, e.message || e);
+        wlState.boards[tb.id] = { tb, error:String(e.message||e), name:tb.he, items:[], col:()=>null, columns:[] };
+        if (activeWorld === 'workload') wlRender();
+      });
+  });
+}
+
+// ── Calendar helpers (Israel work-week Sun–Thu) ──
+function wlIsWorkday(d){ const g = d.getDay(); return g !== 5 && g !== 6; } // 5=Fri,6=Sat off
+function wlWorkdays(aMs, bMs){
+  if (bMs < aMs) return 0;
+  let n = 0;
+  for (let t = aMs; t <= bMs; t += WL_DAY) if (wlIsWorkday(new Date(t))) n++;
+  return n;
+}
+function wlWindow(){
+  const todayMs = ovTodayMs();
+  const now = new Date(todayMs);
+  if (wlState.window === 'week'){
+    const sun = todayMs - now.getDay()*WL_DAY;     // Sunday of current week
+    return { start:sun, end:sun + 4*WL_DAY, label:'השבוע (א׳–ה׳)' };
+  }
+  if (wlState.window === '2weeks'){
+    return { start:todayMs, end:todayMs + 13*WL_DAY, label:'שבועיים הקרובים' };
+  }
+  const ms = new Date(now.getFullYear(), now.getMonth(), 1).getTime();
+  const me = new Date(now.getFullYear(), now.getMonth()+1, 0).getTime();
+  return { start:ms, end:me, label:'החודש' };
+}
+
+// ── Item derivation (own shape, resolved by title) ──
+function wlPeople(text){ return (text||'').split(',').map(s=>s.trim()).filter(Boolean); }
+function wlProjectKey(board, item, pnId){
+  if (pnId){ const v = cv(item, pnId).t; if (v && v.trim()) return v.trim(); }
+  if (item.group_title && item.group_title.trim()) return item.group_title.trim();
+  const gnId = board.col('groupName');
+  if (gnId){ const v = cv(item, gnId).t; if (v && v.trim()) return v.trim(); }
+  return null;
+}
+function wlLoadedBoards(){ return TEAM_BOARDS.map(tb=>wlState.boards[tb.id]).filter(b=>b && !b.error); }
+function wlAllItems(){
+  const out = [];
+  for (const board of wlLoadedBoards()){
+    const col = board.col;
+    const stId=col('status'), ownId=col('owner'), tmId=col('team'), tlId=col('timeline'),
+          cdId=col('calcDeadline'), pnId=col('projectName'), psId=col('projectStage'),
+          ptId=col('projectType'), efId=col('effort'), peId=col('plannedEffort');
+    for (const it of board.items){
+      const tl = tlId ? parseTL(cv(it, tlId).r) : { from:null, to:null };
+      const start = tl.from ? ovDayMs(tl.from) : null;
+      const end   = tl.to   ? ovDayMs(tl.to)   : null;
+      out.push({
+        id:it.id, name:it.name, raw:it, boardId:board.tb.id, dept:board.tb.he, emoji:board.tb.emoji, mgr:board.tb.mgr,
+        status: stId ? cv(it, stId).t : null,
+        owners: wlPeople(ownId ? cv(it, ownId).t : null),
+        teams:  wlPeople(tmId  ? cv(it, tmId).t  : null),
+        start, end,
+        calc:  cdId ? cv(it, cdId).t : null,
+        project: wlProjectKey(board, it, pnId),
+        stage: psId ? cv(it, psId).t : null,
+        ptype: ptId ? cv(it, ptId).t : null,
+        effort: efId ? cv(it, efId).t : null,
+        planned: peId ? cv(it, peId).t : null,
+      });
+    }
+  }
+  return out;
+}
+
+// Qualifying task for LOAD (Metric 1). Retro adds completed/approved/waiting historical load.
+function wlQualifies(it){
+  const okStatus = WL_LOAD_ACTIVE.has(it.status) || (wlState.retro && WL_RETRO_ADD.has(it.status));
+  if (!okStatus) return false;
+  if (it.calc && it.calc.trim().toLowerCase() === 'no') return false; // missing/empty → included
+  if (it.start == null || it.end == null) return false;
+  return true;
+}
+// Concurrency = max overlapping qualifying tasks on any single working day in the window.
+function wlConcurrency(tasks, ws, we){
+  let max = 0;
+  for (let t = ws; t <= we; t += WL_DAY){
+    if (!wlIsWorkday(new Date(t))) continue;
+    let c = 0;
+    for (const tk of tasks) if (tk.start <= t && tk.end >= t) c++;
+    if (c > max) max = c;
+  }
+  return max;
+}
+
+// ── Metric 1 — per-person loading. Multi-owner tasks attribute days to EACH owner. ──
+function wlComputePeople(){
+  const win = wlWindow();
+  const cap = wlWorkdays(win.start, win.end) || 1;
+  const items = wlAllItems().filter(wlQualifies);
+  const byPerson = new Map();
+  for (const it of items){
+    const cs = Math.max(it.start, win.start), ce = Math.min(it.end, win.end);
+    const allocDays = (ce >= cs) ? wlWorkdays(cs, ce) : 0;
+    const overlaps = it.end >= win.start && it.start <= win.end;
+    for (const person of it.owners){
+      if (!byPerson.has(person)) byPerson.set(person, { person, allocDays:0, tasks:[], depts:{} });
+      const rec = byPerson.get(person);
+      rec.allocDays += allocDays;
+      if (overlaps) rec.tasks.push(it);
+      for (const tm of (it.teams.length ? it.teams : [it.dept])) rec.depts[tm] = (rec.depts[tm]||0)+1;
+    }
+  }
+  const rows = [];
+  for (const rec of byPerson.values()){
+    const loading = Math.round(rec.allocDays / cap * 100);
+    const conc = wlConcurrency(rec.tasks, win.start, win.end);
+    let dept='—', mx=0; for (const [k,n] of Object.entries(rec.depts)) if (n>mx){ mx=n; dept=k; }
+    rows.push({ person:rec.person, allocDays:rec.allocDays, tasks:rec.tasks, loading, cap, conc, dept });
+  }
+  rows.sort((a,b)=> b.loading - a.loading || b.conc - a.conc);
+  return { rows, win, cap };
+}
+
+// ── Metric 1 (rolled up) — per department, from the team column (fallback: board dept) ──
+function wlComputeDepts(){
+  const { rows, win, cap } = wlComputePeople();
+  const byDept = new Map();
+  for (const r of rows){
+    if (!byDept.has(r.dept)) byDept.set(r.dept, []);
+    byDept.get(r.dept).push(r);
+  }
+  const out = [];
+  for (const [dept, people] of byDept){
+    const loads = people.map(p=>p.loading).sort((a,b)=>a-b);
+    const avg = Math.round(loads.reduce((s,v)=>s+v,0)/loads.length);
+    const med = loads.length % 2 ? loads[(loads.length-1)/2] : Math.round((loads[loads.length/2-1]+loads[loads.length/2])/2);
+    const over = people.filter(p=>p.loading>100).length;
+    const allocDays = people.reduce((s,p)=>s+p.allocDays,0);
+    out.push({ dept, people, avg, min:loads[0], med, max:loads[loads.length-1], over, headcount:people.length, allocDays });
+  }
+  out.sort((a,b)=> b.avg - a.avg);
+  return { rows:out, win, cap };
+}
+
+// ── Metric 2 — per-project duration / bottleneck. ALL statuses count. ──
+function wlIsRealProject(key, board, items){
+  if (!key || !key.trim()) return false;
+  const tbHe  = (board && board.tb) ? board.tb.he : '';
+  const bname = (board && board.name) ? board.name : '';
+  const keyC = ovDClean(key);
+  if (!keyC) return false;
+  if (keyC.startsWith('all tasks') || keyC.startsWith('2b organized') ||
+      keyC.startsWith('משימות אישי') || keyC.startsWith('משימות צוות') ||
+      keyC.includes('mayven hub- all tasks') ||
+      keyC==='כל המשימות' || keyC.startsWith('כל המשימות') ||
+      keyC==='topics' || keyC==='מושגים' ||
+      keyC==='משימות שהסתיימו' || keyC==='משימות שבוטלו' || keyC==='משימות שנכנסו לעבודה') return false;
+  if (OV_STATUS_NAMES.has(keyC)) return false;
+  if (keyC.startsWith('team ')) return false;
+  if (bname && keyC===ovDClean(bname)) return false;
+  if (tbHe && (keyC===ovDClean(tbHe) || keyC==='team '+ovDClean(tbHe))) return false;
+  for (const it of items) if (it.ptype && /department/i.test(it.ptype)) return false;
+  return true;
+}
+function wlSpanDays(it){ return Math.max(1, Math.round((it.end - it.start)/WL_DAY) + 1); } // inclusive calendar days
+function wlComputeProjects(){
+  const items = wlAllItems();
+  const groups = new Map();
+  for (const it of items){
+    if (!it.project) continue;
+    const k = it.boardId + '::' + it.project;
+    if (!groups.has(k)) groups.set(k, []);
+    groups.get(k).push(it);
+  }
+  const out = [];
+  for (const [, list] of groups){
+    const board = wlState.boards[list[0].boardId];
+    if (!wlIsRealProject(list[0].project, board, list)) continue;
+    if (!list.some(it => OV_ACTIVE_SET.has(it.status))) continue; // active projects only
+    const tt = list.filter(it => it.start != null && it.end != null);
+    if (!tt.length) continue;
+    let personDays = 0, bottleneck = null;
+    const teamDays = {}, owners = new Set(), teams = new Set();
+    for (const it of tt){
+      const span = wlSpanDays(it);
+      const oc = Math.max(1, it.owners.length);
+      personDays += span * oc;
+      it.owners.forEach(o=>owners.add(o));
+      const tms = it.teams.length ? it.teams : [it.dept];
+      tms.forEach(tm=>{ teams.add(tm); teamDays[tm] = (teamDays[tm]||0) + span; });
+      const overdue = it.end < ovTodayMs() && !OV_DONE_SET.has(it.status);
+      if (!bottleneck || span > bottleneck.span || (span===bottleneck.span && overdue && !bottleneck.overdue))
+        bottleneck = { name:it.name, span, overdue, owner:it.owners.join(', ')||'—', team:tms.join(', '), status:it.status };
+    }
+    out.push({ key:list[0].project, boardId:list[0].boardId, dept:list[0].dept, emoji:list[0].emoji, mgr:list[0].mgr,
+      personDays, ownerCount:owners.size, teams:[...teams], teamDays, bottleneck, tasks:tt,
+      stage:(list.find(x=>x.stage && x.stage.trim())||{}).stage || '—' });
+  }
+  out.sort((a,b)=> b.personDays - a.personDays);
+  return out;
+}
+
+// ── Data-quality scan (honesty: thin coverage understates numbers) ──
+function wlDataQuality(){
+  const loaded = wlLoadedBoards();
+  const noCalc = [], noProjName = [], thin = [];
+  for (const b of loaded){
+    if (!b.col('calcDeadline')) noCalc.push(b.tb.he);
+    if (!b.col('projectName'))  noProjName.push(b.tb.he);
+    // coverage among ACTIVE tasks
+    let act=0, withOwner=0, withTL=0;
+    const ownId=b.col('owner'), tlId=b.col('timeline'), stId=b.col('status');
+    for (const it of b.items){
+      const st = stId ? cv(it, stId).t : null;
+      if (!OV_ACTIVE_SET.has(st)) continue;
+      act++;
+      if (ownId && (cv(it, ownId).t||'').trim()) withOwner++;
+      if (tlId){ const tl=parseTL(cv(it, tlId).r); if (tl.from && tl.to) withTL++; }
+    }
+    if (act >= 5){
+      const op = Math.round(withOwner/act*100), tp = Math.round(withTL/act*100);
+      if (op < 60 || tp < 60) thin.push(`${b.tb.he} (אחראי ${op}% · Timeline ${tp}%)`);
+    }
+  }
+  return { noCalc, noProjName, thin, failed: TEAM_BOARDS.map(tb=>wlState.boards[tb.id]).filter(b=>b&&b.error).map(b=>b.tb.he) };
+}
+
+// ══════════════════════════════════════════════════
+// WORKLOAD — RENDER
+// ══════════════════════════════════════════════════
+function renderWorkload(){
+  document.getElementById('content').innerHTML = `
+  <div class="page">
+    <div id="wl-overlay" class="wl-overlay ov-overlay" onclick="if(event.target===this)wlCloseModal()">
+      <div class="wl-modal ov-modal">
+        <div class="wl-modal-head ov-modal-head"><span id="wl-modal-title"></span>
+          <button class="wl-modal-close ov-modal-close" onclick="wlCloseModal()">✕</button></div>
+        <div id="wl-modal-body" class="wl-modal-body ov-modal-body"></div>
+      </div>
+    </div>
+    <div id="wl-root"></div>
+  </div>`;
+  if (!wlState.escBound){
+    document.addEventListener('keydown', e => { if (e.key==='Escape') wlCloseModal(); });
+    wlState.escBound = true;
+  }
+  wlRender();
+  wlFetchBoards();
+}
+
+// Controls (re-render on change)
+function wlSetWindow(w){ wlState.window = w; wlRender(); }
+function wlToggleRetro(){ wlState.retro = !wlState.retro; wlRender(); }
+function wlSetLens(l){ wlState.lens = l; wlRender(); }
+
+function wlHead(){
+  const total = TEAM_BOARDS.length;
+  const loadedN = wlLoadedBoards().length;
+  const failedN = TEAM_BOARDS.map(tb=>wlState.boards[tb.id]).filter(b=>b&&b.error).length;
+  const attempted = Object.keys(wlState.boards).length;
+  const today = new Date().toLocaleDateString('he-IL',{day:'2-digit',month:'2-digit',year:'numeric'});
+  let state;
+  if (attempted < total) state = `<span class="wl-spinner"></span> טוען מחלקות… ${loadedN}/${total}`;
+  else if (failedN)      state = `${loadedN} מחלקות נטענו · <span class="wl-red">${failedN} נכשלו</span>`;
+  else                   state = `${loadedN} מחלקות`;
+  const win = (k,l)=> `<button class="wl-cbtn ${wlState.window===k?'on':''}" onclick="wlSetWindow('${k}')">${l}</button>`;
+  const lens = (k,l)=> `<button class="wl-cbtn ${wlState.lens===k?'on':''}" onclick="wlSetLens('${k}')">${l}</button>`;
+  return `<div class="page-head">
+    <div>
+      <h1 class="page-title">⚖️ עומסים וצווארי בקבוק</h1>
+      <div class="page-sub">מי צוואר הבקבוק · מה לוקח הכי הרבה זמן · מקור: בורדי צוות (חי) · קריאה בלבד</div>
+      <div class="wl-controls">
+        <span class="wl-clabel">חלון:</span>
+        <div class="wl-cgroup">${win('week','השבוע')}${win('2weeks','שבועיים')}${win('month','החודש')}</div>
+        <span class="wl-clabel">עדשה:</span>
+        <div class="wl-cgroup">${lens('people','אנשים')}${lens('depts','מחלקות')}${lens('projects','פרויקטים')}</div>
+        <button class="wl-toggle ${wlState.retro?'on':''}" onclick="wlToggleRetro()"><span class="wl-dot"></span> רטרו (כולל שהסתיימו)</button>
+      </div>
+    </div>
+    <div class="ov-loadstate">${state}<div class="ov-asof mono">נכון ל-${today}</div></div>
+  </div>`;
+}
+
+function wlRender(){
+  const root = document.getElementById('wl-root');
+  if (!root) return;
+  if (!wlLoadedBoards().length){
+    root.innerHTML = wlHead() + `<div class="wl-section"><div class="wl-empty">טוען נתוני מחלקות…</div></div>`;
+    return;
+  }
+  let body;
+  if (wlState.lens === 'people')        body = wlLensPeople();
+  else if (wlState.lens === 'depts')    body = wlLensDepts();
+  else                                  body = wlLensProjects();
+  root.innerHTML = wlHead() + wlDQHtml() + body;
+}
+
+function wlDQHtml(){
+  const dq = wlDataQuality();
+  const parts = [];
+  if (dq.failed.length)     parts.push(`<li>בורדים שלא נטענו: ${dq.failed.map(ovEsc).join(', ')} — המספרים חלקיים.</li>`);
+  if (dq.thin.length)       parts.push(`<li>כיסוי דליל של אחראי/Timeline: ${dq.thin.map(ovEsc).join(' · ')} — עומס האנשים שם <b>מוערך בחֶסר</b>.</li>`);
+  if (dq.noProjName.length) parts.push(`<li>ללא עמודת "Project Name": ${dq.noProjName.map(ovEsc).join(', ')} — עדשת הפרויקטים מקבצת לפי קבוצת Monday (גס יותר).</li>`);
+  if (dq.noCalc.length)     parts.push(`<li>סינון "In Deadline" פעיל רק היכן שהעמודה קיימת; חסרה ב: ${dq.noCalc.map(ovEsc).join(', ')} — שם נספרות כל המשימות.</li>`);
+  if (!parts.length) return '';
+  return `<div class="wl-section"><div class="wl-dq"><b>⚠️ הערת איכות נתונים</b><ul>${parts.join('')}</ul></div></div>`;
+}
+
+// ── Lens A — אנשים ──
+// NOTE on the metric: allocated-days = Σ per-task workdays-in-window. Since tasks overlap and
+// many timelines are long/left-open, this equals the AVERAGE number of timed tasks open per
+// working day (sum÷capacity). So 100% ≈ one task open per day on average; 300% ≈ three at once.
+// It is a pressure/over-extension ranking, NOT literal hours-utilization. Concurrency = the peak.
+function wlBarRow(r, ceiling){
+  const band = r.loading > 100 ? 'over' : r.loading >= 50 ? 'healthy' : 'under';
+  const w = Math.min(100, r.loading / ceiling * 100);
+  const oneHundred = Math.min(100, 100 / ceiling * 100);
+  return `<div class="wl-bar-row" onclick="wlOpenPerson('${ovEsc(r.person).replace(/'/g,"\\'")}')">
+    <span class="wl-bar-name" title="${ovEsc(r.person)} · ${ovEsc(r.dept)}">${ovEsc(r.person)}</span>
+    <div class="wl-bar-track">
+      <div class="wl-bar-fill ${band}" style="width:${w}%"></div>
+      <div class="wl-bar-100" style="inset-inline-start:${oneHundred}%"></div>
+    </div>
+    <span class="wl-bar-val ${r.loading>100?'over':''}">${r.loading}%${r.conc>=3?` · ⚠${r.conc}`:''}</span>
+  </div>`;
+}
+function wlLensPeople(){
+  const { rows, win, cap } = wlComputePeople();
+  const cap1 = cap || 1;
+  // Visual ceiling: cap at 300% so the spread among the majority is readable; outliers peg full
+  // with their true % in the label. (Raw values reach the hundreds of % — see caption.)
+  const maxLoad = Math.max(...rows.map(r=>r.loading), 0);
+  const ceiling = Math.min(Math.max(maxLoad, 120), 300);
+  const cap_ = `<div class="wl-cap">עומס לפי אדם = סך ימי ה-Timeline שלו שנופלים בחלון "${win.label}" ÷ ימי העבודה בחלון (${cap1}, ספירת א׳–ה׳, ישראל) × 100. כיוון שמשימות חופפות ו-Timelines ארוכים/פתוחים, זה שווה ל<b>מספר המשימות הממוצע הפתוח ביום עבודה</b>: 100% ≈ משימה אחת פתוחה ביום · 300% ≈ שלוש במקביל. זהו דירוג לחץ/הקצאת-יתר, לא ניצול-שעות. מעל 100% (ורוד) = הקצאת יתר. ⚠N = שיא הריבוי (Concurrency). הסקאלה נחתכת ב-300% לקריאוּת; חורגים ננעלים על מלא והערך המדויק בטקסט. משימות נספרות: סט פעיל ללא צד-שלישי/מבוטלת/בנק, In Deadline≠No, עם Timeline${wlState.retro?' · <b>רטרו פעיל: כולל גם הסתיימה/מאושר/ממתין</b>':''}.</div>`;
+  const bars = rows.length
+    ? `<div class="wl-bars">${rows.map(r=>wlBarRow(r, ceiling)).join('')}</div>`
+    : `<div class="wl-empty">אין משימות מתוזמנות בחלון הנבחר</div>`;
+  // concurrency callout
+  const conc = rows.filter(r=>r.conc>=3).sort((a,b)=>b.conc-a.conc);
+  const concCap = `<div class="wl-cap">ריבוי-משימות (Concurrency) = המספר המרבי של משימות חופפות לאותו אדם ביום עבודה אחד בחלון. ≥3 = סימן צוואר בקבוק (כשאין שעות, חפיפה היא הסמן הטוב ביותר ל"יותר מדי בו-זמנית"). לחיצה פותחת את המשימות.</div>`;
+  const concList = conc.length
+    ? `<div class="wl-conc-list">${conc.map(r=>`<button class="wl-conc" onclick="wlOpenPerson('${ovEsc(r.person).replace(/'/g,"\\'")}')"><span class="wl-conc-n">${r.conc}</span> ${ovEsc(r.person)}</button>`).join('')}</div>`
+    : `<div class="wl-empty">אין אנשים עם 3+ משימות חופפות ✓</div>`;
+  return `
+    <div class="wl-section">
+      <div class="wl-section-h">עומס לפי אדם · ${win.label}</div>
+      ${cap_}
+      <div class="wl-legend"><span><i style="background:var(--accent)"></i> &gt;100% הקצאת יתר</span><span><i style="background:var(--ink-soft)"></i> 50–100%</span><span><i style="background:#b9b2a6"></i> &lt;50% תת-ניצול</span><span>⚠N = ריבוי-משימות</span></div>
+      ${bars}
+    </div>
+    <div class="wl-section">
+      <div class="wl-section-h">צווארי בקבוק אנושיים · ריבוי-משימות ≥3</div>
+      ${concCap}
+      ${concList}
+    </div>`;
+}
+
+// ── Lens B — מחלקות ──
+function wlLensDepts(){
+  const { rows, win, cap } = wlComputeDepts();
+  const cap1 = cap || 1;
+  const cap_ = `<div class="wl-cap">עומס ממוצע לפי מחלקה = ממוצע אחוז העומס של האנשים במחלקה (חלון "${win.label}", קיבולת ${cap1} ימי עבודה). זהות המחלקה נגזרת מעמודת ה-Team (סוג "צוות"); בהיעדרה — מבורד המקור. <b>ממוצע יכול להסתיר חוסר-איזון</b> — הרצועה מציגה את פיזור האנשים (כל נקודה = אדם; הקו = חציון; הקו המקווקו = 100%).</div>`;
+  if (!rows.length) return `<div class="wl-section"><div class="wl-section-h">עומס לפי מחלקה</div>${cap_}<div class="wl-empty">אין נתונים בחלון הנבחר</div></div>`;
+  const scale = Math.max(120, ...rows.map(d=>d.max));
+  const html = rows.map(d => {
+    const pts = d.people.map(p=>`<div class="wl-spark-pt ${p.loading>100?'over':''}" style="inset-inline-start:${Math.min(100,p.loading/scale*100)}%" title="${ovEsc(p.person)} · ${p.loading}%"></div>`).join('');
+    const med = `<div class="wl-spark-med" style="inset-inline-start:${Math.min(100,d.med/scale*100)}%"></div>`;
+    const hundred = 100/scale*100;
+    const h100 = hundred<=100?`<div class="wl-spark-100" style="inset-inline-start:${hundred}%"></div>`:'';
+    return `<div class="wl-dept-row" onclick="wlOpenDept('${ovEsc(d.dept).replace(/'/g,"\\'")}')">
+      <div><div class="wl-dept-name">${ovEsc(d.dept)}</div><div class="wl-dept-sub">${d.headcount} אנשים · ${d.over>0?`<span class="wl-red">${d.over} מעל 100%</span>`:'0 מעל 100%'} · ${d.allocDays} ימים</div></div>
+      <div class="wl-spark">${pts}${med}${h100}</div>
+      <div class="wl-dept-stat ${d.avg>100?'wl-red':''}">${d.avg}%<br><span class="wl-dept-sub mono">${d.min}–${d.max}</span></div>
+    </div>`;
+  }).join('');
+  return `<div class="wl-section">
+    <div class="wl-section-h">עומס לפי מחלקה · ${win.label}</div>
+    ${cap_}
+    <div class="wl-card">${html}</div>
+  </div>`;
+}
+
+// ── Lens C — פרויקטים (duration / bottleneck) ──
+function wlLensProjects(){
+  const projects = wlComputeProjects();
+  const cap_ = `<div class="wl-cap">עומס לפי פרויקט = סך ימי-אדם (ימי Timeline קלנדריים של כל משימה × מספר האחראים), פרויקטים פעילים אמיתיים בלבד, ממוין מהכבד לקל = "מה לוקח הכי הרבה זמן". כאן <b>כל הסטטוסים נספרים</b> (כולל צד-שלישי ושהסתיימו) — משימת ספק שרצה 3 חודשים <b>היא</b> צוואר הבקבוק. "צוואר" = המשימה עם ה-Timeline הארוך ביותר בפרויקט.</div>`;
+  if (!projects.length) return `<div class="wl-section"><div class="wl-section-h">עומס לפי פרויקט</div>${cap_}<div class="wl-empty">אין פרויקטים פעילים עם Timeline</div></div>`;
+  const topN = projects.slice(0, 15);
+  const maxPD = Math.max(...topN.map(p=>p.personDays), 1);
+  // chart (horizontal bars by person-days)
+  const chart = topN.map(p => {
+    const w = Math.round(p.personDays/maxPD*100);
+    return `<div class="wl-bar-row" onclick="wlOpenProject('${p.boardId}','${ovEsc(p.key).replace(/'/g,"\\'")}')">
+      <span class="wl-bar-name" title="${ovEsc(p.key)}">${ovEsc(p.key)}</span>
+      <div class="wl-bar-track"><div class="wl-bar-fill healthy" style="width:${w}%"></div></div>
+      <span class="wl-bar-val">${p.personDays}<small style="font-weight:400"> י"א</small></span>
+    </div>`;
+  }).join('');
+  // detailed rows
+  const rows = topN.map(p => {
+    const teamChips = p.teams.slice(0,4).map(t=>`<span class="wl-chip wl-chip-team">${ovEsc(t)}</span>`).join('');
+    const nb = p.bottleneck;
+    const neck = nb ? `<div class="wl-neck ${nb.overdue?'over':''}">צוואר: ${ovEsc(nb.name.length>44?nb.name.slice(0,43)+'…':nb.name)} · ${nb.span} ימים${nb.overdue?' · חורג':''}</div>` : '';
+    return `<div class="wl-proj" onclick="wlOpenProject('${p.boardId}','${ovEsc(p.key).replace(/'/g,"\\'")}')">
+      <div class="wl-proj-top-wrap">
+        <div class="wl-proj-top">
+          <span class="wl-proj-name" title="${ovEsc(p.key)}">${ovEsc(p.key)}</span>
+          <span class="wl-chip wl-chip-stage" title="שלב">${ovEsc(p.stage)}</span>
+        </div>
+        <div class="wl-proj-meta">${ovEsc(p.emoji)} ${ovEsc(p.dept)} · ${ovEsc(p.mgr)} · ${p.ownerCount} אחראים · ${teamChips}</div>
+        ${neck}
+      </div>
+      <div class="wl-proj-bn">${p.personDays}<small>ימי-אדם</small></div>
+    </div>`;
+  }).join('');
+  return `<div class="wl-section">
+    <div class="wl-section-h">עומס לפי פרויקט · ${projects.length} פרויקטים פעילים</div>
+    ${cap_}
+    <div class="wl-grid2">
+      <div class="wl-card">${rows}</div>
+      <div class="wl-card"><div class="wl-dept-sub" style="margin-bottom:8px;font-weight:700">Top 15 לפי ימי-אדם</div><div class="wl-bars">${chart}</div></div>
+    </div>
+  </div>`;
+}
+
+// ── Modals (reuse ov overlay styling) ──
+function wlOpenModal(title, html){
+  const ov = document.getElementById('wl-overlay'); if (!ov) return;
+  document.getElementById('wl-modal-title').innerHTML = title;
+  document.getElementById('wl-modal-body').innerHTML = html;
+  ov.style.display = 'flex';
+}
+function wlCloseModal(){ const ov=document.getElementById('wl-overlay'); if (ov) ov.style.display='none'; }
+
+// Person drill-down: qualifying tasks in-window, overlapping ones highlighted.
+function wlOpenPerson(person){
+  const { rows, win } = wlComputePeople();
+  const r = rows.find(x=>x.person===person);
+  if (!r){ wlOpenModal(ovEsc(person), `<div class="wl-empty">אין משימות בחלון</div>`); return; }
+  const tasks = [...r.tasks].sort((a,b)=> (a.start??0)-(b.start??0));
+  // mark overlaps: a task overlaps another of this person's tasks within window
+  const overlapId = new Set();
+  for (let i=0;i<tasks.length;i++) for (let j=i+1;j<tasks.length;j++){
+    if (tasks[i].start<=tasks[j].end && tasks[j].start<=tasks[i].end){ overlapId.add(tasks[i].id); overlapId.add(tasks[j].id); }
+  }
+  const span = Math.max(1, win.end - win.start);
+  const body = tasks.map(t => {
+    const cs = Math.max(t.start, win.start), ce = Math.min(t.end, win.end);
+    const left = Math.max(0, (cs-win.start)/span*100), w = Math.max(3, (ce-cs)/span*100);
+    const ol = overlapId.has(t.id);
+    return `<div class="wl-tlrow ${ol?'olap':''}">
+      <div><div class="wl-tlname" title="${ovEsc(t.name)}">${ol?'⚠ ':''}${ovEsc(t.name)}</div>
+        <div class="wl-tlsub">${ovEsc(t.project||'—')} · ${ovEsc(t.dept)} · <span class="wl-st">${ovEsc(t.status||'—')}</span></div></div>
+      <div class="wl-tlbar"><div class="wl-tlbar-fill ${ol?'olap':''}" style="left:${left}%;width:${w}%"></div></div>
+      <span class="mono" style="font-size:11px;text-align:left">${fmtDate(new Date(t.start))}→${fmtDate(new Date(t.end))}</span>
+    </div>`;
+  }).join('');
+  wlOpenModal(`${ovEsc(person)} — עומס ${r.loading}% · ${r.allocDays}/${r.cap} ימים · ריבוי ${r.conc} · ${tasks.length} משימות`,
+    `<div style="padding:4px 14px">${body}</div>`);
+}
+
+function wlOpenDept(dept){
+  const { rows } = wlComputeDepts();
+  const d = rows.find(x=>x.dept===dept);
+  if (!d){ wlOpenModal(ovEsc(dept), `<div class="wl-empty">אין נתונים</div>`); return; }
+  const people = [...d.people].sort((a,b)=>b.loading-a.loading);
+  const tbl = ovTable(['אדם','עומס','ימים מוקצים','ריבוי-משימות','משימות'],
+    people.map(p=>[ `<b style="cursor:pointer" onclick="wlCloseModal();wlOpenPerson('${ovEsc(p.person).replace(/'/g,"\\'")}')">${ovEsc(p.person)}</b>`,
+      `<span class="mono ${p.loading>100?'wl-red':''}">${p.loading}%</span>`,
+      `<span class="mono">${p.allocDays}/${p.cap}</span>`,
+      p.conc>=3?`<span class="wl-red mono">${p.conc}</span>`:`<span class="mono">${p.conc}</span>`,
+      `<span class="mono">${p.tasks.length}</span>` ]));
+  wlOpenModal(`${ovEsc(dept)} — עומס ממוצע ${d.avg}% · ${d.over} מעל 100% · ${d.headcount} אנשים`, tbl);
+}
+
+function wlOpenProject(boardId, key){
+  const p = wlComputeProjects().find(x=>x.boardId===boardId && x.key===key);
+  if (!p){ wlOpenModal(ovEsc(key), `<div class="wl-empty">אין נתונים</div>`); return; }
+  const tasks = [...p.tasks].sort((a,b)=> wlSpanDays(b)-wlSpanDays(a)); // longest first = time sink
+  const tbl = ovTable(['משימה','אחראי','צוות','סטטוס','משך (ימים)'],
+    tasks.map(t=>{
+      const span = wlSpanDays(t);
+      const overdue = t.end < ovTodayMs() && !OV_DONE_SET.has(t.status);
+      const isNeck = p.bottleneck && t.name===p.bottleneck.name && span===p.bottleneck.span;
+      return [ `${isNeck?'🔴 ':''}${overdue&&!isNeck?'⏰ ':''}${ovEsc(t.name)}`, ovEsc(t.owners.join(', ')||'—'),
+        ovEsc((t.teams.join(', '))||'—'), `<span class="wl-st">${ovEsc(t.status||'—')}</span>`,
+        `<span class="mono ${isNeck?'wl-red':overdue?'wl-red':''}">${span}</span>` ];
+    }));
+  const dept = Object.entries(p.teamDays).sort((a,b)=>b[1]-a[1]).map(([t,n])=>`${ovEsc(t)} ${n}י׳`).join(' · ');
+  const head = `<div style="padding:8px 14px 0;font-size:12px;color:rgba(26,29,35,.7)">סה"כ ${p.personDays} ימי-אדם · ${p.ownerCount} אחראים · עומס מחלקות בפרויקט: ${dept||'—'}</div>`;
+  wlOpenModal(`${ovEsc(p.key)} — ${ovEsc(p.dept)}`, head + tbl);
 }
 
 // ══════════════════════════════════════════════════
