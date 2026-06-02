@@ -5154,7 +5154,7 @@ function ovOpenKpi(which){
 // 'מאושר לביצוע' (not started), 'ממתין לאישור מנהל' (off the person), 'בעבודה - צד שלישי'
 // (vendor, not the person) and all done/parked statuses are deliberately excluded.
 const WL_PERSON_ACTIVE = new Set(['בעבודה','אושר על ידי מנהל','יש לבצע תיקונים :)']);
-const WL_RETRO_ADD   = new Set(['הסתיימה','מאושר לביצוע','דגל אדום']); // retro adds timing/planning context (per CEO)
+const WL_RETRO_ADD   = new Set(['הסתיימה','מאושר לביצוע','דגל אדום','ממתין לאישור מנהל']); // retro adds timing/planning context (per CEO)
 const WL_CONC_CAP = 8; // concurrency above this = messy board data, not real load → flag, don't show
 // Normalized daily-load model: each working day a person carries Σ task-weights; 4 task-units = a
 // full day = 100%. Tunable. Headline per person = the PEAK day's utilization in the window.
@@ -5567,7 +5567,7 @@ function wlLensPeople(){
   // with their true % in the label.
   const maxLoad = Math.max(...rows.map(r=>r.loading), 0);
   const ceiling = Math.min(Math.max(maxLoad, 120), 300);
-  const cap_ = `<div class="wl-cap">עומס = העומס ביום העמוס ביותר בחלון "${win.label}". כל משימה פעילה תורמת 1÷(מספר ימי העבודה בטווח שלה) לכל יום עבודה שהיא מכסה; סוכמים ליום ומחלקים בקיבולת (${WL_DAILY_CAPACITY} יחידות = יום מלא = 100%). נספרות משימות בסטטוס <b>בעבודה / אושר על ידי מנהל / יש לבצע תיקונים</b> עם Timeline (ללא סינון In-Deadline). מעל 100% (ורוד) = יום עמוס מקיבולת. הרצועה הקטנה = התפלגות יומית (אחוז העומס לכל יום עבודה בחלון). ⚠N = שיא משימות פעילות חופפות באותו יום (Concurrency). ${wlState.retro?'<b>רטרו פעיל:</b> נוספים גם הסתיימה · מאושר לביצוע · דגל אדום (הקשר תזמון/תכנון).':'<b>רטרו כבוי:</b> רק 3 סטטוסי העבודה הפעילים נספרים.'} שורה עם <b>⚠ דאטה חריגה</b> = ריבוי מעל ${WL_CONC_CAP}, כלומר דאטת הבורד עדיין לא נקייה (משימות פתוחות בסטטוס שגוי) ולא עומס אמיתי.</div>`;
+  const cap_ = `<div class="wl-cap">עומס = העומס ביום העמוס ביותר בחלון "${win.label}". כל משימה פעילה תורמת 1÷(מספר ימי העבודה בטווח שלה) לכל יום עבודה שהיא מכסה; סוכמים ליום ומחלקים בקיבולת (${WL_DAILY_CAPACITY} יחידות = יום מלא = 100%). נספרות משימות בסטטוס <b>בעבודה / אושר על ידי מנהל / יש לבצע תיקונים</b> עם Timeline (ללא סינון In-Deadline). מעל 100% (ורוד) = יום עמוס מקיבולת. הרצועה הקטנה = התפלגות יומית (אחוז העומס לכל יום עבודה בחלון). ⚠N = שיא משימות פעילות חופפות באותו יום (Concurrency). ${wlState.retro?'<b>רטרו פעיל:</b> נוספים גם הסתיימה · מאושר לביצוע · דגל אדום · ממתין לאישור מנהל (הקשר תזמון/תכנון/צוואר בקבוק).':'<b>רטרו כבוי:</b> רק 3 סטטוסי העבודה הפעילים נספרים.'} שורה עם <b>⚠ דאטה חריגה</b> = ריבוי מעל ${WL_CONC_CAP}, כלומר דאטת הבורד עדיין לא נקייה (משימות פתוחות בסטטוס שגוי) ולא עומס אמיתי.</div>`;
   const bars = rows.length
     ? `<div class="wl-bars">${rows.map(r=>wlBarRow(r, ceiling)).join('')}</div>`
     : `<div class="wl-empty">אין משימות מתוזמנות בחלון הנבחר</div>`;
