@@ -915,6 +915,59 @@ body::before{content:"";position:fixed;inset:0;background-image:url("data:image/
 .wl-legend{display:flex;flex-wrap:wrap;gap:12px;font-size:10.5px;color:rgba(26,29,35,.6);margin-top:2px}
 .wl-legend span{display:inline-flex;align-items:center;gap:4px}
 .wl-legend i{width:11px;height:11px;border-radius:3px;display:inline-block;border:1px solid var(--ink-softer)}
+/* ══ Tech Status page (.ts-) — additive, reuses design vars only ══ */
+.ts-kpi-strip{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
+@media(max-width:1100px){.ts-kpi-strip{grid-template-columns:repeat(2,1fr)}}
+.ts-section{background:var(--paper);border:1.5px solid var(--ink);border-radius:10px;box-shadow:3px 3px 0 var(--ink);padding:18px}
+.ts-section-h{font-family:'Suez One',serif;font-size:18px;color:var(--ink);margin:0 0 4px}
+.ts-cap{font-size:11.5px;color:rgba(26,29,35,.66);line-height:1.5;background:var(--paper-deep);border-inline-start:3px solid var(--ink-soft);border-radius:0 6px 6px 0;padding:6px 10px;margin-bottom:12px}
+.ts-empty{font-size:13px;color:rgba(26,29,35,.5);padding:18px;text-align:center}
+.ts-spinner{display:inline-block;width:11px;height:11px;border:2px solid var(--ink-soft);border-top-color:var(--accent);border-radius:50%;animation:spin .75s linear infinite;vertical-align:-1px;margin-inline-end:4px}
+/* bottleneck table */
+.ts-tbl{width:100%;border-collapse:collapse;font-size:12.5px}
+.ts-tbl th{text-align:right;font-size:11px;font-weight:700;color:rgba(26,29,35,.6);border-bottom:1.5px solid var(--ink);padding:6px 8px;white-space:nowrap}
+.ts-tbl td{padding:8px;border-bottom:1px dashed var(--ink-softer);vertical-align:middle}
+.ts-row{cursor:pointer}
+.ts-row:hover{background:var(--paper-deep)}
+.ts-pname{font-weight:700;color:var(--ink)}
+.ts-tag{display:inline-block;font-size:10px;font-weight:700;padding:1px 7px;border-radius:999px;border:1.5px solid currentColor;white-space:nowrap;line-height:1.5}
+.ts-tag.red{color:var(--red-fg);background:var(--red-bg)}
+.ts-tag.over{color:var(--accent);background:#fbe5ea}
+.ts-tag.stuck{color:var(--yellow-fg);background:var(--yellow-bg)}
+.ts-tag.nodl{color:rgba(26,29,35,.6);background:var(--paper-shade)}
+.ts-tag.live{color:var(--green-fg);background:var(--green-bg)}
+.ts-stagechip{display:inline-block;font-size:10.5px;font-weight:600;padding:1px 8px;border-radius:6px;background:var(--paper-shade);border:1px solid var(--ink-softer);color:rgba(26,29,35,.75);white-space:nowrap}
+.ts-prio{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700}
+.ts-prio.crit{color:var(--red-fg)}.ts-prio.high{color:var(--accent)}.ts-prio.med{color:var(--yellow-fg)}.ts-prio.low{color:rgba(26,29,35,.5)}
+/* gantt / timeline */
+.ts-gantt{position:relative;direction:ltr;border:1px solid var(--ink-softer);border-radius:8px;background:var(--paper-deep);padding:0}
+.ts-gantt-axis{position:relative;height:22px;border-bottom:1px solid var(--ink-softer);font-family:'JetBrains Mono',monospace}
+.ts-gantt-mtick{position:absolute;top:0;bottom:0;border-inline-start:1px dashed var(--ink-softer)}
+.ts-gantt-mlbl{position:absolute;top:4px;font-size:9.5px;color:rgba(26,29,35,.55);transform:translateX(3px)}
+.ts-gantt-today{position:absolute;top:0;bottom:0;width:0;border-inline-start:2px solid var(--accent);z-index:3}
+.ts-gantt-today-lbl{position:absolute;top:2px;font-size:9px;font-weight:700;color:var(--accent);background:var(--paper);padding:0 3px;transform:translateX(-50%)}
+.ts-lane{position:relative;min-height:30px;border-bottom:1px dashed var(--ink-softer);padding:4px 0}
+.ts-lane:last-child{border-bottom:none}
+.ts-lane-lbl{position:absolute;inset-inline-start:6px;top:5px;font-size:10px;font-weight:700;color:rgba(26,29,35,.6);direction:rtl;z-index:2}
+.ts-dot{position:absolute;transform:translate(-50%,-50%);top:50%;width:11px;height:11px;border-radius:50%;border:1.5px solid var(--ink);cursor:pointer}
+.ts-dot:hover{width:15px;height:15px}
+.ts-dot.planned{background:var(--paper-shade)}.ts-dot.prog{background:var(--yellow-bg)}.ts-dot.live{background:var(--green-fg)}.ts-dot.red{background:var(--accent)}
+.ts-untimed{display:flex;flex-wrap:wrap;gap:6px;padding:10px;background:var(--paper-shade);border-radius:0 0 8px 8px;border-top:1px solid var(--ink-softer)}
+.ts-untimed-chip{font-size:10.5px;background:var(--paper);border:1px solid var(--ink-softer);border-radius:6px;padding:2px 8px;cursor:pointer}
+.ts-untimed-chip:hover{border-color:var(--ink)}
+/* distributions */
+.ts-grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+@media(max-width:1100px){.ts-grid3{grid-template-columns:1fr}}
+.ts-dist-h{font-size:12px;font-weight:700;color:var(--ink);margin-bottom:8px}
+.ts-bar-row{display:grid;grid-template-columns:110px 1fr 34px;align-items:center;gap:8px;margin-bottom:5px;font-size:11.5px}
+.ts-bar-name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:rgba(26,29,35,.8)}
+.ts-bar-track{height:14px;background:var(--paper-shade);border:1px solid var(--ink-softer);border-radius:4px;overflow:hidden}
+.ts-bar-fill{height:100%;background:var(--ink-soft)}
+.ts-bar-val{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;text-align:left}
+.ts-note{font-size:11px;color:rgba(26,29,35,.6);margin-top:10px;padding-top:8px;border-top:1px dashed var(--ink-softer)}
+.ts-modal-tbl{width:100%;border-collapse:collapse;font-size:12px}
+.ts-modal-tbl th{text-align:right;font-size:10.5px;color:rgba(26,29,35,.6);border-bottom:1px solid var(--ink);padding:5px 7px}
+.ts-modal-tbl td{padding:6px 7px;border-bottom:1px dashed var(--ink-softer)}
 </style>
 </head>
 <body>
@@ -1115,6 +1168,7 @@ const WORLDS = [
   { key:'product_launches', he:'השקות מוצר',         en:'Product Launches',   icon:'🚀' },
   { key:'campaigns',        he:'קמפיינים',           en:'Campaigns',          icon:'🎀' },
   { key:'launches',         he:'עלייה לאוויר',       en:'Tech Go-Live',       icon:'📅' },
+  { key:'tech_status',      he:'טכנולוגיה — סטטוס פיתוחים', en:'Tech — Dev Status', icon:'💻' },
   { key:'departments',      he:'מחלקות',             en:'Departments',        icon:'✨' },
 ];
 
@@ -1574,6 +1628,7 @@ function renderWorld(ps) {
   else if (activeWorld === 'product_portfolio') renderProductLaunches(productLaunchItems);
   else if (activeWorld === 'product_launches') renderProductRoadmap();
   else if (activeWorld === 'launches') renderRoadmap();
+  else if (activeWorld === 'tech_status') renderTechStatus();
   else renderWorldPage(ps);
 }
 
@@ -5750,6 +5805,316 @@ function wlOpenProject(boardId, key){
   const dept = Object.entries(p.teamDays).sort((a,b)=>b[1]-a[1]).map(([t,n])=>`${ovEsc(t)} ${n}י׳`).join(' · ');
   const head = `<div style="padding:8px 14px 0;font-size:12px;color:rgba(26,29,35,.7)">סה"כ ${p.personDays} ימי-אדם · ${p.ownerCount} אחראים · עומס מחלקות בפרויקט: ${dept||'—'}</div>`;
   wlOpenModal(`${ovEsc(p.key)} — ${ovEsc(p.dept)}`, head + tbl);
+}
+
+// ══════════════════════════════════════════════════
+// TECH STATUS PAGE (.ts-) — "טכנולוגיה — סטטוס פיתוחים"
+// Project-level, management-facing. TWO-SOURCE architecture, fetched live & cached:
+//   • MANAGEMENT portfolio (18404945843): epics. Dev Stage=P.DEV_STAGE, Dept=P.DEPARTMENT,
+//     Project Deadline (go-live DAY) = timerange_mm3y45wk (.end) — the ONLY deadline source.
+//   • EXECUTION board Team-Technology (18404395098): tasks. Dev Status=color_mm1jr8z.
+//   • JOIN = match-by-title: task Project Name ⭐ (text_mm3wkges) === epic name (normalized).
+//     Unmatched tasks are bucketed visibly as "ללא שיוך אפיק", never dropped.
+// Self-contained: own fetch + own state. Never touches processItems/processPipeline/applyFilters.
+// No person-level load by design (team has tasks on other boards too).
+// ══════════════════════════════════════════════════
+const TS_EXEC_BOARD   = '18404395098';
+const TS_DEADLINE_COL = 'timerange_mm3y45wk';     // Project Deadline = single-day go-live; use .end
+const TS_EX = { DEV_STATUS:'color_mm1jr8z', PROJECT_NAME:'text_mm3wkges', TIMELINE:'timeline__1',
+  COMPLETION:'date_mkxaztcc', EFFORT:'numeric_mkxapvw6', PLANNED:'project_planned_effort',
+  PRIORITY:'color_mm2ecyd3', OWNER:'people0' };
+const TS_LIVE_STAGES     = new Set(['Go Live','Deployed']);
+const TS_INACTIVE_STAGES = new Set(['Go Live','Deployed','Cancelled','NTH']); // NOT "active"
+const TS_REDFLAG_STAGE   = 'Red Flag 🚩';
+const TS_PLANNED_STAGES  = new Set(['Backlog','Discovery & Planning','Technical Specs','UI/UX Design']);
+const TS_PROG_STAGES     = new Set(['In Development','QA & Testing','Launch Prep','On Hold','Red Flag 🚩']);
+const TS_APPROVAL_STATUSES = new Set(['QA Biz','Ready 4 Deploy']); // awaiting-approval bottleneck
+const TS_BLOCKED_STATUSES  = new Set(['Blocked','NeedsFix']);
+const TS_PRIO_RANK = { 'Critical ⚠️️':4,'Critical ⚠️':4,'Critical':4,'High':3,'Medium':2,'Low':1 };
+const tsState = { mgmt:[], exec:[], started:false, loaded:false, error:null, escBound:false };
+
+function tsNorm(s){ return stripE(s||'').trim().toLowerCase(); }
+function tsNormItems(items){ return (items||[]).map(it=>({ id:it.id, name:it.name,
+  column_values:(it.column_values||[]).map(c=>({ column_id:c.id, text_value:c.text, value:c.value })) })); }
+function tsBucket(stage){ if(TS_LIVE_STAGES.has(stage))return'live'; if(TS_PLANNED_STAGES.has(stage))return'planned'; if(TS_PROG_STAGES.has(stage))return'prog'; return'other'; }
+
+function tsFetch(){
+  if (tsState.started) return;
+  tsState.started = true;
+  Promise.all([
+    fetch(PIPELINE_FETCH_URL, { headers:{ 'Authorization':`Bearer ${PIPELINE_ANON_KEY}` } }).then(r=>r.json()),
+    fetch(`${TEAM_BOARDS_FETCH_URL}?board=${TS_EXEC_BOARD}`, { headers:{ 'Authorization':`Bearer ${PIPELINE_ANON_KEY}` } }).then(r=>r.json()),
+  ]).then(([mg, ex]) => {
+    if (!mg || !mg.ok) throw new Error(mg && mg.error ? mg.error : 'pipeline-fetch failed');
+    if (!ex || !ex.ok) throw new Error(ex && ex.error ? ex.error : 'team-technology fetch failed');
+    tsState.mgmt = tsNormItems(mg.items);
+    tsState.exec = tsNormItems(ex.items);
+    tsState.loaded = true;
+    if (activeWorld === 'tech_status') tsRender();
+  }).catch(e => {
+    console.warn('[tech_status] fetch failed:', e.message || e);
+    tsState.error = String(e.message || e);
+    if (activeWorld === 'tech_status') tsRender();
+  });
+}
+
+// ── Aggregation (project-level). Pure over already-loaded data → <200ms. ──
+function tsCompute(){
+  const todayMs = ovTodayMs();
+  const epics = tsState.mgmt.map(it => {
+    const dl = parseTL(cv(it, TS_DEADLINE_COL).r);          // single-day → .to === .from
+    const deadline = dl.to || dl.from || null;
+    return { id:it.id, name:it.name, key:tsNorm(it.name),
+      stage: cv(it, P.DEV_STAGE).t || null, dept: cv(it, P.DEPARTMENT).t || null,
+      pm: cv(it, P.PM).t || null, owner: cv(it, P.OWNER).t || null,
+      quarter: cv(it, P.QUARTER).t || null, bizImpact: cv(it, P.BIZ_IMPACT).t || null,
+      deadline, dlMs: deadline ? ovDayMs(deadline) : null, tasks:[] };
+  });
+  const epicByKey = new Map(); epics.forEach(e => { if (e.key) epicByKey.set(e.key, e); });
+  // JOIN by title; unmatched/empty tasks → visible bucket
+  const unmatched = []; const unmatchedByName = new Map(); let emptyName = 0;
+  for (const t of tsState.exec){
+    const pn = (cv(t, TS_EX.PROJECT_NAME).t || '').trim();
+    const task = { id:t.id, name:t.name, devStatus: cv(t, TS_EX.DEV_STATUS).t || null,
+      prio: cv(t, TS_EX.PRIORITY).t || null, owner: cv(t, TS_EX.OWNER).t || null,
+      effort: parseFloat(cv(t, TS_EX.EFFORT).t || 0) || 0,
+      planned: parseFloat(cv(t, TS_EX.PLANNED).t || 0) || 0,
+      completion: parseDate(cv(t, TS_EX.COMPLETION).t), projectName: pn };
+    const e = pn ? epicByKey.get(tsNorm(pn)) : null;
+    if (e) { e.tasks.push(task); }
+    else { unmatched.push(task); if (!pn) emptyName++; else unmatchedByName.set(pn,(unmatchedByName.get(pn)||0)+1); }
+  }
+  for (const e of epics){
+    e.isLive     = TS_LIVE_STAGES.has(e.stage);
+    e.isActive   = !TS_INACTIVE_STAGES.has(e.stage);
+    e.plannedSP  = Math.round(e.tasks.reduce((s,t)=>s+t.planned,0));
+    e.actualSP   = Math.round(e.tasks.reduce((s,t)=>s+t.effort,0));
+    e.awaitTasks = e.tasks.filter(t=>TS_APPROVAL_STATUSES.has(t.devStatus)).length;
+    e.blockedTasks = e.tasks.filter(t=>TS_BLOCKED_STATUSES.has(t.devStatus)).length;
+    let pr=0, prLabel=null; for (const t of e.tasks){ const r=TS_PRIO_RANK[t.prio]||0; if(r>pr){pr=r; prLabel=t.prio;} }
+    e.prioRank = pr; e.prio = prLabel;
+    e.overdue   = e.dlMs!=null && e.dlMs < todayMs && !e.isLive;
+    e.delayDays = e.overdue ? Math.round((todayMs - e.dlMs)/864e5) : 0;
+    e.stuck     = e.isActive && (e.awaitTasks>0 || e.blockedTasks>0);
+    e.missingDL = e.isActive && e.dlMs==null;
+    // severity: Red Flag stage(4) → overdue(3) → stuck(2) → missing-deadline(1)
+    e.sev = e.stage===TS_REDFLAG_STAGE ? 4 : e.overdue ? 3 : e.stuck ? 2 : e.missingDL ? 1 : 0;
+  }
+  return { epics, todayMs, unmatched, emptyName,
+    unmatchedByName:[...unmatchedByName.entries()].sort((a,b)=>b[1]-a[1]) };
+}
+
+// ── Render ──
+function renderTechStatus(){
+  document.getElementById('content').innerHTML = `
+  <div class="page">
+    <div id="ts-overlay" class="wl-overlay ov-overlay" onclick="if(event.target===this)tsCloseModal()">
+      <div class="wl-modal ov-modal">
+        <div class="wl-modal-head ov-modal-head"><span id="ts-modal-title"></span>
+          <button class="wl-modal-close ov-modal-close" onclick="tsCloseModal()">✕</button></div>
+        <div id="ts-modal-body" class="wl-modal-body ov-modal-body"></div>
+      </div>
+    </div>
+    <div id="ts-root"></div>
+  </div>`;
+  if (!tsState.escBound){ document.addEventListener('keydown', e=>{ if(e.key==='Escape') tsCloseModal(); }); tsState.escBound=true; }
+  tsRender();
+  tsFetch();
+}
+
+function tsHead(){
+  const today = new Date().toLocaleDateString('he-IL',{day:'2-digit',month:'2-digit',year:'numeric'});
+  let state;
+  if (tsState.error)       state = `<span class="wl-red">שגיאה בטעינה</span>`;
+  else if (!tsState.loaded) state = `<span class="ts-spinner"></span> טוען…`;
+  else                      state = `${tsState.mgmt.length} אפיקים · ${tsState.exec.length} משימות`;
+  return `<div class="page-head">
+    <div>
+      <h1 class="page-title">💻 טכנולוגיה — סטטוס פיתוחים</h1>
+      <div class="page-sub">מה מצב הפיתוחים — מה עולה לאוויר, מה תקוע, ומה חורג · ברמת הפרויקט · מקור: פורטפוליו פיתוח (חי) + בורד טכנולוגיה (חי) · קריאה בלבד</div>
+    </div>
+    <div class="ov-loadstate">${state}<div class="ov-asof mono">נכון ל-${today}</div></div>
+  </div>`;
+}
+
+function tsRender(){
+  const root = document.getElementById('ts-root'); if (!root) return;
+  if (tsState.error){ root.innerHTML = tsHead() + `<div class="ts-section"><div class="ts-empty">שגיאה בטעינת הנתונים: ${ovEsc(tsState.error)}</div></div>`; return; }
+  if (!tsState.loaded){ root.innerHTML = tsHead() + `<div class="ts-section"><div class="ts-empty"><span class="ts-spinner"></span> טוען נתונים משני הבורדים (פורטפוליו פיתוח + בורד טכנולוגיה)…</div></div>`; return; }
+  const data = tsCompute();
+  const k = tsKpiData(data);
+  console.log('[tech_status] evidence:', JSON.stringify({
+    activeEpics:k.activeEpics, totalEpics:data.epics.length,
+    withDeadline:k.withDL, missingDeadline_noTrahNikba:k.noDLAll,
+    tasksTotal:tsState.exec.length, tasksMatched:k.matched, tasksUnmatched_lelaShiyuch:k.unmatched,
+    epicsWithTasks:k.epicsWithTasks, wentLive30:k.live30, awaitingApproval:k.awaiting, redFlag:k.red, activeMissingDeadline:k.missingActive }));
+  root.innerHTML = tsHead() + tsKPIs(data,k) + tsBottlenecks(data) + tsGantt(data) + tsDists(data);
+}
+
+function tsKpiData(data){
+  const t = data.todayMs, d30 = t - 30*864e5;
+  const active = data.epics.filter(e=>e.isActive);
+  const withDL = data.epics.filter(e=>e.dlMs!=null).length;
+  const matched = data.epics.reduce((s,e)=>s+e.tasks.length,0);
+  return {
+    activeEpics: active.length,
+    live30: data.epics.filter(e=>e.isLive && e.dlMs!=null && e.dlMs>=d30 && e.dlMs<=t).length,
+    awaiting: data.epics.filter(e=>e.awaitTasks>0).length,
+    red: data.epics.filter(e=>e.stage===TS_REDFLAG_STAGE || e.overdue).length,
+    missingActive: active.filter(e=>e.dlMs==null).length,
+    withDL, noDLAll: data.epics.length - withDL,
+    matched, unmatched: tsState.exec.length - matched,
+    epicsWithTasks: data.epics.filter(e=>e.tasks.length>0).length,
+  };
+}
+
+function tsKPIs(data,k){
+  const card = (label,val,sub,cls,dashed)=>`<div class="kpi"${dashed?' data-dashed':''}>
+    <div class="kpi-label">${label}</div><div class="kpi-value ${cls||''}">${val}</div><div class="kpi-sub">${sub}</div></div>`;
+  return `<div class="ts-kpi-strip">
+    ${card('פיתוחים פעילים', k.activeEpics, `מתוך ${data.epics.length} אפיקים בפורטפוליו`,'')}
+    ${card('עלו לאוויר (30 ימים)', k.live30, 'הגיעו ל-Go Live / Deployed','success')}
+    ${card('ממתינים לאישור', k.awaiting, 'פרויקטים עם משימות QA Biz / Ready 4 Deploy','warning')}
+    ${card('דגל אדום', k.red, 'דגל אדום או דד-ליין שעבר וטרם עלה','danger')}
+    ${card('חסר דד-ליין רשמי', k.missingActive, 'אפיקים פעילים ללא Project Deadline — למילוי','warning',true)}
+  </div>`;
+}
+
+function tsStageChip(stage){ return `<span class="ts-stagechip">${ovEsc(stage||'—')}</span>`; }
+function tsPrioHtml(e){
+  if (!e.prio) return '<span class="muted">—</span>';
+  const cls = e.prioRank>=4?'crit':e.prioRank===3?'high':e.prioRank===2?'med':'low';
+  return `<span class="ts-prio ${cls}">${ovEsc(e.prio)}</span>`;
+}
+function tsTags(e){
+  const out=[];
+  if (e.stage===TS_REDFLAG_STAGE) out.push('<span class="ts-tag red">🚩 דגל אדום</span>');
+  if (e.overdue) out.push(`<span class="ts-tag over">חורג ${e.delayDays} ימים</span>`);
+  if (e.stuck) out.push(`<span class="ts-tag stuck">תקוע · ${e.awaitTasks?`${e.awaitTasks} לאישור`:''}${e.awaitTasks&&e.blockedTasks?' · ':''}${e.blockedTasks?`${e.blockedTasks} חסום`:''}</span>`);
+  if (e.missingDL) out.push('<span class="ts-tag nodl">חסר דד-ליין</span>');
+  if (e.isLive) out.push('<span class="ts-tag live">עלה לאוויר</span>');
+  return out.join(' ');
+}
+
+function tsBottlenecks(data){
+  const rows = data.epics.filter(e=>e.sev>0)
+    .sort((a,b)=> b.sev-a.sev || b.delayDays-a.delayDays || b.prioRank-a.prioRank || b.actualSP-a.actualSP);
+  const cap_ = `<div class="ts-cap">פרויקטים הדורשים תשומת לב, ממוינים לפי חומרה: <b>דגל אדום → חורג (דד-ליין עבר וטרם עלה) → תקוע (ממתין לאישור / חסום) → חסר דד-ליין</b>. דד-ליין = Project Deadline (יום עלייה לאוויר); "טרם נקבע" מוצג ולא מוסתר. מאמץ מתוכנן/בפועל מחושב מסכימת המשימות המשויכות לאפיק (לפי שם).</div>`;
+  if (!rows.length) return `<div class="ts-section"><div class="ts-section-h">צווארי בקבוק</div>${cap_}<div class="ts-empty">אין פרויקטים חורגים או תקועים ✓</div></div>`;
+  const body = rows.map(e=>`<tr class="ts-row" onclick="tsOpenEpic('${ovEsc(e.id)}')">
+    <td><div class="ts-pname">${ovEsc(e.name)}</div><div style="margin-top:3px">${tsTags(e)}</div></td>
+    <td>${ovEsc(e.dept||'—')}</td>
+    <td>${tsStageChip(e.stage)}</td>
+    <td class="mono">${e.deadline?fmtDate(new Date(e.dlMs)):'<span class="muted">טרם נקבע</span>'}</td>
+    <td class="mono ${e.delayDays>0?'wl-red':''}">${e.delayDays>0?e.delayDays:'—'}</td>
+    <td class="mono">${e.plannedSP||'—'} / ${e.actualSP||'—'}</td>
+    <td>${tsPrioHtml(e)}</td>
+  </tr>`).join('');
+  return `<div class="ts-section">
+    <div class="ts-section-h">צווארי בקבוק · ${rows.length} פרויקטים</div>
+    ${cap_}
+    <table class="ts-tbl"><thead><tr>
+      <th>פרויקט</th><th>מחלקה מבקשת</th><th>שלב פיתוח</th><th>דד-ליין</th><th>ימי חריגה</th><th>מאמץ מתוכנן/בפועל</th><th>עדיפות</th>
+    </tr></thead><tbody>${body}</tbody></table>
+  </div>`;
+}
+
+function tsGantt(data){
+  const today = data.todayMs;
+  const placed  = data.epics.filter(e=> e.dlMs!=null && tsBucket(e.stage)!=='other');
+  const untimed = data.epics.filter(e=> e.dlMs==null && e.isActive);
+  const cap_ = `<div class="ts-cap">פרויקטים על ציר הזמן לפי <b>Project Deadline</b> (יום עלייה לאוויר), מקובצים לפי שלב: <b>מתוכנן → בפיתוח → עלה לאוויר</b>. הקו האדום = היום. פרויקטים פעילים ללא דד-ליין מוצגים בנפרד בנתיב "טרם תוזמן" ולא על הציר.</div>`;
+  let axis = '', lanesHtml = '';
+  if (placed.length){
+    let minMs = Math.min(today, ...placed.map(e=>e.dlMs));
+    let maxMs = Math.max(today, ...placed.map(e=>e.dlMs));
+    const span = Math.max(maxMs-minMs, 864e5); minMs -= span*0.04; maxMs += span*0.04;
+    const pos = ms => 6 + (ms-minMs)/(maxMs-minMs)*92;          // [6,98] leaves room for lane labels
+    // month ticks
+    let ticks=''; const d=new Date(minMs); d.setDate(1); d.setMonth(d.getMonth()+1);
+    for (let g=new Date(d); g.getTime()<=maxMs && ticks.length<4000; g.setMonth(g.getMonth()+1)){
+      const x=pos(g.getTime()); if (x<2||x>99) continue;
+      ticks += `<div class="ts-gantt-mtick" style="left:${x}%"></div><div class="ts-gantt-mlbl" style="left:${x}%">${g.toLocaleDateString('he-IL',{month:'short',year:'2-digit'})}</div>`;
+    }
+    const tx = pos(today);
+    axis = `<div class="ts-gantt-axis">${ticks}<div class="ts-gantt-today" style="left:${tx}%"></div><div class="ts-gantt-today-lbl" style="left:${tx}%">היום</div></div>`;
+    const lanes = [['planned','מתוכנן'],['prog','בפיתוח'],['live','עלה לאוויר']];
+    lanesHtml = lanes.map(([b,lbl])=>{
+      const dots = placed.filter(e=>tsBucket(e.stage)===b).map(e=>{
+        const cls = e.stage===TS_REDFLAG_STAGE?'red':b;
+        return `<div class="ts-dot ${cls}" style="left:${pos(e.dlMs)}%" title="${ovEsc(e.name)} · ${ovEsc(e.stage)} · ${fmtDate(new Date(e.dlMs))}" onclick="tsOpenEpic('${ovEsc(e.id)}')"></div>`;
+      }).join('');
+      return `<div class="ts-lane"><span class="ts-lane-lbl">${lbl}</span>${dots}</div>`;
+    }).join('');
+  }
+  const untimedHtml = untimed.length
+    ? `<div class="ts-untimed"><span style="font-size:10.5px;font-weight:700;color:rgba(26,29,35,.6);align-self:center">טרם תוזמן (${untimed.length}):</span>${untimed.map(e=>`<button class="ts-untimed-chip" onclick="tsOpenEpic('${ovEsc(e.id)}')">${ovEsc(e.name.length>30?e.name.slice(0,29)+'…':e.name)}</button>`).join('')}</div>`
+    : '';
+  const inner = placed.length
+    ? `<div class="ts-gantt">${axis}${lanesHtml}</div>${untimedHtml}`
+    : `<div class="ts-empty">אין פרויקטים עם דד-ליין על הציר</div>${untimedHtml}`;
+  return `<div class="ts-section"><div class="ts-section-h">עלייה לאוויר · ${placed.length} מתוזמנים · ${untimed.length} טרם תוזמנו</div>${cap_}${inner}</div>`;
+}
+
+function tsBarChart(title, pairs){
+  const max = Math.max(1, ...pairs.map(p=>p[1]));
+  const rows = pairs.map(([name,n])=>`<div class="ts-bar-row">
+    <span class="ts-bar-name" title="${ovEsc(name)}">${ovEsc(name)}</span>
+    <div class="ts-bar-track"><div class="ts-bar-fill" style="width:${Math.round(n/max*100)}%"></div></div>
+    <span class="ts-bar-val">${n}</span></div>`).join('');
+  return `<div><div class="ts-dist-h">${title}</div>${rows||'<div class="ts-empty">—</div>'}</div>`;
+}
+
+function tsDists(data){
+  const active = data.epics.filter(e=>e.isActive);
+  // by requesting department (active epics)
+  const dept={}; active.forEach(e=>{ const d=e.dept||'(ללא)'; dept[d]=(dept[d]||0)+1; });
+  const deptPairs = Object.entries(dept).sort((a,b)=>b[1]-a[1]);
+  // by Dev Priority (project-level = max task priority)
+  const prioOrder = ['Critical','High','Medium','Low','ללא'];
+  const prio = {Critical:0,High:0,Medium:0,Low:0,'ללא':0};
+  active.forEach(e=>{ const k = e.prioRank>=4?'Critical':e.prioRank===3?'High':e.prioRank===2?'Medium':e.prioRank===1?'Low':'ללא'; prio[k]++; });
+  const prioPairs = prioOrder.map(k=>[k,prio[k]]).filter(p=>p[1]>0);
+  // by Dev Stage bucket
+  const buckets={'מתוכנן':0,'בפיתוח':0,'עלה לאוויר':0,'אחר':0};
+  data.epics.forEach(e=>{ const b=tsBucket(e.stage); buckets[b==='planned'?'מתוכנן':b==='prog'?'בפיתוח':b==='live'?'עלה לאוויר':'אחר']++; });
+  const bucketPairs = Object.entries(buckets).filter(p=>p[1]>0);
+  const note = `<div class="ts-note">🔗 <b>שיוך לפי שם (match-by-title):</b> ${data.epics.reduce((s,e)=>s+e.tasks.length,0)} משימות שויכו לאפיקים · <b>${tsState.exec.length - data.epics.reduce((s,e)=>s+e.tasks.length,0)} משימות "ללא שיוך אפיק"</b> (שמות שלא תואמים אף אפיק — נספרות ולא נזרקות). <button class="ts-untimed-chip" onclick="tsOpenUnmatched()">פירוט →</button></div>`;
+  return `<div class="ts-section"><div class="ts-section-h">חלוקות</div>
+    <div class="ts-grid3">
+      ${tsBarChart('לפי מחלקה מבקשת (אפיקים פעילים)', deptPairs)}
+      ${tsBarChart('לפי עדיפות פיתוח', prioPairs)}
+      ${tsBarChart('לפי שלב פיתוח', bucketPairs)}
+    </div>${note}</div>`;
+}
+
+// ── Modals ──
+function tsOpenModal(title, html){ const ov=document.getElementById('ts-overlay'); if(!ov)return;
+  document.getElementById('ts-modal-title').innerHTML=title; document.getElementById('ts-modal-body').innerHTML=html; ov.style.display='flex'; }
+function tsCloseModal(){ const ov=document.getElementById('ts-overlay'); if(ov)ov.style.display='none'; }
+
+function tsOpenEpic(id){
+  const data = tsCompute();
+  const e = data.epics.find(x=>String(x.id)===String(id));
+  if (!e){ tsOpenModal('—', `<div class="ts-empty">לא נמצא</div>`); return; }
+  const tasks = [...e.tasks].sort((a,b)=> (b.effort+b.planned)-(a.effort+a.planned));
+  const head = `<div style="padding:8px 14px 0;font-size:12px;color:rgba(26,29,35,.72);line-height:1.7">
+    שלב: <b>${ovEsc(e.stage||'—')}</b> · מחלקה: ${ovEsc(e.dept||'—')} · PM: ${ovEsc(e.pm||'—')}<br>
+    דד-ליין (עלייה לאוויר): <b>${e.deadline?fmtDate(new Date(e.dlMs)):'טרם נקבע'}</b>${e.delayDays>0?` · <span class="wl-red">חורג ${e.delayDays} ימים</span>`:''} · מאמץ מתוכנן/בפועל: ${e.plannedSP||'—'}/${e.actualSP||'—'} · ${e.tasks.length} משימות משויכות</div>`;
+  const body = tasks.length ? `<table class="ts-modal-tbl"><thead><tr><th>משימה</th><th>Dev Status</th><th>עדיפות</th><th>מתוכנן</th><th>בפועל</th></tr></thead><tbody>${
+    tasks.map(t=>`<tr><td>${ovEsc(t.name)}</td><td><span class="wl-st">${ovEsc(t.devStatus||'—')}</span></td><td>${ovEsc(t.prio||'—')}</td><td class="mono">${t.planned||'—'}</td><td class="mono">${t.effort||'—'}</td></tr>`).join('')
+  }</tbody></table>` : `<div class="ts-empty">אין משימות משויכות לאפיק זה (לפי שם)</div>`;
+  tsOpenModal(`${ovEsc(e.name)}`, head + body);
+}
+
+function tsOpenUnmatched(){
+  const data = tsCompute();
+  const rows = data.unmatchedByName;
+  const tbl = `<div style="padding:8px 14px 0;font-size:12px;color:rgba(26,29,35,.7)">${data.unmatched.length} משימות ללא אפיק תואם${data.emptyName?` (מתוכן ${data.emptyName} ללא שם פרויקט כלל)`:''}. אלו לרוב קבוצות תפעוליות (Bugs Colony, Technical Debt וכו') או שמות שלא תואמים אף אפיק בפורטפוליו.</div>
+    <table class="ts-modal-tbl"><thead><tr><th>שם פרויקט (כפי שמופיע בבורד הטכנולוגיה)</th><th>משימות</th></tr></thead><tbody>${
+    rows.map(([n,c])=>`<tr><td>${ovEsc(n)}</td><td class="mono">${c}</td></tr>`).join('')
+  }</tbody></table>`;
+  tsOpenModal(`ללא שיוך אפיק · ${data.unmatched.length} משימות`, tbl);
 }
 
 // ══════════════════════════════════════════════════
